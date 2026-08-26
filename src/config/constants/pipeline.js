@@ -30,18 +30,11 @@ export const PIPELINE_STAGES = [
     blurb: 'Drafts the questions the ontology must be able to answer, then stops again.',
   },
   {
-    id: 'ontology',
-    label: 'Ontology build',
-    icon: 'hierarchy',
-    gate: false,
-    blurb: 'Compiles approved concepts into OWL classes, properties, axioms and R2RML mappings.',
-  },
-  {
     id: 'graph',
     label: 'Knowledge graph',
     icon: 'graph',
     gate: false,
-    blurb: 'Executes the mappings against live tables to materialise entities and edges.',
+    blurb: 'Compiles the approved model into OWL classes and mappings, then executes them against live tables to materialise entities and edges.',
   },
 ];
 
@@ -72,4 +65,18 @@ export function describeStages(currentStageId, status) {
     } else if (status === 'complete') state = STAGE_STATE.done;
     return { ...stage, index: i, state };
   });
+}
+
+/**
+ * The screen a stage owns, as a `buildPath` key, or null when it has none.
+ *
+ * This is what makes the stepper navigable from anywhere in a run: the gates
+ * carry their own route, the graph exists only once the run produced it, and
+ * Extract has no view of its own — so it stays inert rather than looking
+ * clickable and going nowhere.
+ */
+export function stageRoute(stage, run) {
+  if (stage.route) return stage.route;
+  if (stage.id === 'graph' && run?.output) return 'runGraph';
+  return null;
 }

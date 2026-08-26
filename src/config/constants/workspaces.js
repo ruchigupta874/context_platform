@@ -21,6 +21,7 @@ export const WORKSPACE_FILTERS = [
 
 export const REGISTRY_COPY = {
   title: 'Workspaces',
+  selectedLabel: 'SELECTED',
   subtitle:
     'A workspace owns its data sources, the ontology extracted from them, and the knowledge graph built on top. Open one to run an extraction.',
   newCardTitle: 'New workspace',

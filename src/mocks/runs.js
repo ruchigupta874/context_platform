@@ -32,26 +32,6 @@ export const RUNS = [
     stageNote: 'Waiting at Competency questions',
   },
   {
-    id: 'R-2415',
-    startedAt: '26 min ago',
-    startedBy: 'a.sikarwar',
-    sources: '6 tables, 1 doc',
-    strategy: 'Blended',
-    stage: 'ontology',
-    status: RUN_STATUS.running,
-    stageNote: 'Building ontology, resolving 4 conflicts',
-  },
-  {
-    id: 'R-2414',
-    startedAt: '3 hr ago',
-    startedBy: 'r.mehta',
-    sources: '4 tables',
-    strategy: 'Schema-first',
-    stage: 'concepts',
-    status: RUN_STATUS.needsReview,
-    stageNote: 'Waiting at Concepts & relationships',
-  },
-  {
     id: 'R-2413',
     startedAt: 'Yesterday, 17:40',
     startedBy: 'a.sikarwar',
@@ -60,28 +40,16 @@ export const RUNS = [
     stage: 'graph',
     status: RUN_STATUS.complete,
     stageNote: 'Graph built, 12.4k nodes',
-  },
-  {
-    id: 'R-2412',
-    startedAt: 'Yesterday, 14:02',
-    startedBy: 'system',
-    sources: '2 tables',
-    strategy: 'Schema-first',
-    stage: 'extract',
-    status: RUN_STATUS.failed,
-    stageNote: 'Catalog credentials expired at Extract',
-  },
-  {
-    id: 'R-2411',
-    startedAt: '24 Aug, 09:11',
-    startedBy: 'a.sikarwar',
-    sources: '7 tables',
-    strategy: 'Blended',
-    stage: 'graph',
-    status: RUN_STATUS.complete,
-    stageNote: 'Graph built, 8.1k nodes',
+    output: { version: 'v5', concepts: 47, relations: 62, nodes: '12,438', edges: '31,204' },
   },
 ];
+
+/**
+ * A run is the thing that owns an ontology and a graph — they are its output,
+ * not the workspace's. `output` is set only once a run reaches the end of the
+ * pipeline, so a run still moving has nothing to open yet.
+ */
+export const findRun = (runId) => RUNS.find((run) => run.id === runId);
 
 /** Detail for the run currently sitting at gate 1. */
 export const RUN_DETAIL = {
@@ -119,7 +87,7 @@ export const RUN_DETAIL = {
         { id: 'keys', label: 'Key candidates', value: '23' },
       ],
       listTitle: 'Extraction log',
-      listMeta: 'R-2418 · stage 1 of 5',
+      listMeta: 'R-2418 · stage 1 of 4',
       lines: [
         { id: 'l1', lead: '09:41:02', message: 'Connected to prod_uc.cust360', tag: 'ok' },
         { id: 'l2', lead: '09:41:09', message: 'Profiled customer (14 cols, 482k rows)', tag: 'ok' },
@@ -165,16 +133,10 @@ export const RUN_DETAIL = {
         'Once concepts are approved, the run drafts the questions your ontology must be able to answer, then stops again for your sign-off.',
       tone: 'pending',
     },
-    ontology: {
-      title: 'Ontology build',
-      blurb:
-        'Approved concepts and relationships are compiled into OWL classes, object properties and axioms, with R2RML mappings back to the source columns. No review gate here.',
-      tone: 'pending',
-    },
     graph: {
       title: 'Knowledge graph',
       blurb:
-        'The mappings are executed against the live tables to materialise entities and edges. Expect roughly 12k nodes at this source volume.',
+        'Approved concepts and questions are compiled into OWL classes, properties and R2RML mappings, then executed against the live tables. Expect roughly 12k nodes at this source volume.',
       tone: 'pending',
     },
   },

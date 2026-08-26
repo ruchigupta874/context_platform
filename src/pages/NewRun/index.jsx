@@ -26,7 +26,7 @@ const DEFAULT_GUIDANCE =
 
 export default function NewRun() {
   const navigate = useNavigate();
-  const { workspaceId } = useWorkspace();
+  const { workspace, workspaceId } = useWorkspace();
 
   const [strategy, setStrategy] = useState(DEFAULT_STRATEGY);
   const [guidance, setGuidance] = useState(DEFAULT_GUIDANCE);
@@ -69,7 +69,7 @@ export default function NewRun() {
     <>
       <TopBar
         crumbs={[
-          { label: 'Cust360Auto' },
+          { label: workspace.name },
           { label: 'Runs', to: buildPath.runs(workspaceId) },
           { label: 'New extraction' },
         ]}

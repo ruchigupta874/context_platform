@@ -6,6 +6,8 @@
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--t-base), border-color var(--t-base);
 }
 
 .panelFlush {

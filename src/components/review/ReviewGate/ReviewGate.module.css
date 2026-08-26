@@ -5,6 +5,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  animation: fade-in var(--t-base) both;
 }
 
 .toolbar {

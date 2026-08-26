@@ -104,13 +104,22 @@
   --row-h-compact: 34px;
 
   --sidebar-w: 232px;
+  --sidebar-w-collapsed: 56px;
   --topbar-h: 56px;
 
   /* ---- elevation ---- */
+  /* One ramp, used consistently: resting cards, lifted cards, floating bars. */
   --shadow-raise: 0 1px 2px rgba(22, 22, 29, 0.08);
   --shadow-card: 0 1px 3px rgba(22, 22, 29, 0.06);
+  --shadow-card-hover: 0 2px 8px rgba(22, 22, 29, 0.08), 0 1px 2px rgba(22, 22, 29, 0.05);
+  --shadow-pop: 0 10px 28px rgba(22, 22, 29, 0.12), 0 1px 3px rgba(22, 22, 29, 0.08);
   --shadow-knob: 0 1px 2px rgba(22, 22, 29, 0.2);
 
   /* ---- motion ---- */
-  --t-fast: 0.12s ease;
+  /* Decelerating curve: quick to start, settles softly. No overshoot — this is
+     an operations tool, and bouncing controls read as noise at this density. */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --t-fast: 0.12s var(--ease);
+  --t-base: 0.18s var(--ease);
+  --t-slow: 0.26s var(--ease);
 }

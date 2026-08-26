@@ -1,10 +1,13 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
+import RunShell from '../components/layout/RunShell';
+import RunDetail from '../pages/RunDetail';
 import WorkspaceRegistry from '../pages/WorkspaceRegistry';
+import ReviewQueue from '../pages/ReviewQueue';
+import Overview from '../pages/Overview';
 import Sources from '../pages/Sources';
 import NewRun from '../pages/NewRun';
 import Runs from '../pages/Runs';
-import RunDetail from '../pages/RunDetail';
 import ReviewConcepts from '../pages/ReviewConcepts';
 import ReviewQuestions from '../pages/ReviewQuestions';
 import Ontology from '../pages/Ontology';
@@ -31,39 +34,31 @@ export default function AppRoutes() {
       <Route path="/w/:workspaceId" element={<AppShell />}>
         <Route index element={<Navigate to="overview" replace />} />
 
-        <Route path="overview" element={<Placeholder title="Overview" icon="grid" />} />
+        <Route path="overview" element={<Overview />} />
         <Route path="sources" element={<Sources />} />
-        <Route
-          path="documents"
-          element={
-            <Placeholder
-              title="Documents"
-              icon="doc"
-              hint="Document management lives on the Documents tab of Data sources today."
-            />
-          }
-        />
-
         <Route path="runs" element={<Runs />} />
         <Route path="runs/new" element={<NewRun />} />
-        <Route path="runs/:runId" element={<RunDetail />} />
-        <Route path="runs/:runId/review/concepts" element={<ReviewConcepts />} />
-        <Route path="runs/:runId/review/questions" element={<ReviewQuestions />} />
+
+        {/* Every view of a run shares the run bar, the stepper and the tabs. */}
+        <Route path="runs/:runId" element={<RunShell />}>
+          <Route index element={<RunDetail />} />
+          <Route path="graph" element={<KnowledgeGraph />} />
+          <Route path="ontology" element={<Ontology />} />
+          <Route path="review/concepts" element={<ReviewConcepts />} />
+          <Route path="review/questions" element={<ReviewQuestions />} />
+        </Route>
+        <Route path="review" element={<ReviewQueue />} />
+
         <Route
-          path="review"
+          path="graph"
           element={
             <Placeholder
-              title="Review queue"
-              icon="inbox"
-              hint="A cross-run inbox of every gate waiting on you. Filter the Runs list by 'Needs review' for now."
+              title="Knowledge graph"
+              icon="graph"
+              hint="The whole domain in one graph, merged across every run. Until that exists, each run carries the graph it built — open a finished run to see one."
             />
           }
         />
-
-        <Route path="ontology" element={<Ontology />} />
-        <Route path="questions" element={<Placeholder title="Competency questions" icon="help" />} />
-        <Route path="graph" element={<KnowledgeGraph />} />
-        <Route path="validation" element={<Placeholder title="Validation" icon="shield" />} />
       </Route>
 
       <Route path="*" element={<Navigate to={`/w/${DEFAULT_WORKSPACE_ID}/runs`} replace />} />

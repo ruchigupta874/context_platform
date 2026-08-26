@@ -99,3 +99,46 @@ pre {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---- motion primitives ---- */
+
+/*
+ * Page entry. Every route swap remounts <main>, so this reads as the content
+ * settling in rather than snapping. 4px and 260ms — enough to register, short
+ * enough that it never delays a reviewer working through a list.
+ */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Floating bars arrive from the edge they are anchored to. */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+main {
+  animation: rise-in var(--t-slow) both;
+}

@@ -3,6 +3,7 @@
   min-height: 0;
   display: flex;
   background: var(--bg-panel);
+  animation: fade-in var(--t-base) both;
 }
 
 .tree {

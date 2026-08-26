@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar";
-// import { WorkspaceProvider } from '../../hooks/useWorkspace';
+import Sidebar from "../Sidebar";
+import WorkspaceProvider from "../../../context/WorkspaceProvider";
+import ReviewProvider from "../../../context/ReviewProvider";
 import styles from "./AppShell.module.css";
 
 /**
@@ -9,14 +10,16 @@ import styles from "./AppShell.module.css";
  */
 export default function AppShell() {
   return (
-    // <WorkspaceProvider>
-    <div className={styles.shell}>
-      <Sidebar />
-      <div className={styles.main}>
-        <Outlet />
-      </div>
-    </div>
-    // </WorkspaceProvider>
+    <WorkspaceProvider>
+      <ReviewProvider>
+        <div className={styles.shell}>
+          <Sidebar />
+          <div className={styles.main}>
+            <Outlet />
+          </div>
+        </div>
+      </ReviewProvider>
+    </WorkspaceProvider>
   );
 }
 

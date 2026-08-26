@@ -5,25 +5,69 @@
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  transition: width var(--t-fast), flex-basis var(--t-fast);
 }
 
-.switcher {
+.collapsed {
+  width: var(--sidebar-w-collapsed);
+  flex-basis: var(--sidebar-w-collapsed);
+}
+
+.head {
   height: var(--topbar-h);
   flex: none;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
+}
+
+.switcher {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
   gap: 10px;
-  padding: 0 14px;
+  padding: 0 6px 0 14px;
   background: none;
-  border-left: 0;
-  border-right: 0;
-  border-top: 0;
-  width: 100%;
+  border: 0;
   text-align: left;
 }
 
 .switcher:hover {
+  background: var(--bg-hover);
+}
+
+.collapse {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--text-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse:hover {
+  background: var(--bg-hover);
+  color: var(--text-2);
+}
+
+.expand {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expand:hover {
   background: var(--bg-hover);
 }
 
@@ -59,6 +103,10 @@
   color: var(--text-5);
 }
 
+.switcherCaret {
+  color: var(--text-5);
+}
+
 .nav {
   flex: 1;
   min-height: 0;
@@ -69,10 +117,22 @@
   gap: 15px;
 }
 
+.collapsed .nav {
+  padding: 10px 8px;
+  gap: 10px;
+  overflow-x: hidden;
+}
+
 .group {
   display: flex;
   flex-direction: column;
   gap: 1px;
+}
+
+/* Without labels the groups need something to keep them apart. */
+.collapsed .group + .group {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 10px;
 }
 
 .groupLabel {
@@ -82,6 +142,10 @@
   color: var(--text-5);
   padding: 0 8px 6px;
   text-transform: uppercase;
+}
+
+.collapsed .groupLabel {
+  display: none;
 }
 
 .item {
@@ -102,12 +166,64 @@
   text-decoration: none;
 }
 
+.collapsed .item {
+  justify-content: center;
+  gap: 0;
+  height: 34px;
+  padding: 0;
+}
+
+.itemIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
 .itemLabel {
   flex: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.collapsed .itemLabel,
+.collapsed .badge {
+  display: none;
+}
+
+/* The count becomes a dot on the icon so the signal survives the collapse. */
+.dot {
+  position: absolute;
+  top: -2px;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--bg-panel);
+  display: none;
+}
+
+.collapsed .dot {
+  display: block;
+}
+
+.collapsed .active .dot {
+  box-shadow: 0 0 0 2px var(--accent-tint);
+}
+
+.dotInfo {
+  background: var(--info);
+}
+
+.dotWarn {
+  background: var(--warn-strong);
+}
+
+.dotDanger {
+  background: var(--danger);
 }
 
 .active {
@@ -153,6 +269,11 @@
   gap: 9px;
 }
 
+.collapsed .user {
+  justify-content: center;
+  padding: 10px 0;
+}
+
 .avatar {
   width: 24px;
   height: 24px;
@@ -175,4 +296,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.userSettings {
+  color: var(--text-5);
+}
+
+.collapsed .userName,
+.collapsed .userSettings {
+  display: none;
 }

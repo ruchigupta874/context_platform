@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
-import Icon from '../ui/Icon';
-import { STAGE_STATE } from '../../config/constants/pipeline';
+import Icon from '../../ui/Icon';
+import { STAGE_STATE } from '../../../config/constants/pipeline';
 import styles from './StageStepper.module.css';
 
 const DISC_CLASS = {
@@ -15,25 +15,26 @@ const DISC_CLASS = {
  * Horizontal pipeline stepper.
  *
  * `stages` comes from `describeStages()` so the component stays presentational.
- * When `onSelect` is passed the steps become buttons — that is what lets the run
- * page show what each stage produced without leaving the page.
+ * When `onSelect` is passed the steps become buttons, so the stepper doubles as
+ * the run's navigation. `isSelectable` narrows that per stage: a stage with no
+ * screen of its own stays inert instead of looking clickable and going nowhere.
  */
 export default function StageStepper({
   stages,
   selectedId,
   onSelect,
+  isSelectable,
   variant = 'compact',
   showMeta = false,
   meta = {},
 }) {
-  const clickable = Boolean(onSelect);
-
   return (
     <div className={[styles.stepper, styles[variant]].join(' ')} aria-label="Extraction pipeline">
       {stages.map((stage, index) => {
         const current = selectedId ? stage.id === selectedId : stage.state !== STAGE_STATE.pending;
         const done = stage.state === STAGE_STATE.done;
         const pending = stage.state === STAGE_STATE.pending;
+        const clickable = Boolean(onSelect) && (!isSelectable || isSelectable(stage));
         const StepTag = clickable ? 'button' : 'div';
 
         return (

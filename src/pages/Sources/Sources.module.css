@@ -175,30 +175,19 @@
   text-overflow: ellipsis;
 }
 
+/* ---- row action ---- */
+.actionCell {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* ---- footer ---- */
-.footerBody {
-  min-width: 0;
-}
-
 .footerCount {
-  font-size: var(--fs-body);
-  color: var(--text-2);
-}
-
-.footerCountStrong {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.footerCols {
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  color: var(--text-4);
-  margin-left: 6px;
+  font-size: var(--fs-small);
+  color: var(--text-3);
 }
 
 .footerBreakdown {
   font-size: var(--fs-caption);
   color: var(--text-4);
-  margin-top: 2px;
 }

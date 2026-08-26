@@ -1,0 +1,173 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  margin-bottom: 14px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 4px;
+}
+
+.emptyPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.group {
+  flex: none;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--bg-muted);
+}
+
+.groupRun {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.groupLabel {
+  font-size: var(--fs-small);
+  color: var(--text-3);
+}
+
+.groupCount {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+/* ---- rows ---- */
+.rows {
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 18px 22px 74px minmax(0, 1.5fr) minmax(0, 1fr) 118px;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  min-height: 42px;
+  transition: background var(--t-fast);
+}
+
+.row + .row {
+  border-top: 1px solid var(--border-soft);
+}
+
+.row:hover {
+  background: var(--bg-subtle);
+}
+
+.rowLocked {
+  background: var(--bg-subtle);
+}
+
+.rowLocked:hover {
+  background: var(--bg-muted);
+}
+
+.rowIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-4);
+}
+
+.rowScore {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.rowName {
+  min-width: 0;
+  font-size: var(--fs-body);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowLocked .rowName {
+  color: var(--text-2);
+}
+
+.rowSub {
+  min-width: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowNote {
+  display: block;
+}
+
+.rowGateLink {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+.rowGateLink:hover {
+  color: var(--accent);
+}
+
+/* ---- bulk bar ---- */
+.bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 11px 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop);
+  animation: slide-up var(--t-base) both;
+}
+
+.barCount {
+  font-size: var(--fs-body);
+  color: var(--text-2);
+}
+
+.barCount strong {
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.barNote {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}

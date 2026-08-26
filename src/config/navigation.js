@@ -14,7 +14,6 @@ export const NAV_GROUPS = [
     items: [
       { id: 'overview', label: 'Overview', icon: 'grid', to: buildPath.overview },
       { id: 'sources', label: 'Data sources', icon: 'database', to: buildPath.sources },
-      { id: 'documents', label: 'Documents', icon: 'doc', to: buildPath.documents },
     ],
   },
   {
@@ -29,10 +28,7 @@ export const NAV_GROUPS = [
     id: 'knowledge',
     label: 'Knowledge',
     items: [
-      { id: 'ontology', label: 'Ontology', icon: 'hierarchy', to: buildPath.ontology },
-      { id: 'questions', label: 'Competency questions', icon: 'help', to: buildPath.questions },
       { id: 'graph', label: 'Knowledge graph', icon: 'graph', to: buildPath.graph },
-      { id: 'validation', label: 'Validation', icon: 'shield', to: buildPath.validation, badge: 'validationErrors', badgeTone: 'danger' },
     ],
   },
 ];

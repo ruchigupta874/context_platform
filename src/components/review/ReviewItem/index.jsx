@@ -1,9 +1,9 @@
-import Icon from '../ui/Icon';
-import Chip from '../ui/Chip';
-import Checkbox from '../ui/Checkbox';
-import { DECISION } from '../../config/constants/common';
-import { EVIDENCE_TONES } from '../../config/constants/review';
-import { confidenceTone, formatConfidence, signalTone } from '../../utils/format';
+import Icon from '../../ui/Icon';
+import Chip from '../../ui/Chip';
+import Checkbox from '../../ui/Checkbox';
+import { DECISION } from '../../../config/constants/common';
+import { EVIDENCE_TONES } from '../../../config/constants/review';
+import { confidenceTone, formatConfidence, signalTone } from '../../../utils/format';
 import styles from './ReviewItem.module.css';
 
 const TONE_CLASS = { ok: styles.toneOk, warn: styles.toneWarn, danger: styles.toneDanger };

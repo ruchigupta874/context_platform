@@ -1,4 +1,4 @@
-import Icon from './Icon';
+import Icon from '../Icon';
 import styles from './Surfaces.module.css';
 
 /** Bordered white card. `flush` uses the tighter radius used inside page bodies. */

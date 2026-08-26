@@ -1,4 +1,4 @@
-import Icon from './Icon';
+import Icon from '../Icon';
 import styles from './SegmentedControl.module.css';
 
 /**

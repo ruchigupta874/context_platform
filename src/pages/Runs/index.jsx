@@ -15,7 +15,7 @@ import {
   DataTableRow,
 } from '../../components/ui/DataTable';
 import { RUN_COLUMNS, RUN_FILTERS, RUN_STATUS, RUN_STATUS_META } from '../../config/constants/runs';
-import { describeStages } from '../../config/constants/pipeline';
+import { PIPELINE_STAGES, describeStages } from '../../config/constants/pipeline';
 import { RUNS } from '../../mocks/runs';
 import { useWorkspace } from '../../hooks/useWorkspace';
 import { buildPath } from '../../routes/paths';
@@ -29,7 +29,7 @@ const EDGE_CLASS = {
 
 export default function Runs() {
   const navigate = useNavigate();
-  const { workspaceId } = useWorkspace();
+  const { workspace, workspaceId } = useWorkspace();
   const [filter, setFilter] = useState('all');
 
   const counts = useMemo(
@@ -47,13 +47,20 @@ export default function Runs() {
     [filter],
   );
 
+  /**
+   * Where a row leads is whatever its status action promises: a gate opens its
+   * review, a finished run opens the graph it built, anything else opens the run.
+   */
   const openRun = (run) => {
-    if (run.status === RUN_STATUS.needsReview && run.stage === 'concepts') {
-      navigate(buildPath.reviewConcepts(workspaceId, run.id));
-      return;
+    if (run.status === RUN_STATUS.needsReview) {
+      const stage = PIPELINE_STAGES.find((item) => item.id === run.stage);
+      if (stage?.route) {
+        navigate(buildPath[stage.route](workspaceId, run.id));
+        return;
+      }
     }
-    if (run.status === RUN_STATUS.needsReview && run.stage === 'questions') {
-      navigate(buildPath.reviewQuestions(workspaceId, run.id));
+    if (run.output) {
+      navigate(buildPath.runGraph(workspaceId, run.id));
       return;
     }
     navigate(buildPath.runDetail(workspaceId, run.id));
@@ -62,7 +69,7 @@ export default function Runs() {
   return (
     <>
       <TopBar
-        crumbs={[{ label: 'Cust360Auto' }, { label: 'Runs' }]}
+        crumbs={[{ label: workspace.name }, { label: 'Runs' }]}
         actions={
           <Button variant="primary" iconLeft="plus" onClick={() => navigate(buildPath.newRun(workspaceId))}>
             New extraction

@@ -1,4 +1,4 @@
-import Icon from './Icon';
+import Icon from '../Icon';
 import styles from './Checkbox.module.css';
 
 export default function Checkbox({ checked = false, onChange, size = 'md', label, ...rest }) {

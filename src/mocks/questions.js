@@ -3,6 +3,9 @@ import { COVERAGE } from '../config/constants/questions';
 
 const { covered, partial, notCovered } = COVERAGE;
 
+/** The run these questions were drafted in. */
+export const QUESTION_RUN = 'R-2416';
+
 export const QUESTIONS = [
   {
     id: 'q1',

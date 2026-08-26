@@ -1,37 +1,3 @@
-.runBar {
-  height: 62px;
-  flex: none;
-  background: var(--bg-panel);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 24px;
-}
-
-.runId {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.runIdText {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.runSummary {
-  font-size: var(--fs-caption);
-  color: var(--text-4);
-  margin-top: 2px;
-}
-
-.spacer {
-  flex: 1;
-}
-
 .body {
   flex: 1;
   min-height: 0;

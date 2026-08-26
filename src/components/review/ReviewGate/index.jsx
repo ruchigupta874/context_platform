@@ -1,6 +1,6 @@
-import Icon from '../ui/Icon';
-import Button from '../ui/Button';
-import ProgressBar from '../ui/ProgressBar';
+import Icon from '../../ui/Icon';
+import Button from '../../ui/Button';
+import ProgressBar from '../../ui/ProgressBar';
 import styles from './ReviewGate.module.css';
 
 /** Layout primitives for a review gate. Both gates compose from these. */

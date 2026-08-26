@@ -128,11 +128,27 @@
   letter-spacing: var(--ls-title);
 }
 
+.featuredMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 3px;
+  min-width: 0;
+}
+
+.featuredDomain {
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+  flex: none;
+}
+
 .featuredIri {
   font-family: var(--font-mono);
   font-size: var(--fs-caption);
   color: var(--text-4);
-  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .featuredActions {
@@ -192,12 +208,14 @@
   font: inherit;
   color: inherit;
   cursor: pointer;
-  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--t-base), box-shadow var(--t-base), transform var(--t-base);
 }
 
 .card:hover {
   border-color: #c9c7e8;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-1px);
 }
 
 .cardSelected {
@@ -234,10 +252,9 @@
   letter-spacing: -0.01em;
 }
 
-.cardSlug {
-  font-family: var(--font-mono);
+.cardDomain {
   font-size: var(--fs-tiny);
-  color: var(--text-5);
+  color: var(--text-4);
   margin-top: 2px;
 }
 
@@ -285,9 +302,13 @@
   font: inherit;
 }
 
-.newCard:hover {
+.newCard:hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.newCard:disabled {
+  opacity: 0.5;
 }
 
 .newCardIcon {

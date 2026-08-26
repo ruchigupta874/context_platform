@@ -6,7 +6,6 @@ import PageHeader from '../../components/layout/PageHeader';
 import Icon from '../../components/ui/Icon';
 import Button from '../../components/ui/Button';
 import Chip from '../../components/ui/Chip';
-import Checkbox from '../../components/ui/Checkbox';
 import SearchInput from '../../components/ui/SearchInput';
 import { Banner } from '../../components/ui/Surfaces';
 import {
@@ -17,51 +16,66 @@ import {
   DataTableRow,
 } from '../../components/ui/DataTable';
 import { DOCUMENT_COLUMNS, SOURCE_TABS, TABLE_COLUMNS, UPLOAD_HINT } from '../../config/constants/sources';
-import {
-  CATALOG,
-  CURRENT_VERSION,
-  DEFAULT_DOCUMENT_SELECTION,
-  DEFAULT_TABLE_SELECTION,
-  DOCUMENTS,
-  LAST_SYNCED,
-  TABLES,
-} from '../../mocks/sources';
-import { useSelection } from '../../hooks/useSelection';
+import { CATALOG, CURRENT_VERSION, DOCUMENTS, LAST_SYNCED, TABLES } from '../../mocks/sources';
 import { useWorkspace } from '../../hooks/useWorkspace';
 import { buildPath } from '../../routes/paths';
 import { pluralize } from '../../utils/format';
-import { sourceState, useSourceInsights } from './useSourceSelection';
+import { canExtract, extractLabel, sourceStatus } from './sourceStatus';
 import styles from './Sources.module.css';
 
 export default function Sources() {
   const navigate = useNavigate();
-  const { workspaceId } = useWorkspace();
+  const { workspace, workspaceId } = useWorkspace();
   const [tab, setTab] = useState('tables');
   const [query, setQuery] = useState('');
 
-  const tableSelection = useSelection(DEFAULT_TABLE_SELECTION);
-  const docSelection = useSelection(DEFAULT_DOCUMENT_SELECTION);
+  /**
+   * Extraction is per source: one table or one document at a time. Triggering
+   * is the whole interaction, so all this screen has to remember is which
+   * sources are now on their way.
+   */
+  const [triggered, setTriggered] = useState(() => new Set());
+
+  const trigger = (source) => {
+    setTriggered((prev) => new Set(prev).add(source.id));
+  };
 
   const visibleTables = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return needle ? TABLES.filter((table) => table.name.includes(needle)) : TABLES;
   }, [query]);
 
-  const tableInsights = useSourceInsights(TABLES, tableSelection.selectedIds);
-  const docInsights = useSourceInsights(DOCUMENTS, docSelection.selectedIds);
+  const driftedTables = useMemo(() => TABLES.filter((table) => table.drift), []);
 
-  const selectedColumns = tableInsights.selected.reduce((total, table) => total + table.cols, 0);
-  const visibleTableIds = visibleTables.map((table) => table.id);
-  const allVisibleSelected = tableSelection.allSelected(visibleTableIds);
+  const renderAction = (source) => (
+    <div className={styles.actionCell}>
+      <Button
+        size="sm"
+        variant={source.drift ? 'warn' : 'secondary'}
+        iconLeft={source.lastRun ? 'refresh' : undefined}
+        disabled={!canExtract(source, triggered)}
+        onClick={() => trigger(source)}
+      >
+        {extractLabel(source, triggered)}
+      </Button>
+    </div>
+  );
 
-  const goToNewRun = () => navigate(buildPath.newRun(workspaceId));
+  const renderStatus = (source) => {
+    const state = sourceStatus(source, triggered);
+    return (
+      <div>
+        <Chip tone={state.tone}>{state.label}</Chip>
+      </div>
+    );
+  };
 
   return (
     <>
       <TopBar
-        crumbs={[{ label: 'Cust360Auto' }, { label: 'Data sources' }]}
+        crumbs={[{ label: workspace.name }, { label: 'Data sources' }]}
         actions={
-          <Button variant="primary" iconLeft="plus" onClick={goToNewRun}>
+          <Button variant="primary" iconLeft="plus" onClick={() => navigate(buildPath.newRun(workspaceId))}>
             New extraction
           </Button>
         }
@@ -70,7 +84,7 @@ export default function Sources() {
       <PageBody>
         <PageHeader
           title="Data sources"
-          subtitle="Everything an extraction can read from. Tables bring structure; documents bring the language your business actually uses."
+          subtitle="Everything an extraction can read from. Run one against a single table or document — the Status column says whether it is already on its way."
           actions={
             <Button variant="secondary" iconLeft="refresh">
               Sync from catalog
@@ -111,104 +125,50 @@ export default function Sources() {
               <span className={styles.syncNote}>Last synced {LAST_SYNCED}</span>
             </div>
 
-            {tableInsights.drifted.length > 0 && (
+            {driftedTables.length > 0 && (
               <Banner
                 tone="warn"
-                title={`${tableInsights.drifted.length} sources have changed since ${CURRENT_VERSION} was built`}
-                note={`${tableInsights.driftSummary}. Your approved concepts are kept — a re-extraction only asks you about what changed.`}
-                actions={
-                  <>
-                    <Button variant="warnOutline" size="sm">
-                      Review changes
-                    </Button>
-                    <Button
-                      variant="warn"
-                      size="sm"
-                      iconLeft="refresh"
-                      onClick={() => tableSelection.replace(tableInsights.drifted.map((t) => t.id))}
-                    >
-                      Re-extract changed
-                    </Button>
-                  </>
-                }
+                title={`${driftedTables.length} sources have changed since ${CURRENT_VERSION} was built`}
+                note={`${driftedTables.map((t) => `${t.name} ${t.drift}`).join(', ')}. Re-extract them one at a time from the row.`}
               />
             )}
 
             <DataTable>
-              <DataTableHead
-                columns={TABLE_COLUMNS}
-                leading={
-                  <Checkbox
-                    checked={allVisibleSelected}
-                    onChange={(next) => tableSelection.toggleMany(visibleTableIds, next)}
-                    label="Select all tables"
-                  />
-                }
-              />
+              <DataTableHead columns={TABLE_COLUMNS} />
               <DataTableBody>
-                {visibleTables.map((table) => {
-                  const state = sourceState(table);
-                  const selected = tableSelection.isSelected(table.id);
-                  return (
-                    <DataTableRow
-                      key={table.id}
-                      columns={TABLE_COLUMNS}
-                      selected={selected}
-                      flagged={Boolean(table.drift)}
-                      onClick={() => tableSelection.toggle(table.id)}
+                {visibleTables.map((table) => (
+                  <DataTableRow key={table.id} columns={TABLE_COLUMNS} flagged={Boolean(table.drift)}>
+                    <div className={styles.tableName}>{table.name}</div>
+                    <div className={styles.num}>{table.cols}</div>
+                    <div className={styles.num}>{table.rows}</div>
+                    <div
+                      className={[styles.description, table.description ? '' : styles.descriptionEmpty]
+                        .filter(Boolean)
+                        .join(' ')}
                     >
-                      <Checkbox
-                        checked={selected}
-                        onChange={() => tableSelection.toggle(table.id)}
-                        label={`Select ${table.name}`}
-                      />
-                      <div className={styles.tableName}>{table.name}</div>
-                      <div className={styles.num}>{table.cols}</div>
-                      <div className={styles.num}>{table.rows}</div>
-                      <div
-                        className={[styles.description, table.description ? '' : styles.descriptionEmpty]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {table.description || 'No description in catalog'}
-                      </div>
-                      <div
-                        className={[styles.lastRun, table.lastRun ? '' : styles.lastRunNever]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {table.lastRun ?? 'never'}
-                      </div>
-                      <div>
-                        <Chip tone={state.tone}>{state.label}</Chip>
-                      </div>
-                    </DataTableRow>
-                  );
-                })}
+                      {table.description || 'No description in catalog'}
+                    </div>
+                    <div
+                      className={[styles.lastRun, table.lastRun ? '' : styles.lastRunNever]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      {table.lastRun ?? 'never'}
+                    </div>
+                    {renderStatus(table)}
+                    {renderAction(table)}
+                  </DataTableRow>
+                ))}
               </DataTableBody>
 
-              <DataTableFooter tall>
-                <div className={styles.footerBody}>
-                  <div className={styles.footerCount}>
-                    <span className={styles.footerCountStrong}>{tableSelection.count}</span> of {TABLES.length}{' '}
-                    tables selected
-                    <span className={styles.footerCols}>{selectedColumns} columns</span>
-                  </div>
-                  <div className={styles.footerBreakdown}>{tableInsights.breakdown}</div>
+              <DataTableFooter>
+                <div className={styles.footerCount}>
+                  Showing {visibleTables.length} of {pluralize(TABLES.length, 'table')}
                 </div>
                 <div className={styles.spacer} />
-                <Button variant="secondary">Edit descriptions</Button>
-                <Button variant="secondary" iconLeft="refresh" disabled={!tableInsights.canUpdate}>
-                  Update {CURRENT_VERSION}
-                </Button>
-                <Button
-                  variant="primary"
-                  iconRight="arrowRight"
-                  disabled={tableSelection.count === 0}
-                  onClick={goToNewRun}
-                >
-                  New extraction
-                </Button>
+                <div className={styles.footerBreakdown}>
+                  {driftedTables.length} changed since {CURRENT_VERSION}
+                </div>
               </DataTableFooter>
             </DataTable>
           </div>
@@ -223,68 +183,32 @@ export default function Sources() {
             </button>
 
             <DataTable>
-              <DataTableHead columns={DOCUMENT_COLUMNS} leading={<span />} />
+              <DataTableHead columns={DOCUMENT_COLUMNS} />
               <DataTableBody>
-                {DOCUMENTS.map((doc) => {
-                  const state = doc.indexed
-                    ? sourceState(doc)
-                    : { label: 'Indexing', tone: 'info' };
-                  const selected = docSelection.isSelected(doc.id);
-                  return (
-                    <DataTableRow
-                      key={doc.id}
-                      columns={DOCUMENT_COLUMNS}
-                      selected={selected}
-                      flagged={Boolean(doc.drift)}
-                      onClick={() => docSelection.toggle(doc.id)}
+                {DOCUMENTS.map((doc) => (
+                  <DataTableRow key={doc.id} columns={DOCUMENT_COLUMNS} flagged={Boolean(doc.drift)}>
+                    <div className={styles.docName}>
+                      <Icon name="doc" size={15} style={{ color: 'var(--text-4)' }} />
+                      <span className={styles.docNameText}>{doc.name}</span>
+                    </div>
+                    <div className={styles.num}>{doc.kind}</div>
+                    <div className={styles.num}>{doc.pages}</div>
+                    <div className={styles.description}>{doc.uploaded}</div>
+                    <div
+                      className={[styles.lastRun, doc.lastRun ? '' : styles.lastRunNever]
+                        .filter(Boolean)
+                        .join(' ')}
                     >
-                      <Checkbox
-                        checked={selected}
-                        onChange={() => docSelection.toggle(doc.id)}
-                        label={`Select ${doc.name}`}
-                      />
-                      <div className={styles.docName}>
-                        <Icon name="doc" size={15} style={{ color: 'var(--text-4)' }} />
-                        <span className={styles.docNameText}>{doc.name}</span>
-                      </div>
-                      <div className={styles.num}>{doc.kind}</div>
-                      <div className={styles.num}>{doc.pages}</div>
-                      <div className={styles.description}>{doc.uploaded}</div>
-                      <div
-                        className={[styles.lastRun, doc.lastRun ? '' : styles.lastRunNever]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {doc.lastRun ?? 'never'}
-                      </div>
-                      <div>
-                        <Chip tone={state.tone}>{state.label}</Chip>
-                      </div>
-                    </DataTableRow>
-                  );
-                })}
+                      {doc.lastRun ?? 'never'}
+                    </div>
+                    {renderStatus(doc)}
+                    {renderAction(doc)}
+                  </DataTableRow>
+                ))}
               </DataTableBody>
 
-              <DataTableFooter tall>
-                <div className={styles.footerBody}>
-                  <div className={styles.footerCount}>
-                    <span className={styles.footerCountStrong}>{docSelection.count}</span> of{' '}
-                    {pluralize(DOCUMENTS.length, 'document')} selected
-                  </div>
-                  <div className={styles.footerBreakdown}>{docInsights.breakdown}</div>
-                </div>
-                <div className={styles.spacer} />
-                <Button variant="secondary" iconLeft="refresh" disabled={!docInsights.canUpdate}>
-                  Update {CURRENT_VERSION}
-                </Button>
-                <Button
-                  variant="primary"
-                  iconRight="arrowRight"
-                  disabled={docSelection.count === 0}
-                  onClick={goToNewRun}
-                >
-                  New extraction
-                </Button>
+              <DataTableFooter>
+                <div className={styles.footerCount}>{pluralize(DOCUMENTS.length, 'document')}</div>
               </DataTableFooter>
             </DataTable>
           </div>

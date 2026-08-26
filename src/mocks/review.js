@@ -5,6 +5,9 @@ import { DECISION } from '../config/constants/common';
  * an item carries its own evidence and its own confidence reasoning, because
  * the reviewer needs both in front of them to decide.
  */
+/** The run these proposals came out of. */
+export const PROPOSAL_RUN = 'R-2418';
+
 export const CONCEPTS = [
   {
     id: 'c1',

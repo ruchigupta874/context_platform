@@ -1,13 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import TopBar from '../../components/layout/TopBar';
 import Chip from '../../components/ui/Chip';
 import Checkbox from '../../components/ui/Checkbox';
 import SearchInput from '../../components/ui/SearchInput';
 import SegmentedControl from '../../components/ui/SegmentedControl';
 import Toggle from '../../components/ui/Toggle';
 import { SectionLabel } from '../../components/ui/Surfaces';
-import StageStepper from '../../components/pipeline/StageStepper';
 import DecisionActions from '../../components/review/DecisionActions';
 import {
   BulkActions,
@@ -33,9 +31,8 @@ import {
   RELATION_EVIDENCE_COLUMNS,
   REVIEW_TABS,
 } from '../../config/constants/review';
-import { describeStages } from '../../config/constants/pipeline';
-import { CONCEPTS, INITIAL_DECISIONS, RELATIONS } from '../../mocks/review';
-import { useDecisions } from '../../hooks/useDecisions';
+import { CONCEPTS, RELATIONS } from '../../mocks/review';
+import { useReviewDecisions } from '../../hooks/useReviewDecisions';
 import { useSelection } from '../../hooks/useSelection';
 import { useWorkspace } from '../../hooks/useWorkspace';
 import { buildPath } from '../../routes/paths';
@@ -54,7 +51,7 @@ export default function ReviewConcepts() {
   const [selectedConcept, setSelectedConcept] = useState(CONCEPTS[0].id);
   const [selectedRelation, setSelectedRelation] = useState(RELATIONS[0].id);
 
-  const decisions = useDecisions(INITIAL_DECISIONS);
+  const decisions = useReviewDecisions();
   const checks = useSelection();
 
   const isConcepts = tab === 'concepts';
@@ -94,7 +91,6 @@ export default function ReviewConcepts() {
     : RELATIONS.find((r) => r.id === selectedId);
   const currentDecision = decisions.decisionFor(selectedId);
 
-  const stages = describeStages('concepts', 'needs-review');
 
   const visibleIds = visible.map((row) => row.id);
   const allChecked = checks.allSelected(visibleIds);
@@ -113,155 +109,142 @@ export default function ReviewConcepts() {
     : [];
 
   return (
-    <>
-      <TopBar
-        crumbs={[
-          { label: 'Runs', to: buildPath.runs(workspaceId) },
-          { label: runId, mono: true, to: buildPath.runDetail(workspaceId, runId) },
-          { label: 'Concepts & relationships' },
-        ]}
-        note="2 more runs waiting in the queue"
-      />
-
-      <StageStepper stages={stages} variant="compact" />
-
-      <GateShell>
-        <GateToolbar>
-          <SegmentedControl
-            options={REVIEW_TABS.map((option) => ({
-              ...option,
-              count: option.id === 'concepts' ? CONCEPTS.length : RELATIONS.length,
-            }))}
-            value={tab}
-            onChange={(next) => {
-              setTab(next);
-              checks.clear();
-            }}
-            size="lg"
-            ariaLabel="Review tab"
-          />
-          <SearchInput value={query} onChange={setQuery} placeholder="Filter" width={190} subtle />
-          <Toggle checked={undecidedOnly} onChange={setUndecidedOnly} label="Undecided only" />
-          <ToolbarSpacer />
-          <BulkActions
-            count={checks.count}
-            onApprove={() => {
-              decisions.decideMany(checks.selectedIds, DECISION.approved);
-              checks.clear();
-            }}
-            onReject={() => {
-              decisions.decideMany(checks.selectedIds, DECISION.rejected);
-              checks.clear();
-            }}
-          />
-        </GateToolbar>
-
-        <GateSplit>
-          <GateList width={424}>
-            <GateListHead columns={LIST_COLUMNS}>
-              <Checkbox
-                size="sm"
-                checked={allChecked}
-                onChange={(next) => checks.toggleMany(visibleIds, next)}
-                label="Select all"
-              />
-              <div>{isConcepts ? 'Concept' : 'Relationship'}</div>
-              <div>Conf</div>
-              <div />
-            </GateListHead>
-            <GateListBody>
-              {visible.map((row) => (
-                <ReviewListItem
-                  key={row.id}
-                  columns={LIST_COLUMNS}
-                  name={row.name}
-                  sub={row.sub}
-                  confidence={row.confidence}
-                  decision={decisions.decisionFor(row.id)}
-                  selected={selectedId === row.id}
-                  checked={checks.isSelected(row.id)}
-                  onSelect={() => (isConcepts ? setSelectedConcept(row.id) : setSelectedRelation(row.id))}
-                  onCheck={() => checks.toggle(row.id)}
-                />
-              ))}
-            </GateListBody>
-          </GateList>
-
-          <GateDetail>
-            <GateDetailHeader
-              title={isConcepts ? detail.name : `${detail.subject} — ${detail.predicate} → ${detail.object}`}
-              mono={!isConcepts}
-              badges={
-                <>
-                  <Chip tone="accent">{isConcepts ? 'OWL CLASS' : detail.kind.toUpperCase()}</Chip>
-                  <Chip tone={confidenceTone(detail.confidence)} mono>
-                    {formatConfidence(detail.confidence)} confidence
-                  </Chip>
-                </>
-              }
-              uri={conceptIri(workspaceId, isConcepts ? detail.name : detail.predicate)}
-              actions={
-                <DecisionActions
-                  decision={currentDecision}
-                  onApprove={() => decisions.approve(selectedId)}
-                  onReject={() => decisions.reject(selectedId)}
-                  onEdit={() => {}}
-                />
-              }
-            />
-
-            <GateDetailBody>
-              {!isConcepts && (
-                <TripleDisplay
-                  subject={detail.subject}
-                  predicate={detail.predicate}
-                  object={detail.object}
-                  cardinality={detail.cardinality}
-                />
-              )}
-
-              <div>
-                <SectionLabel>Definition</SectionLabel>
-                <Definition source={detail.definitionSource} sourceIcon={detail.sourceIcon}>
-                  {detail.definition}
-                </Definition>
-              </div>
-
-              <div>
-                <SectionLabel
-                  note={isConcepts ? 'columns that support this class' : 'how the link was established'}
-                >
-                  {isConcepts ? 'Grounded in' : 'Join evidence'}
-                </SectionLabel>
-                <EvidenceTable
-                  columns={isConcepts ? CONCEPT_EVIDENCE_COLUMNS : RELATION_EVIDENCE_COLUMNS}
-                  rows={detail.evidence}
-                />
-              </div>
-
-              <div>
-                <SectionLabel>Why this confidence</SectionLabel>
-                <SignalList signals={detail.signals} />
-              </div>
-
-              {isConcepts && relatedLinks.length > 0 && (
-                <div>
-                  <SectionLabel>Proposed relationships</SectionLabel>
-                  <LinkChips items={relatedLinks} onSelect={jumpToRelation} />
-                </div>
-              )}
-            </GateDetailBody>
-          </GateDetail>
-        </GateSplit>
-
-        <GateFooter
-          tally={tally}
-          undecidedWarning={GATE_COPY.undecidedWarning(tally.undecided)}
-          onApproveRest={() => decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)}
-          primaryLabel={GATE_COPY.continue(tally.approved)}
-          onPrimary={() => navigate(buildPath.reviewQuestions(workspaceId, runId))}
+    <GateShell>
+      <GateToolbar>
+        <SegmentedControl
+          options={REVIEW_TABS.map((option) => ({
+            ...option,
+            count: option.id === 'concepts' ? CONCEPTS.length : RELATIONS.length,
+          }))}
+          value={tab}
+          onChange={(next) => {
+            setTab(next);
+            checks.clear();
+          }}
+          size="lg"
+          ariaLabel="Review tab"
         />
-      </GateShell>
-    </>
+        <SearchInput value={query} onChange={setQuery} placeholder="Filter" width={190} subtle />
+        <Toggle checked={undecidedOnly} onChange={setUndecidedOnly} label="Undecided only" />
+        <ToolbarSpacer />
+        <BulkActions
+          count={checks.count}
+          onApprove={() => {
+            decisions.decideMany(checks.selectedIds, DECISION.approved);
+            checks.clear();
+          }}
+          onReject={() => {
+            decisions.decideMany(checks.selectedIds, DECISION.rejected);
+            checks.clear();
+          }}
+        />
+      </GateToolbar>
+
+      <GateSplit>
+        <GateList width={424}>
+          <GateListHead columns={LIST_COLUMNS}>
+            <Checkbox
+              size="sm"
+              checked={allChecked}
+              onChange={(next) => checks.toggleMany(visibleIds, next)}
+              label="Select all"
+            />
+            <div>{isConcepts ? 'Concept' : 'Relationship'}</div>
+            <div>Conf</div>
+            <div />
+          </GateListHead>
+          <GateListBody>
+            {visible.map((row) => (
+              <ReviewListItem
+                key={row.id}
+                columns={LIST_COLUMNS}
+                name={row.name}
+                sub={row.sub}
+                confidence={row.confidence}
+                decision={decisions.decisionFor(row.id)}
+                selected={selectedId === row.id}
+                checked={checks.isSelected(row.id)}
+                onSelect={() => (isConcepts ? setSelectedConcept(row.id) : setSelectedRelation(row.id))}
+                onCheck={() => checks.toggle(row.id)}
+              />
+            ))}
+          </GateListBody>
+        </GateList>
+
+        <GateDetail>
+          <GateDetailHeader
+            title={isConcepts ? detail.name : `${detail.subject} — ${detail.predicate} → ${detail.object}`}
+            mono={!isConcepts}
+            badges={
+              <>
+                <Chip tone="accent">{isConcepts ? 'OWL CLASS' : detail.kind.toUpperCase()}</Chip>
+                <Chip tone={confidenceTone(detail.confidence)} mono>
+                  {formatConfidence(detail.confidence)} confidence
+                </Chip>
+              </>
+            }
+            uri={conceptIri(workspaceId, isConcepts ? detail.name : detail.predicate)}
+            actions={
+              <DecisionActions
+                decision={currentDecision}
+                onApprove={() => decisions.approve(selectedId)}
+                onReject={() => decisions.reject(selectedId)}
+                onEdit={() => {}}
+              />
+            }
+          />
+
+          <GateDetailBody>
+            {!isConcepts && (
+              <TripleDisplay
+                subject={detail.subject}
+                predicate={detail.predicate}
+                object={detail.object}
+                cardinality={detail.cardinality}
+              />
+            )}
+
+            <div>
+              <SectionLabel>Definition</SectionLabel>
+              <Definition source={detail.definitionSource} sourceIcon={detail.sourceIcon}>
+                {detail.definition}
+              </Definition>
+            </div>
+
+            <div>
+              <SectionLabel
+                note={isConcepts ? 'columns that support this class' : 'how the link was established'}
+              >
+                {isConcepts ? 'Grounded in' : 'Join evidence'}
+              </SectionLabel>
+              <EvidenceTable
+                columns={isConcepts ? CONCEPT_EVIDENCE_COLUMNS : RELATION_EVIDENCE_COLUMNS}
+                rows={detail.evidence}
+              />
+            </div>
+
+            <div>
+              <SectionLabel>Why this confidence</SectionLabel>
+              <SignalList signals={detail.signals} />
+            </div>
+
+            {isConcepts && relatedLinks.length > 0 && (
+              <div>
+                <SectionLabel>Proposed relationships</SectionLabel>
+                <LinkChips items={relatedLinks} onSelect={jumpToRelation} />
+              </div>
+            )}
+          </GateDetailBody>
+        </GateDetail>
+      </GateSplit>
+
+      <GateFooter
+        tally={tally}
+        undecidedWarning={GATE_COPY.undecidedWarning(tally.undecided)}
+        onApproveRest={() => decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)}
+        primaryLabel={GATE_COPY.continue(tally.approved)}
+        onPrimary={() => navigate(buildPath.reviewQuestions(workspaceId, runId))}
+      />
+    </GateShell>
   );
 }

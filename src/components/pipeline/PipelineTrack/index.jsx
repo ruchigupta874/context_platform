@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { STAGE_STATE } from '../../config/constants/pipeline';
+import { STAGE_STATE } from '../../../config/constants/pipeline';
 import styles from './PipelineTrack.module.css';
 
 const DOT_CLASS = {

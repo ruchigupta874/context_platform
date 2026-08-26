@@ -1,10 +1,10 @@
 import { Fragment } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Icon from '../ui/Icon';
-import Button from '../ui/Button';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import { pluralize } from '../../utils/format';
+import Icon from '../../ui/Icon';
+import Button from '../../ui/Button';
+import { useWorkspace } from '../../../hooks/useWorkspace';
+import { buildPath } from '../../../routes/paths';
+import { pluralize } from '../../../utils/format';
 import styles from './TopBar.module.css';
 
 /**

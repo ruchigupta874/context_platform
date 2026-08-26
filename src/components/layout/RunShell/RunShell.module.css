@@ -1,0 +1,80 @@
+.runBar {
+  height: 62px;
+  flex: none;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.runId {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.runIdText {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.runSummary {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  margin-top: 2px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.tabs {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 24px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  border: 0;
+  background: none;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--text-4);
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 transparent;
+  transition: color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.tab:hover {
+  color: var(--text-2);
+}
+
+.tabActive {
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.tabDisabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.tabDisabled:hover {
+  color: var(--text-disabled);
+}
+
+.tabNote {
+  font-size: var(--fs-caption);
+  color: var(--text-5);
+}

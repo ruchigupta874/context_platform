@@ -10,11 +10,18 @@
   font-size: var(--fs-body);
   font-weight: 500;
   white-space: nowrap;
-  transition: filter var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+  transition: filter var(--t-fast), background var(--t-fast), border-color var(--t-fast),
+    box-shadow var(--t-fast), transform var(--t-fast);
 }
 
 .button:hover:not(:disabled) {
   filter: brightness(0.96);
+}
+
+/* A half-pixel is enough to read as a press without shifting the layout. */
+.button:active:not(:disabled) {
+  transform: translateY(0.5px);
+  filter: brightness(0.93);
 }
 
 .button:disabled {

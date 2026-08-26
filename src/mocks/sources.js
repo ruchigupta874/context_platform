@@ -97,6 +97,7 @@ export const TABLES = [
     description: 'Interval consumption readings',
     lastRun: null,
     drift: null,
+    activeRun: 'R-2417',
   },
 ];
 
