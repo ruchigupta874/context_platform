@@ -1,0 +1,119 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--control-h);
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: filter var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+}
+
+.button:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.button:disabled {
+  opacity: 0.4;
+}
+
+/* ---- sizes ---- */
+.sm {
+  height: 29px;
+  padding: 0 11px;
+  font-size: var(--fs-small);
+}
+
+.lg {
+  height: var(--control-h-lg);
+  padding: 0 15px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--radius-md);
+}
+
+/* ---- variants ---- */
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.secondary {
+  background: var(--bg-panel);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--bg-hover);
+  filter: none;
+}
+
+.ghost {
+  background: transparent;
+  border-color: var(--border-input);
+  border-style: dashed;
+  color: var(--text-3);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--bg-hover);
+  filter: none;
+}
+
+.approve {
+  background: var(--ok-bg);
+  border-color: var(--ok-border);
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.approveActive {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+  font-weight: 600;
+}
+
+.reject {
+  background: var(--bg-panel);
+  border-color: var(--danger-border);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.rejectActive {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+  font-weight: 600;
+}
+
+.warn {
+  background: var(--warn);
+  border-color: var(--warn);
+  color: #fff;
+  font-weight: 600;
+}
+
+.warnOutline {
+  background: var(--bg-panel);
+  border-color: #e0c68c;
+  color: var(--warn);
+}
+
+.block {
+  width: 100%;
+}

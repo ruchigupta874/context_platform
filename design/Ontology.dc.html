@@ -1,0 +1,455 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F7F7F9; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif; color: #16161D; -webkit-font-smoothing: antialiased; }
+    a { color: #4B45C6; text-decoration: none; }
+    a:hover { color: #3C37A8; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; }
+    input { font: inherit; outline: none; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .nav { cursor: pointer; }
+    .nav:hover { background: #F4F4F7; }
+    .nav.on:hover { background: #EEEDFB; }
+    .btn:hover { filter: brightness(.96); }
+    .tw:hover { background: #F4F4F7; }
+    .tw.sel:hover { background: #EEEDFB; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: #D6D6DE; border-radius: 6px; border: 3px solid #FFFFFF; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true"><defs>
+  <g id="i-graph"><circle cx="3.5" cy="12" r="1.7"/><circle cx="12.5" cy="12" r="1.7"/><circle cx="8" cy="3.6" r="1.7"/><path d="M6.7 4.9 4.7 10.5M9.3 4.9l2 5.6M5.3 12h5.4"/></g>
+  <g id="i-grid"><rect x="2.4" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="2.4" y="8.9" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="8.9" width="4.7" height="4.7" rx="1.2"/></g>
+  <g id="i-db"><ellipse cx="8" cy="4" rx="5.5" ry="2"/><path d="M2.5 4v8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V4"/><path d="M2.5 8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2"/></g>
+  <g id="i-doc"><path d="M9.2 1.6H4.6A1.6 1.6 0 0 0 3 3.2v9.6a1.6 1.6 0 0 0 1.6 1.6h6.8a1.6 1.6 0 0 0 1.6-1.6V5.4z"/><path d="M9.2 1.6v3.8H13"/><path d="M5.6 8.6h4.8M5.6 11.2h3.2"/></g>
+  <g id="i-play"><path d="M4.6 3.1v9.8L13 8z"/></g>
+  <g id="i-inbox"><path d="M1.6 9.4 3.7 3.3A1.6 1.6 0 0 1 5.2 2.2h5.6a1.6 1.6 0 0 1 1.5 1.1l2.1 6.1"/><path d="M1.6 9.4h3.3l1 2.1h4.2l1-2.1h3.3v3.1a1.6 1.6 0 0 1-1.6 1.6H3.2a1.6 1.6 0 0 1-1.6-1.6z"/></g>
+  <g id="i-hier"><rect x="5.6" y="1.6" width="4.8" height="3.4" rx="1"/><rect x="1.2" y="11" width="4.4" height="3.4" rx="1"/><rect x="10.4" y="11" width="4.4" height="3.4" rx="1"/><path d="M8 5v3.2M3.4 11V8.2h9.2V11"/></g>
+  <g id="i-help"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.3"/><path d="M8 11.9h.01"/></g>
+  <g id="i-shield"><path d="M8 1.7 13.2 3.6v4c0 3.1-2.1 5.5-5.2 6.6-3.1-1.1-5.2-3.5-5.2-6.6v-4z"/><path d="m6 7.9 1.5 1.5 2.7-2.9"/></g>
+  <g id="i-settings"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.4v1.6M8 13v1.6M14.6 8H13M3 8H1.4M12.7 3.3l-1.2 1.2M4.5 11.5l-1.2 1.2M12.7 12.7l-1.2-1.2M4.5 4.5 3.3 3.3"/></g>
+  <g id="i-plus"><path d="M8 3.2v9.6M3.2 8h9.6"/></g>
+  <g id="i-chev-d"><path d="m3.8 6.2 4.2 4.2 4.2-4.2"/></g>
+  <g id="i-chev-r"><path d="m6.2 3.8 4.2 4.2-4.2 4.2"/></g>
+  <g id="i-check"><path d="m3.2 8.4 3.2 3.2 6.4-7"/></g>
+  <g id="i-x"><path d="M4.2 4.2 11.8 11.8M11.8 4.2 4.2 11.8"/></g>
+  <g id="i-search"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.7 10.7 3 3"/></g>
+  <g id="i-node"><circle cx="8" cy="8" r="2.5"/><path d="M8 5.5V1.9M8 10.5v3.6M5.5 8H1.9M10.5 8h3.6"/></g>
+  <g id="i-link"><path d="M6.6 9.4a2.8 2.8 0 0 0 4 0l2.2-2.2a2.83 2.83 0 0 0-4-4l-.6.6"/><path d="M9.4 6.6a2.8 2.8 0 0 0-4 0L3.2 8.8a2.83 2.83 0 0 0 4 4l.6-.6"/></g>
+  <g id="i-download"><path d="M8 2.2v8.3"/><path d="m4.8 7.3 3.2 3.2 3.2-3.2"/><path d="M2.6 11.6v1A1.6 1.6 0 0 0 4.2 14h7.6a1.6 1.6 0 0 0 1.6-1.4v-1"/></g>
+  <g id="i-alert"><path d="M8 2.4 14.6 13.2H1.4z"/><path d="M8 6.4v3M8 11.4h.01"/></g>
+  <g id="i-info"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.4v3.6M8 5.2h.01"/></g>
+  <g id="i-arrow-r"><path d="M2.8 8h10.4M9.2 4l4 4-4 4"/></g>
+</defs></svg>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #F7F7F9; overflow: hidden;">
+
+  <aside style="width: 232px; flex: 0 0 232px; background: #FFFFFF; border-right: 1px solid #E4E4E9; display: flex; flex-direction: column;">
+    <div style="height: 56px; flex: 0 0 56px; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 10px; padding: 0 14px;">
+      <div style="width: 26px; height: 26px; border-radius: 6px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg class="ic" width="15" height="15" viewBox="0 0 16 16" style="stroke: #FFFFFF"><use href="#i-graph"></use></svg>
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: -0.01em;">Cust360Auto</div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; color: #9A9AA5;">v5 &middot; draft</div>
+      </div>
+      <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-chev-d"></use></svg>
+    </div>
+    <nav style="flex: 1; min-height: 0; overflow-y: auto; padding: 14px 10px; display: flex; flex-direction: column; gap: 15px;">
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">WORKSPACE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-grid"></use></svg><span style="flex: 1">Overview</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-db"></use></svg><span style="flex: 1">Data sources</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-doc"></use></svg><span style="flex: 1">Documents</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">EXTRACTION</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-play"></use></svg><span style="flex: 1">Runs</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #E4EFF8; color: #1F6FB2;">2</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-inbox"></use></svg><span style="flex: 1">Review queue</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #FAEFD9; color: #96620A;">3</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">KNOWLEDGE</div>
+        <div class="nav on" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; font-weight: 600; color: {{accent}}; background: #EEEDFB;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-hier"></use></svg><span style="flex: 1">Ontology</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-help"></use></svg><span style="flex: 1">Competency questions</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-graph"></use></svg><span style="flex: 1">Knowledge graph</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-shield"></use></svg><span style="flex: 1">Validation</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #FAEAE9; color: #B23330;">1</span></div>
+      </div>
+    </nav>
+    <div style="border-top: 1px solid #E4E4E9; padding: 10px 14px; display: flex; align-items: center; gap: 9px;">
+      <div style="width: 24px; height: 24px; border-radius: 50%; background: #E9E9EE; color: #4A4A57; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;">AS</div>
+      <span style="flex: 1; font-size: 12px; color: #4A4A57;">a.sikarwar</span>
+      <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-settings"></use></svg>
+    </div>
+  </aside>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+    <header style="height: 56px; flex: 0 0 56px; background: #FFFFFF; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+      <div style="display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #9A9AA5;">
+        <span>Cust360Auto</span>
+        <svg class="ic" width="12" height="12" viewBox="0 0 16 16"><use href="#i-chev-r"></use></svg>
+        <span style="color: #16161D; font-weight: 600;">Ontology</span>
+      </div>
+      <span style="height: 20px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 4px; background: #E4F3EA; color: #1B7A4C; font-size: 10.5px; font-weight: 600;">BUILT FROM R-2413</span>
+      <div style="flex: 1"></div>
+      <button class="btn" style="height: 30px; padding: 0 11px; border-radius: 6px; border: 1px solid #D2D2DA; background: #FFFFFF; color: #16161D; font-size: 12.5px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #6E6E7A"><use href="#i-download"></use></svg>OWL
+      </button>
+      <button class="btn" style="height: 30px; padding: 0 11px; border-radius: 6px; border: 1px solid #D2D2DA; background: #FFFFFF; color: #16161D; font-size: 12.5px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #6E6E7A"><use href="#i-download"></use></svg>R2RML
+      </button>
+      <button class="btn" style="height: 30px; padding: 0 13px; border-radius: 6px; border: 1px solid {{accent}}; background: {{accent}}; color: #FFFFFF; font-size: 12.5px; font-weight: 600;">Publish v6</button>
+    </header>
+
+    <main style="flex: 1; min-height: 0; display: flex; background: #FFFFFF;">
+
+      <div style="width: 274px; flex: 0 0 274px; border-right: 1px solid #E4E4E9; display: flex; flex-direction: column; min-height: 0;">
+        <div style="padding: 12px 12px 10px; border-bottom: 1px solid #EFEFF2;">
+          <div style="position: relative;">
+            <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="position: absolute; left: 9px; top: 8px; color: #9A9AA5"><use href="#i-search"></use></svg>
+            <input value="{{q}}" onChange="{{onQuery}}" placeholder="Find a class" style="width: 100%; height: 30px; padding: 0 10px 0 29px; border: 1px solid #E4E4E9; border-radius: 6px; background: #FBFBFC; font-size: 12.5px;">
+          </div>
+        </div>
+        <div style="padding: 8px 12px 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">CLASS HIERARCHY</div>
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 2px 8px 12px;">
+          <sc-for list="{{tree}}" as="t" hint-placeholder-count="12">
+            <div class="tw {{t.selCls}}" onClick="{{t.pick}}" style="display: flex; align-items: center; gap: 6px; height: 29px; padding-left: {{t.pad}}; padding-right: 8px; border-radius: 5px; cursor: pointer; background: {{t.bg}};">
+              <span onClick="{{t.toggle}}" style="width: 14px; display: inline-flex; align-items: center; justify-content: center; color: #9A9AA5; flex: none;">
+                <sc-if value="{{t.hasKids}}" hint-placeholder-val="{{ true }}">
+                  <svg class="ic" width="11" height="11" viewBox="0 0 16 16" style="stroke-width: 1.8; transform: {{t.caret}}"><use href="#i-chev-r"></use></svg>
+                </sc-if>
+              </span>
+              <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: {{t.iconFg}}"><use href="#i-node"></use></svg>
+              <span style="flex: 1; min-width: 0; font-size: 12.5px; font-weight: {{t.weight}}; color: {{t.fg}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{t.name}}</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10.5px; color: #A8A8B2;">{{t.count}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0;">
+        <div style="flex: 0 0 auto; padding: 20px 24px 16px; border-bottom: 1px solid #EFEFF2;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px; font-weight: 600; letter-spacing: -0.02em;">{{d.name}}</span>
+            <span style="height: 20px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 4px; background: #EEEDFB; color: {{accent}}; font-size: 10.5px; font-weight: 600; letter-spacing: 0.03em;">OWL CLASS</span>
+            <span style="height: 20px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 4px; background: #E4F3EA; color: #1B7A4C; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 500;">{{d.instances}} instances</span>
+          </div>
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px; color: #83838F; margin-top: 6px;">{{d.uri}}</div>
+          <div style="display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 12px; color: #6E6E7A;">
+            <span style="color: #9A9AA5;">rdfs:subClassOf</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; color: {{accent}};">{{d.parent}}</span>
+          </div>
+          <p style="margin: 12px 0 0; font-size: 13.5px; line-height: 1.6; color: #16161D; max-width: 660px; text-wrap: pretty;">{{d.definition}}</p>
+        </div>
+
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 18px 24px 24px; display: flex; flex-direction: column; gap: 20px;">
+
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 8px;">OBJECT PROPERTIES</div>
+            <div style="border: 1px solid #E4E4E9; border-radius: 8px; overflow: hidden;">
+              <div style="display: grid; grid-template-columns: 1.2fr 1fr 82px 1fr; height: 30px; align-items: center; padding: 0 12px; background: #FBFBFC; border-bottom: 1px solid #E4E4E9; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: #9A9AA5;">
+                <div>PROPERTY</div><div>RANGE</div><div>CARD.</div><div>INVERSE</div>
+              </div>
+              <sc-for list="{{d.objectProps}}" as="p" hint-placeholder-count="3">
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr 82px 1fr; min-height: 34px; align-items: center; padding: 0 12px; border-bottom: 1px solid #F4F4F7; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px;">
+                  <div style="color: {{accent}};">{{p.name}}</div>
+                  <div style="color: #16161D;">{{p.range}}</div>
+                  <div style="color: #6E6E7A;">{{p.card}}</div>
+                  <div style="color: #83838F;">{{p.inverse}}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 8px;">DATATYPE PROPERTIES</div>
+            <div style="border: 1px solid #E4E4E9; border-radius: 8px; overflow: hidden;">
+              <div style="display: grid; grid-template-columns: 1.1fr 100px 1.3fr 82px; height: 30px; align-items: center; padding: 0 12px; background: #FBFBFC; border-bottom: 1px solid #E4E4E9; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: #9A9AA5;">
+                <div>PROPERTY</div><div>TYPE</div><div>MAPPED FROM</div><div>REQUIRED</div>
+              </div>
+              <sc-for list="{{d.dataProps}}" as="p" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: 1.1fr 100px 1.3fr 82px; min-height: 34px; align-items: center; padding: 0 12px; border-bottom: 1px solid #F4F4F7; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px;">
+                  <div style="color: {{accent}};">{{p.name}}</div>
+                  <div style="color: #6E6E7A;">{{p.type}}</div>
+                  <div style="color: #16161D;">{{p.from}}</div>
+                  <div style="color: {{p.reqFg}};">{{p.req}}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 8px;">AXIOMS</div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <sc-for list="{{d.axioms}}" as="a" hint-placeholder-count="3">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #E4E4E9; border-radius: 7px; background: #FBFBFC;">
+                  <span style="width: 5px; height: 5px; border-radius: 50%; background: {{a.dot}}; flex: none;"></span>
+                  <span style="flex: 1; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px; color: #16161D;">{{a.text}}</span>
+                  <span style="height: 18px; display: inline-flex; align-items: center; padding: 0 6px; border-radius: 4px; background: {{a.tagBg}}; color: {{a.tagFg}}; font-size: 10px; font-weight: 600;">{{a.tag}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: baseline; gap: 9px; margin-bottom: 8px;">
+              <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">R2RML MAPPING</span>
+              <span style="font-size: 11.5px; color: #A8A8B2;">how instances are materialised from the catalog</span>
+            </div>
+            <pre style="margin: 0; padding: 14px 16px; border: 1px solid #E4E4E9; border-radius: 8px; background: #FBFBFC; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px; line-height: 1.65; color: #16161D; overflow-x: auto; white-space: pre;">{{d.mapping}}</pre>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="width: 268px; flex: 0 0 268px; border-left: 1px solid #E4E4E9; display: flex; flex-direction: column; min-height: 0; background: #FBFBFC;">
+        <div style="padding: 16px 16px 14px; border-bottom: 1px solid #EFEFF2;">
+          <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 11px;">ONTOLOGY</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+            <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+              <div>
+                <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 19px; font-weight: 500; letter-spacing: -0.02em; color: {{s.tone}};">{{s.v}}</div>
+                <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: #9A9AA5; margin-top: 2px;">{{s.k}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding: 16px 16px 12px; border-bottom: 1px solid #EFEFF2;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">QUESTION COVERAGE</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 13px; font-weight: 600; color: #1B7A4C;">18/24</span>
+          </div>
+          <div style="height: 6px; border-radius: 3px; background: #EFEFF2; overflow: hidden; display: flex;">
+            <span style="width: 75%; background: #1B7A4C;"></span>
+            <span style="width: 12.5%; background: #C4881A;"></span>
+          </div>
+          <div style="display: flex; gap: 14px; margin-top: 9px; font-size: 11px; color: #6E6E7A;">
+            <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #1B7A4C;"></span>18 answerable</span>
+            <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C4881A;"></span>3 partial</span>
+          </div>
+        </div>
+
+        <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 16px 16px 0;">
+          <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 10px;">VALIDATION</div>
+          <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px;">
+            <sc-for list="{{validation}}" as="v" hint-placeholder-count="4">
+              <div style="border: 1px solid {{v.border}}; border-radius: 7px; background: {{v.bg}}; padding: 10px 11px; display: flex; gap: 9px; align-items: flex-start;">
+                <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="color: {{v.fg}}; margin-top: 1px;"><use href="{{v.icon}}"></use></svg>
+                <div style="min-width: 0;">
+                  <div style="font-size: 11.5px; font-weight: 600; color: {{v.fg}};">{{v.title}}</div>
+                  <div style="font-size: 11.5px; line-height: 1.45; color: #4A4A57; margin-top: 2px; text-wrap: pretty;">{{v.detail}}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#4B45C6","options":["#4B45C6","#1F6FB2","#1B7A4C","#16161D"],"section":"Theme"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sel: 'Customer',
+      q: '',
+      open: { 'owl:Thing': true, Party: true, Agreement: true, FinancialDocument: true, Interaction: true }
+    };
+  }
+
+  nodes() {
+    return [
+      { id: 'owl:Thing', name: 'owl:Thing', depth: 0, parent: null, count: '' },
+      { id: 'Party', name: 'Party', depth: 1, parent: 'owl:Thing', count: '485k' },
+      { id: 'Customer', name: 'Customer', depth: 2, parent: 'Party', count: '482k' },
+      { id: 'Agent', name: 'Agent', depth: 2, parent: 'Party', count: '2.4k' },
+      { id: 'Agreement', name: 'Agreement', depth: 1, parent: 'owl:Thing', count: '611k' },
+      { id: 'Contract', name: 'Contract', depth: 2, parent: 'Agreement', count: '611k' },
+      { id: 'FinancialDocument', name: 'FinancialDocument', depth: 1, parent: 'owl:Thing', count: '14.1m' },
+      { id: 'Invoice', name: 'Invoice', depth: 2, parent: 'FinancialDocument', count: '7.2m' },
+      { id: 'Payment', name: 'Payment', depth: 2, parent: 'FinancialDocument', count: '6.9m' },
+      { id: 'Interaction', name: 'Interaction', depth: 1, parent: 'owl:Thing', count: '3.1m' },
+      { id: 'Call', name: 'Call', depth: 2, parent: 'Interaction', count: '1.8m' },
+      { id: 'ChatSession', name: 'ChatSession', depth: 2, parent: 'Interaction', count: '740k' },
+      { id: 'Claim', name: 'Claim', depth: 1, parent: 'owl:Thing', count: '94k' },
+      { id: 'BillingAccount', name: 'BillingAccount', depth: 1, parent: 'owl:Thing', count: '38k' }
+    ];
+  }
+
+  detail(id) {
+    var lib = {
+      Customer: {
+        name: 'Customer', parent: 'ex:Party', instances: '482k',
+        definition: 'A party that holds one or more service contracts and is billed against them. Includes residential and small-business account holders, and excludes internal test accounts.',
+        objectProps: [
+          { name: 'ex:holds', range: 'ex:Contract', card: '0..*', inverse: 'ex:heldBy' },
+          { name: 'ex:files', range: 'ex:Claim', card: '0..*', inverse: 'ex:filedBy' },
+          { name: 'ex:participatesIn', range: 'ex:Interaction', card: '0..*', inverse: 'ex:involves' },
+          { name: 'ex:billedUnder', range: 'ex:BillingAccount', card: '1..1', inverse: 'ex:covers' }
+        ],
+        dataProps: [
+          { name: 'ex:customerId', type: 'xsd:long', from: 'customer.customer_id', req: 'yes' },
+          { name: 'ex:fullName', type: 'xsd:string', from: 'customer.full_name', req: 'yes' },
+          { name: 'ex:segment', type: 'xsd:string', from: 'customer.segment', req: 'no' },
+          { name: 'ex:createdAt', type: 'xsd:dateTime', from: 'customer.created_at', req: 'yes' }
+        ],
+        axioms: [
+          { text: 'Customer rdfs:subClassOf Party', tag: 'inherited', ok: true },
+          { text: 'ex:customerId a owl:InverseFunctionalProperty', tag: 'key', ok: true },
+          { text: 'Customer owl:disjointWith Agent', tag: 'disjoint', ok: true },
+          { text: 'Customer rdfs:subClassOf (ex:billedUnder exactly 1 BillingAccount)', tag: 'unverified', ok: false }
+        ],
+        mapping: '<#CustomerMap>\n  rr:logicalTable [ rr:tableName "prod_uc.cust360.customer" ] ;\n  rr:subjectMap [\n    rr:template "https://ctx.internal/id/customer/{customer_id}" ;\n    rr:class    ex:Customer ;\n  ] ;\n  rr:predicateObjectMap [\n    rr:predicate  ex:fullName ;\n    rr:objectMap  [ rr:column "full_name" ] ;\n  ] .'
+      },
+      Contract: {
+        name: 'Contract', parent: 'ex:Agreement', instances: '611k',
+        definition: 'A signed service agreement between the business and a customer, valid over a date range and carrying the terms that invoices are raised against.',
+        objectProps: [
+          { name: 'ex:heldBy', range: 'ex:Customer', card: '1..1', inverse: 'ex:holds' },
+          { name: 'ex:generates', range: 'ex:Invoice', card: '0..*', inverse: 'ex:raisedUnder' }
+        ],
+        dataProps: [
+          { name: 'ex:contractId', type: 'xsd:long', from: 'contract.contract_id', req: 'yes' },
+          { name: 'ex:startDate', type: 'xsd:date', from: 'contract.start_date', req: 'yes' },
+          { name: 'ex:endDate', type: 'xsd:date', from: 'contract.end_date', req: 'no' },
+          { name: 'ex:status', type: 'xsd:string', from: 'contract.status', req: 'yes' }
+        ],
+        axioms: [
+          { text: 'Contract rdfs:subClassOf Agreement', tag: 'inherited', ok: true },
+          { text: 'Contract rdfs:subClassOf (ex:heldBy exactly 1 Customer)', tag: 'cardinality', ok: true },
+          { text: 'ex:endDate rdfs:range xsd:date', tag: 'range', ok: true }
+        ],
+        mapping: '<#ContractMap>\n  rr:logicalTable [ rr:tableName "prod_uc.cust360.contract" ] ;\n  rr:subjectMap [\n    rr:template "https://ctx.internal/id/contract/{contract_id}" ;\n    rr:class    ex:Contract ;\n  ] ;\n  rr:predicateObjectMap [\n    rr:predicate ex:heldBy ;\n    rr:objectMap [\n      rr:parentTriplesMap <#CustomerMap> ;\n      rr:joinCondition [\n        rr:child "customer_id" ; rr:parent "customer_id" ;\n      ] ;\n    ] ;\n  ] .'
+      },
+      Invoice: {
+        name: 'Invoice', parent: 'ex:FinancialDocument', instances: '7.2m',
+        definition: 'A billing document issued against a contract for one billing period, listing charges and the amount due.',
+        objectProps: [
+          { name: 'ex:raisedUnder', range: 'ex:Contract', card: '1..1', inverse: 'ex:generates' },
+          { name: 'ex:settledBy', range: 'ex:Payment', card: '0..*', inverse: 'ex:settles' }
+        ],
+        dataProps: [
+          { name: 'ex:invoiceId', type: 'xsd:long', from: 'invoice.invoice_id', req: 'yes' },
+          { name: 'ex:amountDue', type: 'xsd:decimal', from: 'invoice.amount_due', req: 'yes' },
+          { name: 'ex:issuedOn', type: 'xsd:date', from: 'invoice.issued_on', req: 'yes' }
+        ],
+        axioms: [
+          { text: 'Invoice rdfs:subClassOf FinancialDocument', tag: 'inherited', ok: true },
+          { text: 'ex:amountDue rdfs:range xsd:decimal', tag: 'range', ok: true },
+          { text: '14k instances violate (ex:raisedUnder exactly 1)', tag: 'violated', ok: false }
+        ],
+        mapping: '<#InvoiceMap>\n  rr:logicalTable [ rr:tableName "prod_uc.cust360.invoice" ] ;\n  rr:subjectMap [\n    rr:template "https://ctx.internal/id/invoice/{invoice_id}" ;\n    rr:class    ex:Invoice ;\n  ] ;\n  rr:predicateObjectMap [\n    rr:predicate ex:amountDue ;\n    rr:objectMap [ rr:column "amount_due" ; rr:datatype xsd:decimal ] ;\n  ] .'
+      }
+    };
+    return lib[id] || {
+      name: id, parent: 'owl:Thing', instances: '—',
+      definition: 'This class was created during the ontology build. Select Customer, Contract or Invoice to see a fully mapped class.',
+      objectProps: [], dataProps: [], axioms: [],
+      mapping: '# No mapping generated yet for ' + id + '.'
+    };
+  }
+
+  renderVals() {
+    var self = this;
+    var accent = this.props.accent || '#4B45C6';
+    var all = this.nodes();
+    var q = this.state.q.trim().toLowerCase();
+
+    var hasKids = function (id) { return all.some(function (n) { return n.parent === id; }); };
+    var visibleNode = function (n) {
+      if (q) { return n.name.toLowerCase().indexOf(q) >= 0; }
+      var p = n.parent;
+      while (p) {
+        if (!self.state.open[p]) { return false; }
+        p = (all.filter(function (x) { return x.id === p; })[0] || {}).parent;
+      }
+      return true;
+    };
+
+    var d = this.detail(this.state.sel);
+
+    var axTone = function (tag) {
+      if (tag === 'violated' || tag === 'unverified') { return { bg: '#FAEAE9', fg: '#B23330', dot: '#C9605C' }; }
+      if (tag === 'key' || tag === 'cardinality') { return { bg: '#E4EFF8', fg: '#1F6FB2', dot: '#1F6FB2' }; }
+      return { bg: '#F2F2F5', fg: '#6E6E7A', dot: '#1B7A4C' };
+    };
+
+    return {
+      accent: accent,
+      q: this.state.q,
+      onQuery: function (e) { self.setState({ q: e.target.value }); },
+      tree: all.filter(visibleNode).map(function (n) {
+        var on = self.state.sel === n.id;
+        var kids = hasKids(n.id);
+        var opened = !!self.state.open[n.id];
+        return {
+          name: n.name,
+          count: n.count,
+          pad: (8 + n.depth * 15) + 'px',
+          hasKids: kids,
+          caret: opened ? 'rotate(90deg)' : 'rotate(0deg)',
+          bg: on ? '#EEEDFB' : 'transparent',
+          selCls: on ? 'sel' : '',
+          fg: on ? accent : (n.depth === 0 ? '#83838F' : '#16161D'),
+          weight: on ? '600' : (n.depth <= 1 ? '600' : '500'),
+          iconFg: on ? accent : '#B4B4BE',
+          pick: function () { self.setState({ sel: n.id }); },
+          toggle: function (e) {
+            if (e && e.stopPropagation) { e.stopPropagation(); }
+            if (!kids) { return; }
+            var next = Object.assign({}, self.state.open);
+            next[n.id] = !opened;
+            self.setState({ open: next });
+          }
+        };
+      }),
+      d: {
+        name: d.name,
+        parent: d.parent,
+        instances: d.instances,
+        uri: 'https://ctx.internal/ontology/cust360auto#' + d.name,
+        definition: d.definition,
+        objectProps: d.objectProps,
+        dataProps: d.dataProps.map(function (p) {
+          return Object.assign({}, p, { reqFg: p.req === 'yes' ? '#16161D' : '#A8A8B2' });
+        }),
+        axioms: d.axioms.map(function (a) {
+          var t = axTone(a.tag);
+          return { text: a.text, tag: a.tag, tagBg: t.bg, tagFg: t.fg, dot: t.dot };
+        }),
+        mapping: d.mapping
+      },
+      stats: [
+        { k: 'CLASSES', v: '14', tone: '#16161D' },
+        { k: 'OBJECT PROPS', v: '16', tone: '#16161D' },
+        { k: 'DATATYPE PROPS', v: '41', tone: '#16161D' },
+        { k: 'AXIOMS', v: '23', tone: '#16161D' }
+      ],
+      validation: [
+        { title: '14k invoices have no contract', detail: 'Violates the exactly-one cardinality on ex:raisedUnder. Migration-era rows, needs a rule before publishing.', icon: '#i-alert', bg: '#FEF7F6', border: '#EBCFCD', fg: '#B23330' },
+        { title: 'Agent has no definition source', detail: 'Neither the catalog nor any uploaded document defines the term. Consider adding a description.', icon: '#i-alert', bg: '#FEFAF2', border: '#EBD9B4', fg: '#96620A' },
+        { title: 'ChatSession has no competency question', detail: 'Nothing in the approved question set exercises this class.', icon: '#i-alert', bg: '#FEFAF2', border: '#EBD9B4', fg: '#96620A' },
+        { title: '3 classes reuse ContactCentre v7 IRIs', detail: 'Interaction, Call and Agent align with the published ontology, so queries carry across workspaces.', icon: '#i-info', bg: '#F6F9FC', border: '#D3E2EF', fg: '#1F6FB2' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

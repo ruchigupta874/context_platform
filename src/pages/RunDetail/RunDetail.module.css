@@ -1,0 +1,244 @@
+.runBar {
+  height: 62px;
+  flex: none;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.runId {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.runIdText {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.runSummary {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  margin-top: 2px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 18px;
+  padding: 18px 24px;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stagePanel {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: none;
+}
+
+.stageHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.stageIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.iconOk {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+.iconWarn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+
+.iconPending {
+  background: var(--bg-muted);
+  color: var(--text-disabled);
+}
+
+.stageBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.stageTitle {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.stageBlurb {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-3);
+  max-width: 620px;
+  text-wrap: pretty;
+  margin-top: 3px;
+}
+
+.borderWarn {
+  border-color: #ebd2a4;
+}
+
+.logPanel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.logBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.logLine {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  height: 34px;
+  padding: 0 16px;
+}
+
+.logLead {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-disabled);
+}
+
+.logMessage {
+  font-size: var(--fs-body);
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- right rail ---- */
+.rail {
+  width: 296px;
+  flex: 0 0 296px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.railPanel {
+  padding: 15px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.activityPanel {
+  flex: 1;
+  min-height: 0;
+  padding: 15px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.activityList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.activityItem {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.activityRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 10px;
+  flex: none;
+}
+
+.activityDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ok);
+  background: var(--ok-tint);
+  margin-top: 4px;
+  flex: none;
+}
+
+.dotGate {
+  border-color: var(--warn-strong);
+  background: var(--warn-tint);
+}
+
+.dotNote {
+  border-color: var(--border-input);
+  background: var(--bg-panel);
+}
+
+.activityLine {
+  width: 1px;
+  flex: 1;
+  min-height: 14px;
+  background: #ebebef;
+}
+
+.activityBody {
+  padding-bottom: 13px;
+  min-width: 0;
+}
+
+.activityText {
+  font-size: var(--fs-small);
+  color: var(--text);
+  line-height: var(--lh-tight);
+  text-wrap: pretty;
+}
+
+.activityTime {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  color: var(--text-disabled);
+  margin-top: 2px;
+}

@@ -1,0 +1,116 @@
+/* Design tokens — the single source of truth for the "calm technical" direction.
+   Every component reads from here; no component should hard-code a hex value. */
+
+:root {
+  /* ---- surfaces ---- */
+  --bg-app: #f7f7f9;
+  --bg-panel: #ffffff;
+  --bg-subtle: #fbfbfc;
+  --bg-hover: #f4f4f7;
+  --bg-muted: #efeff2;
+  --bg-selected: #eeedfb;
+  --bg-selected-soft: #fafafe;
+
+  /* ---- borders ---- */
+  --border: #e4e4e9;
+  --border-soft: #f2f2f5;
+  --border-strong: #d2d2da;
+  --border-input: #c4c4ce;
+
+  /* ---- text ---- */
+  --text: #16161d;
+  --text-2: #4a4a57;
+  --text-3: #6e6e7a;
+  --text-4: #83838f;
+  --text-5: #9a9aa5;
+  --text-disabled: #a8a8b2;
+
+  /* ---- accent ---- */
+  --accent: #4b45c6;
+  --accent-hover: #3c37a8;
+  --accent-tint: #eeedfb;
+  --accent-tint-2: #f2f1fc;
+  --accent-ring: rgba(75, 69, 198, 0.1);
+
+  /* ---- semantic ---- */
+  --ok: #1b7a4c;
+  --ok-tint: #e4f3ea;
+  --ok-border: #b7dcc6;
+  --ok-bg: #eff8f3;
+
+  --warn: #96620a;
+  --warn-strong: #c4881a;
+  --warn-tint: #faefd9;
+  --warn-border: #ebd9b4;
+  --warn-bg: #fefaf2;
+
+  --danger: #b23330;
+  --danger-soft: #c9605c;
+  --danger-tint: #faeae9;
+  --danger-border: #ebc6c4;
+  --danger-bg: #fef7f6;
+
+  --info: #1f6fb2;
+  --info-tint: #e4eff8;
+  --info-border: #d3e2ef;
+  --info-bg: #f6f9fc;
+
+  /* ---- entity palette (knowledge graph node types) ----
+     Same lightness and chroma, varying hue, so no type shouts louder than another. */
+  --entity-customer: #5b54c4;
+  --entity-contract: #2073ae;
+  --entity-invoice: #0e7c74;
+  --entity-payment: #3c7a2e;
+  --entity-claim: #ae4763;
+  --entity-interaction: #97671a;
+  --entity-agent: #8a4fa8;
+  --entity-billing-account: #4a6076;
+
+  /* ---- typography ---- */
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --fs-micro: 10px;
+  --fs-tiny: 10.5px;
+  --fs-caption: 11.5px;
+  --fs-small: 12px;
+  --fs-body: 12.5px;
+  --fs-base: 13px;
+  --fs-md: 13.5px;
+  --fs-lg: 15px;
+  --fs-title: 18px;
+  --fs-display: 22px;
+
+  --lh-tight: 1.45;
+  --lh-body: 1.55;
+  --lh-relaxed: 1.62;
+
+  --ls-label: 0.08em;
+  --ls-column: 0.06em;
+  --ls-display: -0.02em;
+  --ls-title: -0.015em;
+
+  /* ---- geometry ---- */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 7px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-pill: 999px;
+
+  --control-h: 30px;
+  --control-h-lg: 34px;
+  --row-h: 42px;
+  --row-h-compact: 34px;
+
+  --sidebar-w: 232px;
+  --topbar-h: 56px;
+
+  /* ---- elevation ---- */
+  --shadow-raise: 0 1px 2px rgba(22, 22, 29, 0.08);
+  --shadow-card: 0 1px 3px rgba(22, 22, 29, 0.06);
+  --shadow-knob: 0 1px 2px rgba(22, 22, 29, 0.2);
+
+  /* ---- motion ---- */
+  --t-fast: 0.12s ease;
+}

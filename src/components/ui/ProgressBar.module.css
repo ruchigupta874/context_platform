@@ -1,0 +1,28 @@
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-muted);
+  overflow: hidden;
+  display: flex;
+}
+
+.segment {
+  height: 100%;
+  transition: width var(--t-fast);
+}
+
+.ok {
+  background: var(--ok);
+}
+
+.danger {
+  background: var(--danger-soft);
+}
+
+.warn {
+  background: var(--warn-strong);
+}
+
+.accent {
+  background: var(--accent);
+}

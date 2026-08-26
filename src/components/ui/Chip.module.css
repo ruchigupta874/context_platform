@@ -1,0 +1,62 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 19px;
+  padding: 0 7px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-tiny);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lg {
+  height: 21px;
+  padding: 0 8px;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.02em;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--fs-caption);
+}
+
+.neutral {
+  background: var(--bg-muted);
+  color: var(--text-3);
+}
+
+.ok {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+.warn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+
+.danger {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.info {
+  background: var(--info-tint);
+  color: var(--info);
+}
+
+.accent {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}

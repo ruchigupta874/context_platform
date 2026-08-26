@@ -1,0 +1,370 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F7F7F9; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif; color: #16161D; -webkit-font-smoothing: antialiased; }
+    a { color: #4B45C6; text-decoration: none; }
+    a:hover { color: #3C37A8; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; }
+    input, textarea { font: inherit; outline: none; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .nav { cursor: pointer; }
+    .nav:hover { background: #F4F4F7; }
+    .nav.on:hover { background: #EEEDFB; }
+    .btn:hover { filter: brightness(.96); }
+    .opt { transition: border-color .12s ease, background .12s ease; }
+    .chip .x { opacity: .45; }
+    .chip:hover .x { opacity: 1; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb { background: #D6D6DE; border-radius: 6px; border: 3px solid #F7F7F9; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true"><defs>
+  <g id="i-graph"><circle cx="3.5" cy="12" r="1.7"/><circle cx="12.5" cy="12" r="1.7"/><circle cx="8" cy="3.6" r="1.7"/><path d="M6.7 4.9 4.7 10.5M9.3 4.9l2 5.6M5.3 12h5.4"/></g>
+  <g id="i-grid"><rect x="2.4" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="2.4" y="8.9" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="8.9" width="4.7" height="4.7" rx="1.2"/></g>
+  <g id="i-db"><ellipse cx="8" cy="4" rx="5.5" ry="2"/><path d="M2.5 4v8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V4"/><path d="M2.5 8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2"/></g>
+  <g id="i-doc"><path d="M9.2 1.6H4.6A1.6 1.6 0 0 0 3 3.2v9.6a1.6 1.6 0 0 0 1.6 1.6h6.8a1.6 1.6 0 0 0 1.6-1.6V5.4z"/><path d="M9.2 1.6v3.8H13"/><path d="M5.6 8.6h4.8M5.6 11.2h3.2"/></g>
+  <g id="i-play"><path d="M4.6 3.1v9.8L13 8z"/></g>
+  <g id="i-inbox"><path d="M1.6 9.4 3.7 3.3A1.6 1.6 0 0 1 5.2 2.2h5.6a1.6 1.6 0 0 1 1.5 1.1l2.1 6.1"/><path d="M1.6 9.4h3.3l1 2.1h4.2l1-2.1h3.3v3.1a1.6 1.6 0 0 1-1.6 1.6H3.2a1.6 1.6 0 0 1-1.6-1.6z"/></g>
+  <g id="i-hier"><rect x="5.6" y="1.6" width="4.8" height="3.4" rx="1"/><rect x="1.2" y="11" width="4.4" height="3.4" rx="1"/><rect x="10.4" y="11" width="4.4" height="3.4" rx="1"/><path d="M8 5v3.2M3.4 11V8.2h9.2V11"/></g>
+  <g id="i-help"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.3"/><path d="M8 11.9h.01"/></g>
+  <g id="i-shield"><path d="M8 1.7 13.2 3.6v4c0 3.1-2.1 5.5-5.2 6.6-3.1-1.1-5.2-3.5-5.2-6.6v-4z"/><path d="m6 7.9 1.5 1.5 2.7-2.9"/></g>
+  <g id="i-settings"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.4v1.6M8 13v1.6M14.6 8H13M3 8H1.4M12.7 3.3l-1.2 1.2M4.5 11.5l-1.2 1.2M12.7 12.7l-1.2-1.2M4.5 4.5 3.3 3.3"/></g>
+  <g id="i-plus"><path d="M8 3.2v9.6M3.2 8h9.6"/></g>
+  <g id="i-chev-d"><path d="m3.8 6.2 4.2 4.2 4.2-4.2"/></g>
+  <g id="i-chev-r"><path d="m6.2 3.8 4.2 4.2-4.2 4.2"/></g>
+  <g id="i-x"><path d="M4.2 4.2 11.8 11.8M11.8 4.2 4.2 11.8"/></g>
+  <g id="i-check"><path d="m3.2 8.4 3.2 3.2 6.4-7"/></g>
+  <g id="i-clock"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.4V8l2.6 1.6"/></g>
+  <g id="i-node"><circle cx="8" cy="8" r="2.5"/><path d="M8 5.5V1.9M8 10.5v3.6M5.5 8H1.9M10.5 8h3.6"/></g>
+</defs></svg>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #F7F7F9; overflow: hidden;">
+
+  <aside style="width: 232px; flex: 0 0 232px; background: #FFFFFF; border-right: 1px solid #E4E4E9; display: flex; flex-direction: column;">
+    <div style="height: 56px; flex: 0 0 56px; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 10px; padding: 0 14px;">
+      <div style="width: 26px; height: 26px; border-radius: 6px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg class="ic" width="15" height="15" viewBox="0 0 16 16" style="stroke: #FFFFFF"><use href="#i-graph"></use></svg>
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: -0.01em;">Cust360Auto</div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; color: #9A9AA5;">v5 &middot; draft</div>
+      </div>
+      <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-chev-d"></use></svg>
+    </div>
+    <nav style="flex: 1; min-height: 0; overflow-y: auto; padding: 14px 10px; display: flex; flex-direction: column; gap: 15px;">
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">WORKSPACE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-grid"></use></svg><span style="flex: 1">Overview</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-db"></use></svg><span style="flex: 1">Data sources</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-doc"></use></svg><span style="flex: 1">Documents</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">EXTRACTION</div>
+        <div class="nav on" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; font-weight: 600; color: {{accent}}; background: #EEEDFB;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-play"></use></svg><span style="flex: 1">Runs</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #E4EFF8; color: #1F6FB2;">2</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-inbox"></use></svg><span style="flex: 1">Review queue</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #FAEFD9; color: #96620A;">3</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">KNOWLEDGE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-hier"></use></svg><span style="flex: 1">Ontology</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-help"></use></svg><span style="flex: 1">Competency questions</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-graph"></use></svg><span style="flex: 1">Knowledge graph</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-shield"></use></svg><span style="flex: 1">Validation</span></div>
+      </div>
+    </nav>
+    <div style="border-top: 1px solid #E4E4E9; padding: 10px 14px; display: flex; align-items: center; gap: 9px;">
+      <div style="width: 24px; height: 24px; border-radius: 50%; background: #E9E9EE; color: #4A4A57; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;">AS</div>
+      <span style="flex: 1; font-size: 12px; color: #4A4A57;">a.sikarwar</span>
+      <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-settings"></use></svg>
+    </div>
+  </aside>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+    <header style="height: 56px; flex: 0 0 56px; background: #FFFFFF; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+      <div style="display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #9A9AA5;">
+        <span>Cust360Auto</span>
+        <svg class="ic" width="12" height="12" viewBox="0 0 16 16"><use href="#i-chev-r"></use></svg>
+        <span>Runs</span>
+        <svg class="ic" width="12" height="12" viewBox="0 0 16 16"><use href="#i-chev-r"></use></svg>
+        <span style="color: #16161D; font-weight: 600;">New extraction</span>
+      </div>
+      <div style="flex: 1"></div>
+      <div style="display: flex; align-items: center; gap: 7px; height: 28px; padding: 0 11px; border: 1px solid #E4E4E9; border-radius: 14px; background: #FBFBFC; font-size: 12px; color: #4A4A57;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: #1F6FB2;"></span>2 runs active
+      </div>
+    </header>
+
+    <main style="flex: 1; min-height: 0; overflow-y: auto; padding: 24px 26px 32px;">
+      <div style="display: flex; gap: 24px; align-items: flex-start;">
+
+        <div style="flex: 1; min-width: 0; max-width: 760px; display: flex; flex-direction: column; gap: 20px;">
+
+          <div>
+            <h1 style="margin: 0 0 3px; font-size: 18px; font-weight: 600; letter-spacing: -0.015em;">New extraction</h1>
+            <p style="margin: 0; font-size: 12.5px; color: #6E6E7A;">Choose what to read and where the run should stop for your approval.</p>
+          </div>
+
+          <section style="background: #FFFFFF; border: 1px solid #E4E4E9; border-radius: 10px; padding: 16px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 12px;">
+              <span style="width: 20px; height: 20px; border-radius: 50%; background: #EEEDFB; color: {{accent}}; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">1</span>
+              <span style="font-size: 13.5px; font-weight: 600;">Sources</span>
+              <div style="flex: 1"></div>
+              <span style="font-size: 12px; color: #83838F;">{{srcSummary}}</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+              <sc-for list="{{chips}}" as="c" hint-placeholder-count="8">
+                <span class="chip" style="height: 26px; display: inline-flex; align-items: center; gap: 7px; padding: 0 8px 0 9px; border: 1px solid #E4E4E9; border-radius: 6px; background: #FBFBFC; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px; color: #16161D;">
+                  <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: {{c.iconFg}}"><use href="{{c.icon}}"></use></svg>
+                  {{c.label}}
+                  <span class="x" onClick="{{c.remove}}" style="cursor: pointer; display: inline-flex; color: #6E6E7A;"><svg class="ic" width="11" height="11" viewBox="0 0 16 16" style="stroke-width: 1.8"><use href="#i-x"></use></svg></span>
+                </span>
+              </sc-for>
+              <button class="btn" style="height: 26px; display: inline-flex; align-items: center; gap: 5px; padding: 0 10px; border: 1px dashed #C4C4CE; border-radius: 6px; background: transparent; color: #6E6E7A; font-size: 12px; font-weight: 500;">
+                <svg class="ic" width="12" height="12" viewBox="0 0 16 16"><use href="#i-plus"></use></svg>Add sources
+              </button>
+            </div>
+          </section>
+
+          <section style="background: #FFFFFF; border: 1px solid #E4E4E9; border-radius: 10px; padding: 16px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 12px;">
+              <span style="width: 20px; height: 20px; border-radius: 50%; background: #EEEDFB; color: {{accent}}; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">2</span>
+              <span style="font-size: 13.5px; font-weight: 600;">Extraction strategy</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+              <sc-for list="{{profiles}}" as="p" hint-placeholder-count="3">
+                <div class="opt" onClick="{{p.pick}}" style="border: 1px solid {{p.border}}; border-radius: 8px; padding: 12px 13px; cursor: pointer; background: {{p.bg}}; box-shadow: {{p.ring}};">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <span style="width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid {{p.dotBorder}}; display: inline-flex; align-items: center; justify-content: center;">
+                      <span style="width: 7px; height: 7px; border-radius: 50%; background: {{p.dotFill}};"></span>
+                    </span>
+                    <span style="font-size: 12.5px; font-weight: 600;">{{p.name}}</span>
+                  </div>
+                  <p style="margin: 0; font-size: 11.5px; line-height: 1.5; color: #6E6E7A; text-wrap: pretty;">{{p.blurb}}</p>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <section style="background: #FFFFFF; border: 1px solid #E4E4E9; border-radius: 10px; padding: 16px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 4px;">
+              <span style="width: 20px; height: 20px; border-radius: 50%; background: #EEEDFB; color: {{accent}}; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">3</span>
+              <span style="font-size: 13.5px; font-weight: 600;">Domain guidance</span>
+              <span style="font-size: 11.5px; color: #9A9AA5; font-weight: 500;">optional</span>
+            </div>
+            <p style="margin: 0 0 10px 29px; font-size: 12px; color: #6E6E7A;">Naming conventions, entities to avoid, or terms your business insists on. This steers concept naming more than anything else here.</p>
+            <textarea value="{{guidance}}" onChange="{{onGuidance}}" style="width: 100%; height: 74px; resize: none; padding: 10px 11px; border: 1px solid #E4E4E9; border-radius: 7px; background: #FBFBFC; font-size: 12.5px; line-height: 1.55; color: #16161D;"></textarea>
+            <div style="display: flex; align-items: center; gap: 9px; margin-top: 10px;">
+              <span style="font-size: 12px; color: #6E6E7A;">Seed from existing ontology</span>
+              <div style="height: 28px; display: flex; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid #E4E4E9; border-radius: 6px; background: #FFFFFF; font-size: 12px; color: #16161D;">
+                ContactCentre v7
+                <svg class="ic" width="12" height="12" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-chev-d"></use></svg>
+              </div>
+            </div>
+          </section>
+
+          <section style="background: #FFFFFF; border: 1px solid #E4E4E9; border-radius: 10px; padding: 16px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 4px;">
+              <span style="width: 20px; height: 20px; border-radius: 50%; background: #EEEDFB; color: {{accent}}; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">4</span>
+              <span style="font-size: 13.5px; font-weight: 600;">Review gates</span>
+            </div>
+            <p style="margin: 0 0 12px 29px; font-size: 12px; color: #6E6E7A;">The run pauses at each gate you keep on and waits for a decision. Nothing downstream is built until you approve.</p>
+            <div style="display: flex; flex-direction: column; gap: 1px; border: 1px solid #E4E4E9; border-radius: 8px; overflow: hidden; background: #E4E4E9;">
+              <sc-for list="{{gates}}" as="g" hint-placeholder-count="2">
+                <div onClick="{{g.toggle}}" style="background: #FFFFFF; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: {{g.cursor}};">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                      {{g.name}}
+                      <span style="height: 17px; display: inline-flex; align-items: center; padding: 0 6px; border-radius: 4px; background: {{g.tagBg}}; color: {{g.tagFg}}; font-size: 10px; font-weight: 600; letter-spacing: 0.03em;">{{g.tag}}</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: #83838F; margin-top: 2px;">{{g.desc}}</div>
+                  </div>
+                  <span style="width: 34px; height: 20px; border-radius: 10px; background: {{g.trackBg}}; padding: 2px; display: inline-flex; justify-content: {{g.knobPos}}; flex: none;">
+                    <span style="width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(22,22,29,.2);"></span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+        </div>
+
+        <div style="width: 304px; flex: 0 0 304px; background: #FFFFFF; border: 1px solid #E4E4E9; border-radius: 10px; padding: 16px 17px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">RUN SUMMARY</div>
+
+          <div style="display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{summary}}" as="s" hint-placeholder-count="4">
+              <div style="display: flex; align-items: baseline; gap: 10px; font-size: 12.5px;">
+                <span style="color: #83838F; width: 92px; flex: none;">{{s.k}}</span>
+                <span style="color: #16161D; font-weight: 500; text-align: right; flex: 1;">{{s.v}}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="height: 1px; background: #EFEFF2;"></div>
+
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 9px;">STAGES</div>
+            <div style="display: flex; flex-direction: column; gap: 0;">
+              <sc-for list="{{stages}}" as="s" hint-placeholder-count="5">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                  <div style="display: flex; flex-direction: column; align-items: center; flex: none; width: 16px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid {{s.dot}}; background: {{s.dotFill}}; margin-top: 5px;"></span>
+                    <span style="width: 1px; flex: 1; background: {{s.line}}; min-height: {{s.lineH}};"></span>
+                  </div>
+                  <div style="padding-bottom: 11px; min-width: 0;">
+                    <div style="font-size: 12.5px; font-weight: 500; color: #16161D;">{{s.name}}</div>
+                    <div style="font-size: 11px; color: {{s.metaFg}}; margin-top: 1px;">{{s.meta}}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <button class="btn" style="height: 36px; border-radius: 7px; border: 1px solid {{accent}}; background: {{accent}}; color: #FFFFFF; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 7px;">
+            <svg class="ic" width="14" height="14" viewBox="0 0 16 16"><use href="#i-play"></use></svg>Run extraction
+          </button>
+          <p style="margin: -4px 0 0; font-size: 11.5px; line-height: 1.5; color: #83838F; text-align: center; text-wrap: pretty;">Runs in the background. Leave this page, start another run, come back when a gate needs you.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#4B45C6","options":["#4B45C6","#1F6FB2","#1B7A4C","#16161D"],"section":"Theme"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      profile: 'blended',
+      removed: {},
+      cqGate: true,
+      guidance: 'Use singular CamelCase class names. Treat "party" and "account holder" as Customer. Do not create separate classes for soft-deleted rows.'
+    };
+  }
+
+  sources() {
+    return [
+      { id: 's1', label: 'customer', kind: 'table' },
+      { id: 's2', label: 'contract', kind: 'table' },
+      { id: 's3', label: 'invoice', kind: 'table' },
+      { id: 's4', label: 'payment', kind: 'table' },
+      { id: 's5', label: 'claim', kind: 'table' },
+      { id: 's6', label: 'interaction', kind: 'table' },
+      { id: 's7', label: 'call', kind: 'table' },
+      { id: 's8', label: 'agent', kind: 'table' },
+      { id: 's9', label: 'Customer Data Dictionary 2026.pdf', kind: 'doc' },
+      { id: 's10', label: 'Billing Domain Glossary.docx', kind: 'doc' }
+    ];
+  }
+
+  renderVals() {
+    var self = this;
+    var accent = this.props.accent || '#4B45C6';
+
+    var live = this.sources().filter(function (s) { return !self.state.removed[s.id]; });
+    var tableCount = live.filter(function (s) { return s.kind === 'table'; }).length;
+    var docCount = live.length - tableCount;
+
+    var profiles = [
+      { id: 'schema', name: 'Schema-first', blurb: 'Reads table structure, keys and profiles. Fast and literal, but blind to business language.' },
+      { id: 'doc', name: 'Document-first', blurb: 'Builds the model from your glossaries and policies, then tries to bind it to tables.' },
+      { id: 'blended', name: 'Blended', blurb: 'Structure proposes the shape, documents name and define it. Best when you have both.' }
+    ];
+
+    var mins = 4 + Math.round(tableCount * 1.4) + docCount * 3 + (this.state.profile === 'blended' ? 6 : 0);
+
+    var stageDefs = [
+      { name: 'Extract', meta: 'Automatic', gate: false },
+      { name: 'Concepts & relationships', meta: 'Pauses for review', gate: true },
+      { name: 'Competency questions', meta: this.state.cqGate ? 'Pauses for review' : 'Automatic', gate: this.state.cqGate },
+      { name: 'Ontology build', meta: 'Automatic', gate: false },
+      { name: 'Knowledge graph', meta: 'Automatic', gate: false }
+    ];
+
+    var gateCount = stageDefs.filter(function (s) { return s.gate; }).length;
+
+    return {
+      accent: accent,
+      guidance: this.state.guidance,
+      onGuidance: function (e) { self.setState({ guidance: e.target.value }); },
+      srcSummary: tableCount + ' tables, ' + docCount + ' documents',
+      chips: live.map(function (s) {
+        return {
+          label: s.label,
+          icon: s.kind === 'table' ? '#i-db' : '#i-doc',
+          iconFg: s.kind === 'table' ? '#6E6E7A' : '#96620A',
+          remove: function (e) {
+            if (e && e.stopPropagation) { e.stopPropagation(); }
+            var next = Object.assign({}, self.state.removed);
+            next[s.id] = true;
+            self.setState({ removed: next });
+          }
+        };
+      }),
+      profiles: profiles.map(function (p) {
+        var on = self.state.profile === p.id;
+        return {
+          name: p.name, blurb: p.blurb,
+          border: on ? accent : '#E4E4E9',
+          bg: on ? '#FBFAFF' : '#FFFFFF',
+          ring: on ? '0 0 0 3px rgba(75,69,198,.10)' : 'none',
+          dotBorder: on ? accent : '#C4C4CE',
+          dotFill: on ? accent : 'transparent',
+          pick: function () { self.setState({ profile: p.id }); }
+        };
+      }),
+      gates: [
+        {
+          name: 'Concepts & relationships', tag: 'REQUIRED', tagBg: '#EFEFF2', tagFg: '#6E6E7A',
+          desc: 'Approve the classes and the links between them before anything is built on top.',
+          trackBg: accent, knobPos: 'flex-end', cursor: 'not-allowed',
+          toggle: function () {}
+        },
+        {
+          name: 'Competency questions', tag: self.state.cqGate ? 'ON' : 'OFF',
+          tagBg: self.state.cqGate ? '#E4F3EA' : '#EFEFF2',
+          tagFg: self.state.cqGate ? '#1B7A4C' : '#6E6E7A',
+          desc: 'Approve the questions the ontology must be able to answer. Turn off to accept all generated questions.',
+          trackBg: self.state.cqGate ? accent : '#D2D2DA',
+          knobPos: self.state.cqGate ? 'flex-end' : 'flex-start',
+          cursor: 'pointer',
+          toggle: function () { self.setState({ cqGate: !self.state.cqGate }); }
+        }
+      ],
+      summary: [
+        { k: 'Sources', v: tableCount + ' tables + ' + docCount + ' docs' },
+        { k: 'Strategy', v: profiles.filter(function (p) { return p.id === self.state.profile; })[0].name },
+        { k: 'Review gates', v: gateCount === 1 ? '1 gate' : gateCount + ' gates' },
+        { k: 'Est. duration', v: '~' + mins + ' min to first gate' }
+      ],
+      stages: stageDefs.map(function (s, i) {
+        var last = i === stageDefs.length - 1;
+        return {
+          name: s.name,
+          meta: s.meta,
+          metaFg: s.gate ? '#96620A' : '#9A9AA5',
+          dot: s.gate ? '#96620A' : '#C4C4CE',
+          dotFill: s.gate ? '#FAEFD9' : 'transparent',
+          line: last ? 'transparent' : '#E4E4E9',
+          lineH: last ? '0px' : '14px'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

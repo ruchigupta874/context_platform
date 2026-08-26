@@ -1,0 +1,573 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F7F7F9; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif; color: #16161D; -webkit-font-smoothing: antialiased; }
+    a { color: #4B45C6; text-decoration: none; }
+    a:hover { color: #3C37A8; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; }
+    input { font: inherit; outline: none; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .nav { cursor: pointer; }
+    .nav:hover { background: #F4F4F7; }
+    .nav.on:hover { background: #EEEDFB; }
+    .btn:hover { filter: brightness(.96); }
+    .gnode { cursor: pointer; }
+    .gnode:hover circle { stroke: #16161D; }
+    .typerow:hover { background: #F4F4F7; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb { background: #D6D6DE; border-radius: 6px; border: 3px solid #FFFFFF; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true"><defs>
+  <g id="i-graph"><circle cx="3.5" cy="12" r="1.7"/><circle cx="12.5" cy="12" r="1.7"/><circle cx="8" cy="3.6" r="1.7"/><path d="M6.7 4.9 4.7 10.5M9.3 4.9l2 5.6M5.3 12h5.4"/></g>
+  <g id="i-grid"><rect x="2.4" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="2.4" y="8.9" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="8.9" width="4.7" height="4.7" rx="1.2"/></g>
+  <g id="i-db"><ellipse cx="8" cy="4" rx="5.5" ry="2"/><path d="M2.5 4v8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V4"/><path d="M2.5 8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2"/></g>
+  <g id="i-doc"><path d="M9.2 1.6H4.6A1.6 1.6 0 0 0 3 3.2v9.6a1.6 1.6 0 0 0 1.6 1.6h6.8a1.6 1.6 0 0 0 1.6-1.6V5.4z"/><path d="M9.2 1.6v3.8H13"/><path d="M5.6 8.6h4.8M5.6 11.2h3.2"/></g>
+  <g id="i-play"><path d="M4.6 3.1v9.8L13 8z"/></g>
+  <g id="i-inbox"><path d="M1.6 9.4 3.7 3.3A1.6 1.6 0 0 1 5.2 2.2h5.6a1.6 1.6 0 0 1 1.5 1.1l2.1 6.1"/><path d="M1.6 9.4h3.3l1 2.1h4.2l1-2.1h3.3v3.1a1.6 1.6 0 0 1-1.6 1.6H3.2a1.6 1.6 0 0 1-1.6-1.6z"/></g>
+  <g id="i-hier"><rect x="5.6" y="1.6" width="4.8" height="3.4" rx="1"/><rect x="1.2" y="11" width="4.4" height="3.4" rx="1"/><rect x="10.4" y="11" width="4.4" height="3.4" rx="1"/><path d="M8 5v3.2M3.4 11V8.2h9.2V11"/></g>
+  <g id="i-help"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.3"/><path d="M8 11.9h.01"/></g>
+  <g id="i-shield"><path d="M8 1.7 13.2 3.6v4c0 3.1-2.1 5.5-5.2 6.6-3.1-1.1-5.2-3.5-5.2-6.6v-4z"/><path d="m6 7.9 1.5 1.5 2.7-2.9"/></g>
+  <g id="i-settings"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.4v1.6M8 13v1.6M14.6 8H13M3 8H1.4M12.7 3.3l-1.2 1.2M4.5 11.5l-1.2 1.2M12.7 12.7l-1.2-1.2M4.5 4.5 3.3 3.3"/></g>
+  <g id="i-plus"><path d="M8 3.2v9.6M3.2 8h9.6"/></g>
+  <g id="i-minus"><path d="M3.2 8h9.6"/></g>
+  <g id="i-chev-d"><path d="m3.8 6.2 4.2 4.2 4.2-4.2"/></g>
+  <g id="i-chev-r"><path d="m6.2 3.8 4.2 4.2-4.2 4.2"/></g>
+  <g id="i-check"><path d="m3.2 8.4 3.2 3.2 6.4-7"/></g>
+  <g id="i-search"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.7 10.7 3 3"/></g>
+  <g id="i-expand"><path d="M9.6 2.4h4v4M6.4 13.6h-4v-4M13.6 2.4 9.2 6.8M2.4 13.6l4.4-4.4"/></g>
+  <g id="i-download"><path d="M8 2.2v8.3"/><path d="m4.8 7.3 3.2 3.2 3.2-3.2"/><path d="M2.6 11.6v1A1.6 1.6 0 0 0 4.2 14h7.6a1.6 1.6 0 0 0 1.6-1.4v-1"/></g>
+  <g id="i-arrow-r"><path d="M2.8 8h10.4M9.2 4l4 4-4 4"/></g>
+  <g id="i-arrow-l"><path d="M13.2 8H2.8M6.8 4l-4 4 4 4"/></g>
+</defs></svg>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #F7F7F9; overflow: hidden;">
+
+  <aside style="width: 232px; flex: 0 0 232px; background: #FFFFFF; border-right: 1px solid #E4E4E9; display: flex; flex-direction: column;">
+    <div style="height: 56px; flex: 0 0 56px; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 10px; padding: 0 14px;">
+      <div style="width: 26px; height: 26px; border-radius: 6px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg class="ic" width="15" height="15" viewBox="0 0 16 16" style="stroke: #FFFFFF"><use href="#i-graph"></use></svg>
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: -0.01em;">Cust360Auto</div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; color: #9A9AA5;">v5 &middot; draft</div>
+      </div>
+      <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-chev-d"></use></svg>
+    </div>
+    <nav style="flex: 1; min-height: 0; overflow-y: auto; padding: 14px 10px; display: flex; flex-direction: column; gap: 15px;">
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">WORKSPACE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-grid"></use></svg><span style="flex: 1">Overview</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-db"></use></svg><span style="flex: 1">Data sources</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-doc"></use></svg><span style="flex: 1">Documents</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">EXTRACTION</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-play"></use></svg><span style="flex: 1">Runs</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #E4EFF8; color: #1F6FB2;">2</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-inbox"></use></svg><span style="flex: 1">Review queue</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #FAEFD9; color: #96620A;">3</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">KNOWLEDGE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-hier"></use></svg><span style="flex: 1">Ontology</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-help"></use></svg><span style="flex: 1">Competency questions</span></div>
+        <div class="nav on" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; font-weight: 600; color: {{accent}}; background: #EEEDFB;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-graph"></use></svg><span style="flex: 1">Knowledge graph</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-shield"></use></svg><span style="flex: 1">Validation</span></div>
+      </div>
+    </nav>
+    <div style="border-top: 1px solid #E4E4E9; padding: 10px 14px; display: flex; align-items: center; gap: 9px;">
+      <div style="width: 24px; height: 24px; border-radius: 50%; background: #E9E9EE; color: #4A4A57; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;">AS</div>
+      <span style="flex: 1; font-size: 12px; color: #4A4A57;">a.sikarwar</span>
+      <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-settings"></use></svg>
+    </div>
+  </aside>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+    <header style="height: 56px; flex: 0 0 56px; background: #FFFFFF; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+      <div style="display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #9A9AA5;">
+        <span>Cust360Auto</span>
+        <svg class="ic" width="12" height="12" viewBox="0 0 16 16"><use href="#i-chev-r"></use></svg>
+        <span style="color: #16161D; font-weight: 600;">Knowledge graph</span>
+      </div>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px; color: #83838F;">12,438 nodes &middot; 31,204 edges</span>
+      <div style="flex: 1"></div>
+      <button class="btn" style="height: 30px; padding: 0 11px; border-radius: 6px; border: 1px solid #D2D2DA; background: #FFFFFF; color: #16161D; font-size: 12.5px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #6E6E7A"><use href="#i-download"></use></svg>Export subgraph
+      </button>
+      <button class="btn" style="height: 30px; padding: 0 12px; border-radius: 6px; border: 1px solid {{accent}}; background: {{accent}}; color: #FFFFFF; font-size: 12.5px; font-weight: 600;">Query console</button>
+    </header>
+
+    <main style="flex: 1; min-height: 0; display: flex; background: #FFFFFF;">
+
+      <div style="width: 236px; flex: 0 0 236px; border-right: 1px solid #E4E4E9; display: flex; flex-direction: column; min-height: 0; background: #FBFBFC;">
+        <div style="padding: 14px 14px 12px; border-bottom: 1px solid #EFEFF2; display: flex; flex-direction: column; gap: 11px;">
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 7px;">START FROM</div>
+            <div style="position: relative;">
+              <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="position: absolute; left: 9px; top: 8px; color: #9A9AA5"><use href="#i-search"></use></svg>
+              <input value="{{q}}" onChange="{{onQuery}}" placeholder="Search an entity" style="width: 100%; height: 30px; padding: 0 10px 0 29px; border: 1px solid #E4E4E9; border-radius: 6px; background: #FFFFFF; font-size: 12.5px;">
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px;">
+              <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">TRAVERSAL DEPTH</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 600; color: {{accent}};">{{depth}}</span>
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <sc-for list="{{depths}}" as="dp" hint-placeholder-count="4">
+                <button onClick="{{dp.pick}}" style="flex: 1; height: 26px; border-radius: 5px; border: 1px solid {{dp.border}}; background: {{dp.bg}}; color: {{dp.fg}}; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11.5px; font-weight: 600;">{{dp.n}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 14px 10px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 4px; margin-bottom: 8px;">
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">ENTITY TYPES</span>
+            <span onClick="{{allTypes}}" style="font-size: 11px; color: {{accent}}; cursor: pointer;">All</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1px;">
+            <sc-for list="{{types}}" as="t" hint-placeholder-count="7">
+              <div class="typerow" onClick="{{t.toggle}}" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; cursor: pointer;">
+                <span style="width: 14px; height: 14px; border-radius: 3.5px; border: 1.4px solid {{t.cbBorder}}; background: {{t.cbBg}}; display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; flex: none;">
+                  <svg class="ic" width="9" height="9" viewBox="0 0 16 16" style="stroke-width: 2.4; opacity: {{t.mark}}"><use href="#i-check"></use></svg>
+                </span>
+                <span style="width: 9px; height: 9px; border-radius: 50%; background: {{t.color}}; flex: none; opacity: {{t.dotOpacity}};"></span>
+                <span style="flex: 1; font-size: 12.5px; color: {{t.fg}};">{{t.name}}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10.5px; color: #A8A8B2;">{{t.count}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid #EFEFF2; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;">
+          <div onClick="{{toggleLabels}}" style="display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 12.5px; color: #4A4A57;">
+            <span style="width: 30px; height: 18px; border-radius: 9px; background: {{labelsTrack}}; padding: 2px; display: inline-flex; justify-content: {{labelsKnob}}; flex: none;">
+              <span style="width: 14px; height: 14px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(22,22,29,.2);"></span>
+            </span>
+            Node labels
+          </div>
+          <div onClick="{{toggleInferred}}" style="display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 12.5px; color: #4A4A57;">
+            <span style="width: 30px; height: 18px; border-radius: 9px; background: {{inferredTrack}}; padding: 2px; display: inline-flex; justify-content: {{inferredKnob}}; flex: none;">
+              <span style="width: 14px; height: 14px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(22,22,29,.2);"></span>
+            </span>
+            Inferred edges
+          </div>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0;">
+        <div style="height: 40px; flex: 0 0 40px; border-bottom: 1px solid #EFEFF2; display: flex; align-items: center; gap: 10px; padding: 0 16px;">
+          <span style="font-size: 12.5px; color: #4A4A57;">Neighbourhood of <strong style="font-weight: 600; color: #16161D;">Jacob Martin</strong></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; color: #9A9AA5;">{{shownCount}} of 12,438 shown</span>
+          <div style="flex: 1"></div>
+          <button class="btn" style="width: 28px; height: 28px; border-radius: 6px; border: 1px solid #E4E4E9; background: #FFFFFF; color: #6E6E7A; display: flex; align-items: center; justify-content: center;"><svg class="ic" width="13" height="13" viewBox="0 0 16 16"><use href="#i-minus"></use></svg></button>
+          <button class="btn" style="width: 28px; height: 28px; border-radius: 6px; border: 1px solid #E4E4E9; background: #FFFFFF; color: #6E6E7A; display: flex; align-items: center; justify-content: center;"><svg class="ic" width="13" height="13" viewBox="0 0 16 16"><use href="#i-plus"></use></svg></button>
+          <button class="btn" style="width: 28px; height: 28px; border-radius: 6px; border: 1px solid #E4E4E9; background: #FFFFFF; color: #6E6E7A; display: flex; align-items: center; justify-content: center;"><svg class="ic" width="13" height="13" viewBox="0 0 16 16"><use href="#i-expand"></use></svg></button>
+        </div>
+
+        <div style="flex: 1; min-height: 0; position: relative; background: #FCFCFD;">
+          <svg viewBox="60 40 560 520" preserveAspectRatio="xMidYMid meet" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+            <g stroke-linecap="round">
+              <sc-for list="{{edges}}" as="e" hint-placeholder-count="24">
+                <line x1="{{e.x1}}" y1="{{e.y1}}" x2="{{e.x2}}" y2="{{e.y2}}" stroke="{{e.stroke}}" stroke-width="{{e.w}}" stroke-dasharray="{{e.dash}}"></line>
+              </sc-for>
+            </g>
+            <g>
+              <sc-for list="{{edgeLabels}}" as="l" hint-placeholder-count="6">
+                <text x="{{l.x}}" y="{{l.y}}" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, Consolas, monospace" font-size="9" fill="#9A9AA5">{{l.text}}</text>
+              </sc-for>
+            </g>
+            <g>
+              <sc-for list="{{nodes}}" as="n" hint-placeholder-count="25">
+                <g class="gnode" onClick="{{n.pick}}">
+                  <circle cx="{{n.x}}" cy="{{n.y}}" r="{{n.halo}}" fill="{{n.haloFill}}"></circle>
+                  <circle cx="{{n.x}}" cy="{{n.y}}" r="{{n.r}}" fill="{{n.fill}}" stroke="{{n.stroke}}" stroke-width="{{n.sw}}"></circle>
+                  <text x="{{n.x}}" y="{{n.ly}}" text-anchor="middle" font-family="'IBM Plex Sans', 'Segoe UI', sans-serif" font-size="9.5" font-weight="{{n.lw}}" fill="{{n.lfill}}" opacity="{{n.lop}}">{{n.label}}</text>
+                </g>
+              </sc-for>
+            </g>
+          </svg>
+
+          <div style="position: absolute; left: 14px; bottom: 14px; background: rgba(255,255,255,.94); border: 1px solid #E4E4E9; border-radius: 8px; padding: 9px 11px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 9.5px; font-weight: 600; letter-spacing: 0.07em; color: #9A9AA5;">EDGE TYPE</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #4A4A57;">
+              <span style="width: 18px; height: 2px; background: #C4C4CE; border-radius: 1px;"></span>asserted
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #4A4A57;">
+              <span style="width: 18px; height: 0; border-top: 2px dashed #C4C4CE;"></span>inferred
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="width: 296px; flex: 0 0 296px; border-left: 1px solid #E4E4E9; display: flex; flex-direction: column; min-height: 0;">
+        <div style="padding: 16px 16px 14px; border-bottom: 1px solid #EFEFF2;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="width: 11px; height: 11px; border-radius: 50%; background: {{s.color}};"></span>
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.07em; color: #9A9AA5;">{{s.typeUpper}}</span>
+          </div>
+          <div style="font-size: 16px; font-weight: 600; letter-spacing: -0.014em;">{{s.label}}</div>
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; color: #83838F; margin-top: 4px; word-break: break-all;">{{s.iri}}</div>
+        </div>
+
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px 20px; display: flex; flex-direction: column; gap: 18px;">
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 8px;">PROPERTIES</div>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <sc-for list="{{s.props}}" as="p" hint-placeholder-count="4">
+                <div style="display: flex; align-items: baseline; gap: 10px; font-size: 12px;">
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; color: #83838F; width: 100px; flex: none;">{{p.k}}</span>
+                  <span style="flex: 1; color: #16161D; text-align: right; word-break: break-word;">{{p.v}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5;">RELATIONSHIPS</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10.5px; color: #A8A8B2;">{{s.relCount}}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1px; border: 1px solid #E4E4E9; border-radius: 7px; overflow: hidden; background: #EFEFF2;">
+              <sc-for list="{{s.rels}}" as="r" hint-placeholder-count="5">
+                <div onClick="{{r.jump}}" style="background: #FFFFFF; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; cursor: pointer;">
+                  <svg class="ic" width="12" height="12" viewBox="0 0 16 16" style="color: #A8A8B2"><use href="{{r.dir}}"></use></svg>
+                  <span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px; color: {{accent}}; flex: none;">{{r.pred}}</span>
+                  <span style="flex: 1; min-width: 0; font-size: 11.5px; color: #16161D; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.other}}</span>
+                  <span style="width: 7px; height: 7px; border-radius: 50%; background: {{r.color}}; flex: none;"></span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; margin-bottom: 8px;">PROVENANCE</div>
+            <div style="border: 1px solid #E4E4E9; border-radius: 7px; background: #FBFBFC; padding: 10px 11px; display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: baseline; gap: 10px; font-size: 11.5px;">
+                <span style="color: #83838F; width: 74px; flex: none;">source row</span>
+                <span style="flex: 1; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px;">{{s.srcRow}}</span>
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 10px; font-size: 11.5px;">
+                <span style="color: #83838F; width: 74px; flex: none;">mapping</span>
+                <span style="flex: 1; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px;">{{s.mapping}}</span>
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 10px; font-size: 11.5px;">
+                <span style="color: #83838F; width: 74px; flex: none;">built by</span>
+                <span style="flex: 1; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 11px;">R-2413</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#4B45C6","options":["#4B45C6","#1F6FB2","#1B7A4C","#16161D"],"section":"Theme"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sel: 'n0',
+      q: 'Jacob Martin',
+      depth: 2,
+      labels: true,
+      inferred: true,
+      off: {}
+    };
+  }
+
+  palette() {
+    return {
+      Customer: '#5B54C4',
+      Contract: '#2073AE',
+      Invoice: '#0E7C74',
+      Payment: '#3C7A2E',
+      Claim: '#AE4763',
+      Interaction: '#97671A',
+      Agent: '#8A4FA8',
+      BillingAccount: '#4A6076'
+    };
+  }
+
+  graph() {
+    var nodes = [
+      { id: 'n0', label: 'Jacob Martin', type: 'Customer', x: 340, y: 300, r: 21, hub: true, root: true },
+
+      { id: 'h1', label: 'CTR-77104223', type: 'Contract', x: 238, y: 241, r: 14 },
+      { id: 'h2', label: 'CTR-77104881', type: 'Contract', x: 238, y: 359, r: 14 },
+      { id: 'h3', label: 'BA-77120', type: 'BillingAccount', x: 340, y: 418, r: 14 },
+      { id: 'h4', label: 'CLM-30119', type: 'Claim', x: 442, y: 359, r: 14 },
+      { id: 'h5', label: 'INT-88240113', type: 'Interaction', x: 442, y: 241, r: 14 },
+      { id: 'h6', label: 'INT-88245567', type: 'Interaction', x: 340, y: 182, r: 14 },
+
+      { id: 'a1', label: 'INV-9102338', type: 'Invoice', x: 202, y: 123, r: 9, parent: 'h1', pred: 'generates' },
+      { id: 'a2', label: 'INV-9102412', type: 'Invoice', x: 145, y: 188, r: 9, parent: 'h1', pred: 'generates' },
+      { id: 'a3', label: 'INV-9102590', type: 'Invoice', x: 117, y: 269, r: 9, parent: 'h1', pred: 'generates' },
+
+      { id: 'b1', label: 'INV-9103771', type: 'Invoice', x: 117, y: 331, r: 9, parent: 'h2', pred: 'generates' },
+      { id: 'b2', label: 'INV-9103824', type: 'Invoice', x: 145, y: 413, r: 9, parent: 'h2', pred: 'generates' },
+      { id: 'b3', label: 'PAY-5512443', type: 'Payment', x: 202, y: 477, r: 9, parent: 'h2', pred: 'settledBy', inferred: true },
+
+      { id: 'c1', label: 'PAY-5512009', type: 'Payment', x: 256, y: 509, r: 9, parent: 'h3', pred: 'covers' },
+      { id: 'c2', label: 'CTR-77105110', type: 'Contract', x: 340, y: 525, r: 9, parent: 'h3', pred: 'covers' },
+      { id: 'c3', label: 'Priya Raman', type: 'Customer', x: 424, y: 509, r: 9, parent: 'h3', pred: 'billedUnder', inferred: true },
+
+      { id: 'd1', label: 'AGT-1187', type: 'Agent', x: 479, y: 477, r: 9, parent: 'h4', pred: 'assessedBy' },
+      { id: 'd2', label: 'INT-88231004', type: 'Interaction', x: 535, y: 413, r: 9, parent: 'h4', pred: 'precededBy', inferred: true },
+      { id: 'd3', label: 'INT-88231702', type: 'Interaction', x: 563, y: 331, r: 9, parent: 'h4', pred: 'precededBy', inferred: true },
+
+      { id: 'e1', label: 'CALL-0000170', type: 'Interaction', x: 563, y: 269, r: 9, parent: 'h5', pred: 'recordedAs' },
+      { id: 'e2', label: 'AGT-1342', type: 'Agent', x: 535, y: 188, r: 9, parent: 'h5', pred: 'handledBy' },
+      { id: 'e3', label: 'CALL-0000221', type: 'Interaction', x: 479, y: 123, r: 9, parent: 'h5', pred: 'recordedAs' },
+
+      { id: 'f1', label: 'CALL-0000402', type: 'Interaction', x: 424, y: 91, r: 9, parent: 'h6', pred: 'recordedAs' },
+      { id: 'f2', label: 'AGT-1503', type: 'Agent', x: 340, y: 75, r: 9, parent: 'h6', pred: 'handledBy' },
+      { id: 'f3', label: 'CALL-0000318', type: 'Interaction', x: 256, y: 91, r: 9, parent: 'h6', pred: 'recordedAs' }
+    ];
+
+    var hubPreds = {
+      h1: 'holds', h2: 'holds', h3: 'billedUnder',
+      h4: 'files', h5: 'participatesIn', h6: 'participatesIn'
+    };
+
+    var edges = [];
+    Object.keys(hubPreds).forEach(function (h) {
+      edges.push({ from: 'n0', to: h, pred: hubPreds[h], primary: true });
+    });
+    nodes.forEach(function (n) {
+      if (n.parent) { edges.push({ from: n.parent, to: n.id, pred: n.pred, inferred: !!n.inferred }); }
+    });
+
+    return { nodes: nodes, edges: edges };
+  }
+
+  inspector(id) {
+    var lib = {
+      n0: {
+        props: [
+          { k: 'ex:customerId', v: '4821993' },
+          { k: 'ex:fullName', v: 'Jacob Martin' },
+          { k: 'ex:segment', v: 'residential' },
+          { k: 'ex:createdAt', v: '2019-03-11' }
+        ],
+        rels: [
+          { pred: 'holds', other: 'CTR-77104223', to: 'h1', out: true },
+          { pred: 'holds', other: 'CTR-77104881', to: 'h2', out: true },
+          { pred: 'billedUnder', other: 'BA-77120', to: 'h3', out: true },
+          { pred: 'files', other: 'CLM-30119', to: 'h4', out: true },
+          { pred: 'participatesIn', other: 'INT-88240113', to: 'h5', out: true },
+          { pred: 'participatesIn', other: 'INT-88245567', to: 'h6', out: true }
+        ],
+        srcRow: 'customer#4821993',
+        mapping: '#CustomerMap'
+      },
+      h1: {
+        props: [
+          { k: 'ex:contractId', v: '77104223' },
+          { k: 'ex:startDate', v: '2019-04-01' },
+          { k: 'ex:status', v: 'active' },
+          { k: 'ex:planCode', v: 'RES-STD-24' }
+        ],
+        rels: [
+          { pred: 'heldBy', other: 'Jacob Martin', to: 'n0', out: false },
+          { pred: 'generates', other: 'INV-9102338', to: 'a1', out: true },
+          { pred: 'generates', other: 'INV-9102412', to: 'a2', out: true },
+          { pred: 'generates', other: 'INV-9102590', to: 'a3', out: true }
+        ],
+        srcRow: 'contract#77104223',
+        mapping: '#ContractMap'
+      },
+      h4: {
+        props: [
+          { k: 'ex:claimId', v: '30119' },
+          { k: 'ex:claimType', v: 'billing_dispute' },
+          { k: 'ex:filedOn', v: '2026-06-14' },
+          { k: 'ex:resolvedAt', v: 'null' }
+        ],
+        rels: [
+          { pred: 'filedBy', other: 'Jacob Martin', to: 'n0', out: false },
+          { pred: 'assessedBy', other: 'AGT-1187', to: 'd1', out: true },
+          { pred: 'precededBy', other: 'INT-88231004', to: 'd2', out: true },
+          { pred: 'precededBy', other: 'INT-88231702', to: 'd3', out: true }
+        ],
+        srcRow: 'claim#30119',
+        mapping: '#ClaimMap'
+      }
+    };
+    return lib[id] || null;
+  }
+
+  renderVals() {
+    var self = this;
+    var accent = this.props.accent || '#4B45C6';
+    var pal = this.palette();
+    var g = this.graph();
+    var off = this.state.off;
+    var showInferred = this.state.inferred;
+    var depth = this.state.depth;
+
+    var typeOn = function (t) { return !off[t]; };
+    var nodeOn = function (n) {
+      if (!typeOn(n.type)) { return false; }
+      if (n.parent && depth < 2) { return false; }
+      return true;
+    };
+
+    var visNodes = g.nodes.filter(nodeOn);
+    var byId = {};
+    visNodes.forEach(function (n) { byId[n.id] = n; });
+
+    var visEdges = g.edges.filter(function (e) {
+      if (!byId[e.from] || !byId[e.to]) { return false; }
+      if (e.inferred && !showInferred) { return false; }
+      return true;
+    });
+
+    var typeCounts = {
+      Customer: '482k', Contract: '611k', Invoice: '7.2m', Payment: '6.9m',
+      Claim: '94k', Interaction: '3.1m', Agent: '2.4k', BillingAccount: '38k'
+    };
+
+    var selId = byId[this.state.sel] ? this.state.sel : 'n0';
+    var selNode = byId[selId] || g.nodes[0];
+    var insp = this.inspector(selId);
+    var nodeById = {};
+    g.nodes.forEach(function (n) { nodeById[n.id] = n; });
+
+    if (!insp) {
+      var incident = g.edges.filter(function (e) { return e.from === selId || e.to === selId; });
+      insp = {
+        props: [
+          { k: 'rdf:type', v: 'ex:' + selNode.type },
+          { k: 'rdfs:label', v: selNode.label },
+          { k: 'ex:sourceRun', v: 'R-2413' }
+        ],
+        rels: incident.map(function (e) {
+          var out = e.from === selId;
+          var otherId = out ? e.to : e.from;
+          return { pred: e.pred, other: nodeById[otherId].label, to: otherId, out: out };
+        }),
+        srcRow: selNode.type.toLowerCase() + '#' + selNode.label,
+        mapping: '#' + selNode.type + 'Map'
+      };
+    }
+
+    var neighbours = {};
+    visEdges.forEach(function (e) {
+      if (e.from === selId) { neighbours[e.to] = true; }
+      if (e.to === selId) { neighbours[e.from] = true; }
+    });
+
+    return {
+      accent: accent,
+      q: this.state.q,
+      onQuery: function (e) { self.setState({ q: e.target.value }); },
+      depth: depth,
+      depths: [1, 2, 3, 4].map(function (n) {
+        var on = depth === n;
+        return {
+          n: n,
+          border: on ? accent : '#E4E4E9',
+          bg: on ? '#EEEDFB' : '#FFFFFF',
+          fg: on ? accent : '#6E6E7A',
+          pick: function () { self.setState({ depth: n }); }
+        };
+      }),
+      types: Object.keys(pal).map(function (t) {
+        var on = typeOn(t);
+        return {
+          name: t, color: pal[t], count: typeCounts[t],
+          cbBorder: on ? accent : '#C4C4CE',
+          cbBg: on ? accent : '#FFFFFF',
+          mark: on ? '1' : '0',
+          dotOpacity: on ? '1' : '0.35',
+          fg: on ? '#16161D' : '#A8A8B2',
+          toggle: function () {
+            var next = Object.assign({}, off);
+            next[t] = on;
+            self.setState({ off: next });
+          }
+        };
+      }),
+      allTypes: function () { self.setState({ off: {} }); },
+      labelsTrack: this.state.labels ? accent : '#D2D2DA',
+      labelsKnob: this.state.labels ? 'flex-end' : 'flex-start',
+      toggleLabels: function () { self.setState({ labels: !self.state.labels }); },
+      inferredTrack: showInferred ? accent : '#D2D2DA',
+      inferredKnob: showInferred ? 'flex-end' : 'flex-start',
+      toggleInferred: function () { self.setState({ inferred: !showInferred }); },
+      shownCount: visNodes.length,
+      edges: visEdges.map(function (e) {
+        var a = byId[e.from];
+        var b = byId[e.to];
+        var hot = e.from === selId || e.to === selId;
+        return {
+          x1: a.x, y1: a.y, x2: b.x, y2: b.y,
+          stroke: hot ? accent : (e.primary ? '#B4B4BE' : '#DCDCE3'),
+          w: hot ? 1.8 : (e.primary ? 1.4 : 1),
+          dash: e.inferred ? '4 4' : 'none'
+        };
+      }),
+      edgeLabels: this.state.labels ? visEdges.filter(function (e) { return e.primary; }).map(function (e) {
+        var a = byId[e.from];
+        var b = byId[e.to];
+        return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 4, text: e.pred };
+      }) : [],
+      nodes: visNodes.map(function (n) {
+        var on = selId === n.id;
+        var near = !!neighbours[n.id];
+        var dim = !on && !near && selId !== 'n0';
+        return {
+          x: n.x, y: n.y, r: n.r, label: n.label,
+          halo: on ? n.r + 6 : 0,
+          haloFill: on ? 'rgba(75,69,198,.14)' : 'transparent',
+          fill: pal[n.type],
+          stroke: on ? '#16161D' : '#FFFFFF',
+          sw: on ? 2 : 1.6,
+          ly: n.y + n.r + 12,
+          lw: n.root || on ? '600' : '400',
+          lfill: on ? '#16161D' : '#6E6E7A',
+          lop: self.state.labels ? (dim ? '0.35' : '1') : '0',
+          pick: function () { self.setState({ sel: n.id }); }
+        };
+      }),
+      s: {
+        label: selNode.label,
+        color: pal[selNode.type],
+        typeUpper: selNode.type.toUpperCase(),
+        iri: 'https://ctx.internal/id/' + selNode.type.toLowerCase() + '/' + selNode.label.replace(/\s+/g, '-').toLowerCase(),
+        props: insp.props,
+        relCount: insp.rels.length,
+        rels: insp.rels.map(function (r) {
+          return {
+            pred: r.pred,
+            other: r.other,
+            dir: r.out ? '#i-arrow-r' : '#i-arrow-l',
+            color: pal[(nodeById[r.to] || {}).type] || '#C4C4CE',
+            jump: function () { self.setState({ sel: r.to }); }
+          };
+        }),
+        srcRow: insp.srcRow,
+        mapping: insp.mapping
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

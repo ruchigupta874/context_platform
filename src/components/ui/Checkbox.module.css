@@ -1,0 +1,32 @@
+.box {
+  width: 15px;
+  height: 15px;
+  border: 1.4px solid var(--border-input);
+  border-radius: 3.5px;
+  background: var(--bg-panel);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: 0;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+
+.sm {
+  width: 14px;
+  height: 14px;
+}
+
+.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.mark {
+  opacity: 0;
+}
+
+.checked .mark {
+  opacity: 1;
+}

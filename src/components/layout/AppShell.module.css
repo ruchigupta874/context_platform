@@ -1,0 +1,34 @@
+.shell {
+  display: flex;
+  height: 100%;
+  background: var(--bg-app);
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page bodies that scroll as a whole (registry, run config). */
+.scroll {
+  overflow-y: auto;
+}
+
+/* Page bodies with their own internal scroll regions (tables, gates). */
+.fixed {
+  overflow: hidden;
+}
+
+.pad {
+  padding: 22px 26px;
+}

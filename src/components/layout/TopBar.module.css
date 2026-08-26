@@ -1,0 +1,91 @@
+.bar {
+  height: var(--topbar-h);
+  flex: none;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-body);
+  color: var(--text-5);
+  min-width: 0;
+}
+
+.crumbLink {
+  color: var(--text-5);
+  text-decoration: none;
+}
+
+.crumbLink:hover {
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+.crumbCurrent {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.note {
+  font-size: var(--fs-small);
+  color: var(--text-4);
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+}
+
+.activity {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 28px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle);
+  font-size: var(--fs-small);
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+.activity:hover {
+  background: var(--bg-hover);
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--info);
+  animation: breathe 1.9s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}

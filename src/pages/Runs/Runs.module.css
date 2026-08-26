@@ -1,0 +1,71 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.count {
+  font-size: var(--fs-small);
+  color: var(--text-4);
+}
+
+.runId {
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  font-weight: 500;
+}
+
+.runMeta {
+  font-size: var(--fs-caption);
+  color: var(--text-5);
+  margin-top: 2px;
+}
+
+.sources {
+  font-size: var(--fs-small);
+  color: var(--text-2);
+}
+
+.strategy {
+  font-size: var(--fs-caption);
+  color: var(--text-5);
+  margin-top: 2px;
+}
+
+.pipelineCell {
+  padding-right: 22px;
+}
+
+.actionCell {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.edgeWarn {
+  border-left-color: #e0a93c !important;
+}
+
+.edgeInfo {
+  border-left-color: var(--info) !important;
+}
+
+.edgeDanger {
+  border-left-color: var(--danger) !important;
+}
+
+.spin {
+  animation: spin 1.6s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

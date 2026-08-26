@@ -1,0 +1,86 @@
+.track {
+  display: flex;
+  align-items: center;
+  height: 14px;
+}
+
+.segment {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.grow {
+  flex: 1;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+  background: #ebebef;
+}
+
+.lineDone {
+  background: var(--ok);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid #dcdce3;
+  background: var(--bg-panel);
+  flex: none;
+}
+
+.dotCurrent {
+  width: 11px;
+  height: 11px;
+}
+
+.dotDone {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+
+.dotGate {
+  background: var(--warn);
+  border-color: var(--warn);
+}
+
+.dotRunning {
+  background: var(--info);
+  border-color: var(--info);
+  animation: breathe 1.9s ease-in-out infinite;
+}
+
+.dotFailed {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.note {
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+  margin-top: 6px;
+}
+
+.noteGate {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.noteFailed {
+  color: var(--danger);
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}

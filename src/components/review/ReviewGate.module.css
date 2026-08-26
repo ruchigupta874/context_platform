@@ -1,0 +1,231 @@
+/* Shared shell for both review gates: toolbar, master list, detail pane, footer. */
+
+.gate {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  height: 48px;
+  flex: none;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 24px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.bulk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulkCount {
+  font-size: var(--fs-small);
+  color: var(--text-3);
+}
+
+.split {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  background: var(--bg-panel);
+}
+
+.list {
+  flex: none;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.listHead {
+  height: 32px;
+  flex: none;
+  display: grid;
+  align-items: center;
+  padding: 0 16px 0 14px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-subtle);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-column);
+  color: var(--text-5);
+  text-transform: uppercase;
+}
+
+.listBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.detail {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.detailHead {
+  flex: none;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.detailHeadBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.detailTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.detailTitle {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+}
+
+.detailTitleMono {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.detailUri {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  margin-top: 5px;
+  word-break: break-all;
+}
+
+.detailActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.detailBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.definition {
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed);
+  color: var(--text);
+  max-width: 660px;
+  text-wrap: pretty;
+  margin-top: 8px;
+}
+
+.definitionSource {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.linkChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 27px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text);
+}
+
+.linkChip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---- footer ---- */
+.footer {
+  height: 64px;
+  flex: none;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px;
+}
+
+.progress {
+  width: 300px;
+  flex: none;
+}
+
+.progressLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.progressCount {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.progressBreak {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+.warning {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-small);
+  color: var(--warn);
+}
+
+.warningDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warn-strong);
+  flex: none;
+}

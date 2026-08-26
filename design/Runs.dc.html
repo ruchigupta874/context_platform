@@ -1,0 +1,290 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F7F7F9; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif; color: #16161D; -webkit-font-smoothing: antialiased; }
+    a { color: #4B45C6; text-decoration: none; }
+    a:hover { color: #3C37A8; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; }
+    input { font: inherit; outline: none; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .nav { cursor: pointer; }
+    .nav:hover { background: #F4F4F7; }
+    .nav.on:hover { background: #EEEDFB; }
+    .runrow:hover { background: #FAFAFC; }
+    .btn:hover { filter: brightness(.96); }
+    .pill:hover { background: #F0F0F3; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1.6s linear infinite; transform-origin: 50% 50%; }
+    @keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+    .breathe { animation: breathe 1.9s ease-in-out infinite; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb { background: #D6D6DE; border-radius: 6px; border: 3px solid #FFFFFF; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true"><defs>
+  <g id="i-graph"><circle cx="3.5" cy="12" r="1.7"/><circle cx="12.5" cy="12" r="1.7"/><circle cx="8" cy="3.6" r="1.7"/><path d="M6.7 4.9 4.7 10.5M9.3 4.9l2 5.6M5.3 12h5.4"/></g>
+  <g id="i-grid"><rect x="2.4" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="2.4" width="4.7" height="4.7" rx="1.2"/><rect x="2.4" y="8.9" width="4.7" height="4.7" rx="1.2"/><rect x="8.9" y="8.9" width="4.7" height="4.7" rx="1.2"/></g>
+  <g id="i-db"><ellipse cx="8" cy="4" rx="5.5" ry="2"/><path d="M2.5 4v8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V4"/><path d="M2.5 8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2"/></g>
+  <g id="i-doc"><path d="M9.2 1.6H4.6A1.6 1.6 0 0 0 3 3.2v9.6a1.6 1.6 0 0 0 1.6 1.6h6.8a1.6 1.6 0 0 0 1.6-1.6V5.4z"/><path d="M9.2 1.6v3.8H13"/><path d="M5.6 8.6h4.8M5.6 11.2h3.2"/></g>
+  <g id="i-play"><path d="M4.6 3.1v9.8L13 8z"/></g>
+  <g id="i-inbox"><path d="M1.6 9.4 3.7 3.3A1.6 1.6 0 0 1 5.2 2.2h5.6a1.6 1.6 0 0 1 1.5 1.1l2.1 6.1"/><path d="M1.6 9.4h3.3l1 2.1h4.2l1-2.1h3.3v3.1a1.6 1.6 0 0 1-1.6 1.6H3.2a1.6 1.6 0 0 1-1.6-1.6z"/></g>
+  <g id="i-hier"><rect x="5.6" y="1.6" width="4.8" height="3.4" rx="1"/><rect x="1.2" y="11" width="4.4" height="3.4" rx="1"/><rect x="10.4" y="11" width="4.4" height="3.4" rx="1"/><path d="M8 5v3.2M3.4 11V8.2h9.2V11"/></g>
+  <g id="i-help"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.3"/><path d="M8 11.9h.01"/></g>
+  <g id="i-shield"><path d="M8 1.7 13.2 3.6v4c0 3.1-2.1 5.5-5.2 6.6-3.1-1.1-5.2-3.5-5.2-6.6v-4z"/><path d="m6 7.9 1.5 1.5 2.7-2.9"/></g>
+  <g id="i-settings"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.4v1.6M8 13v1.6M14.6 8H13M3 8H1.4M12.7 3.3l-1.2 1.2M4.5 11.5l-1.2 1.2M12.7 12.7l-1.2-1.2M4.5 4.5 3.3 3.3"/></g>
+  <g id="i-plus"><path d="M8 3.2v9.6M3.2 8h9.6"/></g>
+  <g id="i-chev-d"><path d="m3.8 6.2 4.2 4.2 4.2-4.2"/></g>
+  <g id="i-chev-r"><path d="m6.2 3.8 4.2 4.2-4.2 4.2"/></g>
+  <g id="i-arrow-r"><path d="M2.8 8h10.4M9.2 4l4 4-4 4"/></g>
+  <g id="i-refresh"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M13.7 2.1v3.3h-3.3"/></g>
+  <g id="i-alert"><path d="M8 2.4 14.6 13.2H1.4z"/><path d="M8 6.4v3M8 11.4h.01"/></g>
+</defs></svg>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #F7F7F9; overflow: hidden;">
+
+  <aside style="width: 232px; flex: 0 0 232px; background: #FFFFFF; border-right: 1px solid #E4E4E9; display: flex; flex-direction: column;">
+    <div style="height: 56px; flex: 0 0 56px; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 10px; padding: 0 14px;">
+      <div style="width: 26px; height: 26px; border-radius: 6px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg class="ic" width="15" height="15" viewBox="0 0 16 16" style="stroke: #FFFFFF"><use href="#i-graph"></use></svg>
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: -0.01em;">Cust360Auto</div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; color: #9A9AA5;">v5 &middot; draft</div>
+      </div>
+      <svg class="ic" width="13" height="13" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-chev-d"></use></svg>
+    </div>
+    <nav style="flex: 1; min-height: 0; overflow-y: auto; padding: 14px 10px; display: flex; flex-direction: column; gap: 15px;">
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">WORKSPACE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-grid"></use></svg><span style="flex: 1">Overview</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-db"></use></svg><span style="flex: 1">Data sources</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-doc"></use></svg><span style="flex: 1">Documents</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">EXTRACTION</div>
+        <div class="nav on" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; font-weight: 600; color: {{accent}}; background: #EEEDFB;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-play"></use></svg><span style="flex: 1">Runs</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #E4EFF8; color: #1F6FB2;">2</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-inbox"></use></svg><span style="flex: 1">Review queue</span><span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 9px; background: #FAEFD9; color: #96620A;">3</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #9A9AA5; padding: 0 8px 6px;">KNOWLEDGE</div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-hier"></use></svg><span style="flex: 1">Ontology</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-help"></use></svg><span style="flex: 1">Competency questions</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-graph"></use></svg><span style="flex: 1">Knowledge graph</span></div>
+        <div class="nav" style="display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 8px; border-radius: 5px; font-size: 12.5px; color: #4A4A57;"><svg class="ic" width="15" height="15" viewBox="0 0 16 16"><use href="#i-shield"></use></svg><span style="flex: 1">Validation</span></div>
+      </div>
+    </nav>
+    <div style="border-top: 1px solid #E4E4E9; padding: 10px 14px; display: flex; align-items: center; gap: 9px;">
+      <div style="width: 24px; height: 24px; border-radius: 50%; background: #E9E9EE; color: #4A4A57; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;">AS</div>
+      <span style="flex: 1; font-size: 12px; color: #4A4A57;">a.sikarwar</span>
+      <svg class="ic" width="14" height="14" viewBox="0 0 16 16" style="color: #9A9AA5"><use href="#i-settings"></use></svg>
+    </div>
+  </aside>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+    <header style="height: 56px; flex: 0 0 56px; background: #FFFFFF; border-bottom: 1px solid #E4E4E9; display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+      <div style="display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #9A9AA5;">
+        <span>Cust360Auto</span>
+        <svg class="ic" width="12" height="12" viewBox="0 0 16 16"><use href="#i-chev-r"></use></svg>
+        <span style="color: #16161D; font-weight: 600;">Runs</span>
+      </div>
+      <div style="flex: 1"></div>
+      <div style="display: flex; align-items: center; gap: 7px; height: 28px; padding: 0 11px; border: 1px solid #E4E4E9; border-radius: 14px; background: #FBFBFC; font-size: 12px; color: #4A4A57;">
+        <span class="breathe" style="width: 6px; height: 6px; border-radius: 50%; background: #1F6FB2;"></span>2 runs active
+      </div>
+      <button class="btn" style="height: 30px; padding: 0 12px; border-radius: 6px; border: 1px solid {{accent}}; background: {{accent}}; color: #FFFFFF; font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+        <svg class="ic" width="14" height="14" viewBox="0 0 16 16"><use href="#i-plus"></use></svg>New extraction
+      </button>
+    </header>
+
+    <main style="flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 22px 26px 22px;">
+
+      <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+        <div style="flex: 1;">
+          <h1 style="margin: 0 0 3px; font-size: 18px; font-weight: 600; letter-spacing: -0.015em;">Runs</h1>
+          <p style="margin: 0; font-size: 12.5px; color: #6E6E7A;">Extractions run in the background and hold at their review gates. Several can be in flight at once.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+        <div style="display: flex; gap: 3px; padding: 3px; background: #EFEFF2; border-radius: 7px;">
+          <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+            <button class="pill" onClick="{{f.pick}}" style="height: 26px; display: flex; align-items: center; gap: 6px; padding: 0 11px; border: none; border-radius: 5px; font-size: 12px; font-weight: {{f.weight}}; background: {{f.bg}}; color: {{f.fg}}; box-shadow: {{f.shadow}};">
+              {{f.label}}<span style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 10.5px; color: {{f.countFg}};">{{f.count}}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="flex: 1"></div>
+        <span style="font-size: 12px; color: #83838F;">Showing {{shown}}</span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; background: #FFFFFF; border: 1px solid #E4E4E9; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 168px 176px 1fr 132px 148px; align-items: center; height: 34px; padding: 0 16px; border-bottom: 1px solid #E4E4E9; background: #FBFBFC; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; color: #83838F;">
+          <div>RUN</div><div>SOURCES</div><div>PIPELINE</div><div>STATUS</div><div></div>
+        </div>
+        <div style="flex: 1; min-height: 0; overflow-y: auto;">
+          <sc-for list="{{runs}}" as="r" hint-placeholder-count="8">
+            <div class="runrow" style="display: grid; grid-template-columns: 168px 176px 1fr 132px 148px; align-items: center; min-height: 72px; padding: 0 16px; border-bottom: 1px solid #F2F2F5; border-left: 3px solid {{r.edge}}; cursor: pointer;">
+              <div>
+                <div style="font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace; font-size: 13px; font-weight: 500;">{{r.id}}</div>
+                <div style="font-size: 11px; color: #9A9AA5; margin-top: 2px;">{{r.when}}</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; color: #4A4A57;">{{r.sources}}</div>
+                <div style="font-size: 11px; color: #9A9AA5; margin-top: 2px;">{{r.strategy}}</div>
+              </div>
+              <div style="padding-right: 22px;">
+                <div style="display: flex; align-items: center; height: 14px;">
+                  <sc-for list="{{r.track}}" as="t" hint-placeholder-count="5">
+                    <div style="display: flex; align-items: center; flex: {{t.flex}}; min-width: 0;">
+                      <span style="flex: 1; height: 2px; border-radius: 1px; background: {{t.line}};"></span>
+                      <span class="{{t.cls}}" style="width: {{t.size}}; height: {{t.size}}; border-radius: 50%; background: {{t.fill}}; border: 2px solid {{t.ring}}; flex: none;"></span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-size: 11.5px; color: {{r.stageFg}}; margin-top: 6px; font-weight: {{r.stageWeight}};">{{r.stageLabel}}</div>
+              </div>
+              <div>
+                <span style="height: 21px; display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; border-radius: 5px; background: {{r.chipBg}}; color: {{r.chipFg}}; font-size: 11px; font-weight: 600; letter-spacing: 0.02em;">
+                  <sc-if value="{{r.spinning}}" hint-placeholder-val="{{ false }}">
+                    <svg class="ic spin" width="11" height="11" viewBox="0 0 16 16" style="stroke-width: 1.8"><use href="#i-refresh"></use></svg>
+                  </sc-if>
+                  <sc-if value="{{r.alerting}}" hint-placeholder-val="{{ false }}">
+                    <svg class="ic" width="11" height="11" viewBox="0 0 16 16" style="stroke-width: 1.6"><use href="#i-alert"></use></svg>
+                  </sc-if>
+                  {{r.status}}
+                </span>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <button class="btn" style="height: 29px; padding: 0 11px; border-radius: 6px; border: 1px solid {{r.btnBorder}}; background: {{r.btnBg}}; color: {{r.btnFg}}; font-size: 12px; font-weight: {{r.btnWeight}}; display: flex; align-items: center; gap: 6px;">
+                  {{r.action}}
+                  <sc-if value="{{r.primary}}" hint-placeholder-val="{{ true }}">
+                    <svg class="ic" width="13" height="13" viewBox="0 0 16 16"><use href="#i-arrow-r"></use></svg>
+                  </sc-if>
+                </button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#4B45C6","options":["#4B45C6","#1F6FB2","#1B7A4C","#16161D"],"section":"Theme"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'All' };
+  }
+
+  data() {
+    return [
+      { id: 'R-2418', when: '12 min ago', sources: '8 tables, 2 docs', strategy: 'Blended', stage: 1, status: 'Needs review', stageLabel: 'Waiting at Concepts & relationships', action: 'Review' },
+      { id: 'R-2417', when: '4 min ago', sources: '3 tables', strategy: 'Schema-first', stage: 0, status: 'Running', stageLabel: 'Extracting from meter_reading (62%)', action: 'Watch' },
+      { id: 'R-2416', when: '1 hr ago', sources: '5 docs', strategy: 'Document-first', stage: 2, status: 'Needs review', stageLabel: 'Waiting at Competency questions', action: 'Review' },
+      { id: 'R-2415', when: '26 min ago', sources: '6 tables, 1 doc', strategy: 'Blended', stage: 3, status: 'Running', stageLabel: 'Building ontology, resolving 4 conflicts', action: 'Watch' },
+      { id: 'R-2414', when: '3 hr ago', sources: '4 tables', strategy: 'Schema-first', stage: 1, status: 'Needs review', stageLabel: 'Waiting at Concepts & relationships', action: 'Review' },
+      { id: 'R-2413', when: 'Yesterday, 17:40', sources: '10 tables, 2 docs', strategy: 'Blended', stage: 5, status: 'Complete', stageLabel: 'Graph built, 12.4k nodes', action: 'Open graph' },
+      { id: 'R-2412', when: 'Yesterday, 14:02', sources: '2 tables', strategy: 'Schema-first', stage: 0, status: 'Failed', stageLabel: 'Catalog credentials expired at Extract', action: 'View log' },
+      { id: 'R-2411', when: '24 Aug, 09:11', sources: '7 tables', strategy: 'Blended', stage: 5, status: 'Complete', stageLabel: 'Graph built, 8.1k nodes', action: 'Open graph' }
+    ];
+  }
+
+  tone(status) {
+    if (status === 'Needs review') return { bg: '#FAEFD9', fg: '#96620A', edge: '#E0A93C' };
+    if (status === 'Running') return { bg: '#E4EFF8', fg: '#1F6FB2', edge: '#1F6FB2' };
+    if (status === 'Failed') return { bg: '#FAEAE9', fg: '#B23330', edge: '#B23330' };
+    return { bg: '#E4F3EA', fg: '#1B7A4C', edge: 'transparent' };
+  }
+
+  renderVals() {
+    var self = this;
+    var accent = this.props.accent || '#4B45C6';
+    var all = this.data();
+    var f = this.state.filter;
+
+    var counts = {
+      All: all.length,
+      'Needs review': all.filter(function (r) { return r.status === 'Needs review'; }).length,
+      Running: all.filter(function (r) { return r.status === 'Running'; }).length,
+      Complete: all.filter(function (r) { return r.status === 'Complete'; }).length,
+      Failed: all.filter(function (r) { return r.status === 'Failed'; }).length
+    };
+
+    var visible = all.filter(function (r) { return f === 'All' || r.status === f; });
+
+    return {
+      accent: accent,
+      shown: visible.length + ' of ' + all.length,
+      filters: ['All', 'Needs review', 'Running', 'Complete', 'Failed'].map(function (label) {
+        var on = f === label;
+        return {
+          label: label, count: counts[label],
+          bg: on ? '#FFFFFF' : 'transparent',
+          fg: on ? '#16161D' : '#6E6E7A',
+          countFg: on ? '#9A9AA5' : '#A8A8B2',
+          weight: on ? '600' : '500',
+          shadow: on ? '0 1px 2px rgba(22,22,29,.08)' : 'none',
+          pick: function () { self.setState({ filter: label }); }
+        };
+      }),
+      runs: visible.map(function (r) {
+        var t = self.tone(r.status);
+        var failed = r.status === 'Failed';
+        var running = r.status === 'Running';
+        var review = r.status === 'Needs review';
+
+        var track = [];
+        for (var i = 0; i < 5; i++) {
+          var done = i < r.stage;
+          var here = i === r.stage && r.stage < 5;
+          var fill = done ? '#1B7A4C' : (here ? (failed ? '#B23330' : t.fg) : '#FFFFFF');
+          var ring = done ? '#1B7A4C' : (here ? (failed ? '#B23330' : t.fg) : '#DCDCE3');
+          if (r.stage >= 5) { fill = '#1B7A4C'; ring = '#1B7A4C'; }
+          track.push({
+            flex: i === 0 ? '0 0 auto' : '1 1 auto',
+            line: i === 0 ? 'transparent' : (i <= r.stage ? '#1B7A4C' : '#EBEBEF'),
+            size: here ? '11px' : '9px',
+            fill: fill,
+            ring: ring,
+            cls: here && running ? 'breathe' : ''
+          });
+        }
+
+        return {
+          id: r.id, when: r.when, sources: r.sources, strategy: r.strategy,
+          status: r.status, stageLabel: r.stageLabel, action: r.action,
+          track: track,
+          edge: t.edge,
+          chipBg: t.bg, chipFg: t.fg,
+          spinning: running,
+          alerting: failed,
+          stageFg: review ? '#96620A' : (failed ? '#B23330' : '#6E6E7A'),
+          stageWeight: review ? '600' : '400',
+          primary: review,
+          btnBorder: review ? accent : '#D2D2DA',
+          btnBg: review ? accent : '#FFFFFF',
+          btnFg: review ? '#FFFFFF' : '#16161D',
+          btnWeight: review ? '600' : '500'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: var(--fs-body);
+  color: var(--text-2);
+}
+
+.track {
+  width: 30px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+  padding: 2px;
+  display: inline-flex;
+  justify-content: flex-start;
+  flex: none;
+  transition: background var(--t-fast);
+}
+
+.lg {
+  width: 34px;
+  height: 20px;
+}
+
+.on {
+  background: var(--accent);
+  justify-content: flex-end;
+}
+
+.knob {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-knob);
+}
+
+.lg .knob {
+  width: 16px;
+  height: 16px;
+}
+
+.wrap:disabled {
+  cursor: not-allowed;
+}

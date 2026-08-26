@@ -1,0 +1,146 @@
+.item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 13px 16px 13px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border-soft);
+  border-left: 2px solid transparent;
+  background: var(--bg-panel);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #f7f7fa;
+}
+
+.selected {
+  background: var(--bg-selected);
+  border-left-color: var(--accent);
+}
+
+.selected:hover {
+  background: var(--bg-selected);
+}
+
+.number {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-muted);
+  color: var(--text-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin-top: 1px;
+}
+
+.selected .number {
+  background: var(--bg-panel);
+  color: var(--accent);
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.text {
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  font-weight: 500;
+  text-wrap: pretty;
+}
+
+.dropped {
+  color: var(--text-disabled);
+  text-decoration: line-through;
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.mark {
+  flex: none;
+  margin-top: 3px;
+}
+
+.markKept {
+  color: var(--ok);
+}
+
+.markDropped {
+  color: var(--danger-soft);
+}
+
+/* ---- detail ---- */
+.eyebrow {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  color: var(--text-5);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+}
+
+.question {
+  font-size: 17px;
+  line-height: var(--lh-tight);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  max-width: 640px;
+  text-wrap: pretty;
+}
+
+.origin {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+.requires {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-muted);
+  margin-top: 9px;
+}
+
+.requirement {
+  background: var(--bg-panel);
+  display: grid;
+  grid-template-columns: 22px 1fr 108px 128px;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 13px;
+}
+
+.requirementName {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.requirementKind {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
