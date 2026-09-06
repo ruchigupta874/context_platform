@@ -130,9 +130,7 @@ export default function Overview() {
             title="Overview"
             subtitle="Connect the tables and documents this workspace should model. Nothing is extracted until you start a run."
           />
-          <Panel
-            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
+          <Panel center>
             <EmptyState
               icon="database"
               title="No sources connected yet"

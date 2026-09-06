@@ -112,7 +112,7 @@ export function LinkChips({ items, onSelect }) {
           className={styles.linkChip}
           onClick={() => onSelect(item.id)}
         >
-          <Icon name="link" size={12} style={{ color: 'var(--text-5)' }} />
+          <Icon name="link" size={12} className={styles.chipIcon} />
           {item.label}
         </button>
       ))}

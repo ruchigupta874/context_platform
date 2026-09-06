@@ -80,3 +80,8 @@
   font-size: var(--fs-caption);
   color: var(--text-5);
 }
+
+/* Cancel action: destructive, but not a filled danger button. */
+.cancelAction {
+  color: var(--danger);
+}

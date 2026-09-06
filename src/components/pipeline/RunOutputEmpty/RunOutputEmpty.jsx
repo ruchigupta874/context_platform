@@ -24,7 +24,7 @@ export default function RunOutputEmpty({ artifact, run, runId }) {
 
   return (
     <PageBody>
-      <Panel style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Panel center>
         <EmptyState
           icon={artifact === 'Ontology' ? 'hierarchy' : 'graph'}
           title={title}

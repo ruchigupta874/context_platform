@@ -193,7 +193,7 @@ export default function ReviewQuestions() {
                       <Icon
                         name={requirement.kind === 'class' ? 'node' : 'link'}
                         size={14}
-                        style={{ color: 'var(--text-5)' }}
+                        className={styles.mutedIcon}
                       />
                       <span className={styles.requirementName}>{requirement.name}</span>
                       <span className={styles.requirementKind}>{requirement.kind}</span>
@@ -210,9 +210,7 @@ export default function ReviewQuestions() {
               <SectionLabel note="runs against the knowledge graph once it is built">
                 Generated query
               </SectionLabel>
-              <CodeBlock className="mono" style={{ marginTop: 9 }}>
-                {question.query}
-              </CodeBlock>
+              <CodeBlock className={`mono ${styles.labelledCode}`}>{question.query}</CodeBlock>
             </div>
           </GateDetailBody>
         </GateDetail>

@@ -125,7 +125,7 @@ export default function KnowledgeGraph() {
         <div className={styles.controlBlock}>
           <div>
             <SectionLabel>Start from</SectionLabel>
-            <div style={{ marginTop: 7 }}>
+            <div className={styles.labelledField}>
               <SearchInput
                 value={query}
                 onChange={setQuery}
@@ -379,7 +379,7 @@ export default function KnowledgeGraph() {
                   <Icon
                     name={relationship.outgoing ? 'arrowRight' : 'arrowLeft'}
                     size={12}
-                    style={{ color: 'var(--text-disabled)' }}
+                    className={styles.mutedIcon}
                   />
                   <span className={styles.relPredicate}>{relationship.predicate}</span>
                   <span className={styles.relOther}>{relationship.other}</span>

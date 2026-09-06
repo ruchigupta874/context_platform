@@ -266,3 +266,12 @@
   max-width: 380px;
   text-wrap: pretty;
 }
+
+/* Fills the remaining height of a page body and centres its content. Used by
+   every 'this run has no output yet' empty state. */
+.panelCenter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

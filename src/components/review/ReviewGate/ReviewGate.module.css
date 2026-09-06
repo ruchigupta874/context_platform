@@ -230,3 +230,8 @@
   background: var(--warn-strong);
   flex: none;
 }
+
+/* Muted leading icon inside a chip row. */
+.chipIcon {
+  color: var(--text-5);
+}

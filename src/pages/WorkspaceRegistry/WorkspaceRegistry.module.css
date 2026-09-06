@@ -91,6 +91,9 @@
 
 /* ---- featured ---- */
 .featured {
+  /* The featured panel is a card by class but not clickable, unlike the grid
+     cards below it, so it opts out of the card cursor. */
+  cursor: default;
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -332,4 +335,9 @@
 
 .newCardHint {
   font-size: var(--fs-caption);
+}
+
+/* Dot separator between the two card footer figures. */
+.cardFootDot {
+  color: var(--border-strong);
 }

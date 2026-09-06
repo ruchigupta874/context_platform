@@ -193,3 +193,15 @@
   font-size: var(--fs-caption);
   color: var(--text-4);
 }
+
+.mutedIcon {
+  color: var(--text-5);
+}
+
+.pickerIcon {
+  color: var(--text-3);
+}
+
+.docIcon {
+  color: var(--text-4);
+}

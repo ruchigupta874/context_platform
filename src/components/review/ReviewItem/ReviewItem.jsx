@@ -118,7 +118,7 @@ export function TripleDisplay({ subject, predicate, object, cardinality }) {
         <span className={styles.triplePredicate}>{predicate}</span>
         <span className={styles.tripleArrow}>
           <span className={styles.tripleLine} />
-          <Icon name="arrowRight" size={15} strokeWidth={1.6} style={{ marginLeft: -5 }} />
+          <Icon name="arrowRight" size={15} strokeWidth={1.6} />
         </span>
         <span className={styles.tripleCardinality}>{cardinality}</span>
       </div>

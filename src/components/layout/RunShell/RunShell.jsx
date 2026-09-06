@@ -72,9 +72,7 @@ export default function RunShell() {
           ]}
         />
         <PageBody>
-          <Panel
-            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
+          <Panel center>
             <EmptyState
               icon="alert"
               title={`${runId} is not a run in this workspace`}
@@ -141,7 +139,7 @@ export default function RunShell() {
             <Button variant="secondary" iconLeft="pause">
               Hold
             </Button>
-            <Button variant="secondary" iconLeft="close" style={{ color: 'var(--danger)' }}>
+            <Button variant="secondary" iconLeft="close" className={styles.cancelAction}>
               Cancel run
             </Button>
           </>

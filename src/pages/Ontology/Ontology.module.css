@@ -358,3 +358,29 @@
   padding-bottom: 16px;
   margin-top: 10px;
 }
+
+/* Code block sitting under a SectionLabel. */
+.labelledCode {
+  margin-top: 8px;
+}
+
+/* Node glyph: accent when the class is selected, otherwise a quiet outline. */
+.nodeIcon {
+  color: var(--border-input);
+}
+
+.nodeIconActive {
+  color: var(--accent);
+}
+
+.predicate {
+  color: var(--text-5);
+}
+
+.legendSwatchOk {
+  background: var(--ok);
+}
+
+.legendSwatchWarn {
+  background: var(--warn-strong);
+}

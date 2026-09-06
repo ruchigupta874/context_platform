@@ -125,9 +125,9 @@ export default function Sources() {
           <div className={styles.panel}>
             <div className={styles.controls}>
               <div className={styles.catalogPicker}>
-                <Icon name="database" size={14} style={{ color: 'var(--text-3)' }} />
+                <Icon name="database" size={14} className={styles.pickerIcon} />
                 {CATALOG}
-                <Icon name="chevronDown" size={13} style={{ color: 'var(--text-5)' }} />
+                <Icon name="chevronDown" size={13} className={styles.mutedIcon} />
               </div>
               <SearchInput
                 value={query}
@@ -213,7 +213,7 @@ export default function Sources() {
                     flagged={Boolean(doc.drift)}
                   >
                     <div className={styles.docName}>
-                      <Icon name="doc" size={15} style={{ color: 'var(--text-4)' }} />
+                      <Icon name="doc" size={15} className={styles.docIcon} />
                       <span className={styles.docNameText}>{doc.name}</span>
                     </div>
                     <div className={styles.num}>{doc.kind}</div>

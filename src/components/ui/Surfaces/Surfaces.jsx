@@ -3,12 +3,24 @@ import Icon from '@/components/ui/Icon';
 import { ICON_NAMES } from '@/components/ui/Icon/paths';
 import styles from './Surfaces.module.css';
 
-/** Bordered white card. `flush` uses the tighter radius used inside page bodies. */
-export function Panel({ children, pad = false, flush = false, className = '', style }) {
+/**
+ * Bordered white card. `flush` uses the tighter radius used inside page bodies;
+ * `center` fills the remaining height and centres its content, which is what an
+ * empty state inside a page body needs.
+ */
+export function Panel({
+  children,
+  pad = false,
+  flush = false,
+  center = false,
+  className = '',
+  style,
+}) {
   const classes = [
     styles.panel,
     flush ? styles.panelFlush : '',
     pad ? styles.panelPad : '',
+    center ? styles.panelCenter : '',
     className,
   ]
     .filter(Boolean)
@@ -132,6 +144,7 @@ Panel.propTypes = {
   children: PropTypes.node,
   pad: PropTypes.bool,
   flush: PropTypes.bool,
+  center: PropTypes.bool,
   className: PropTypes.string,
   style: PropTypes.object,
 };

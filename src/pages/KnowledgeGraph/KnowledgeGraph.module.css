@@ -427,3 +427,12 @@
   text-align: right;
   font-family: var(--font-mono);
 }
+
+/* Field sitting under a SectionLabel. */
+.labelledField {
+  margin-top: 8px;
+}
+
+.mutedIcon {
+  color: var(--text-disabled);
+}

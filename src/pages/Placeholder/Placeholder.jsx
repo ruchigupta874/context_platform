@@ -14,7 +14,7 @@ export default function Placeholder({ title, icon = 'grid', hint }) {
     <>
       <TopBar crumbs={[{ label: workspace.name }, { label: title }]} />
       <PageBody>
-        <Panel style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Panel center>
           <EmptyState
             icon={icon}
             title={`${title} is not built yet`}

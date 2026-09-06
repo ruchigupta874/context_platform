@@ -99,9 +99,11 @@ export default function NewRun() {
                     <Icon
                       name={source.kind === SOURCE_KIND.table ? 'database' : 'doc'}
                       size={13}
-                      style={{
-                        color: source.kind === SOURCE_KIND.table ? 'var(--text-3)' : 'var(--warn)',
-                      }}
+                      className={
+                        source.kind === SOURCE_KIND.table
+                          ? styles.chipIconTable
+                          : styles.chipIconDocument
+                      }
                     />
                     {source.label}
                     <button
@@ -161,7 +163,7 @@ export default function NewRun() {
             </Panel>
 
             <Panel className={styles.section}>
-              <div className={styles.sectionHead} style={{ marginBottom: 4 }}>
+              <div className={`${styles.sectionHead} ${styles.sectionHeadTight}`}>
                 <span className={styles.step}>3</span>
                 <span className={styles.sectionTitle}>Domain guidance</span>
                 <span className={styles.optional}>optional</span>
@@ -180,13 +182,13 @@ export default function NewRun() {
                 <span>Seed from existing ontology</span>
                 <span className={styles.seedPicker}>
                   ContactCentre v7
-                  <Icon name="chevronDown" size={12} style={{ color: 'var(--text-5)' }} />
+                  <Icon name="chevronDown" size={12} className={styles.mutedIcon} />
                 </span>
               </div>
             </Panel>
 
             <Panel className={styles.section}>
-              <div className={styles.sectionHead} style={{ marginBottom: 4 }}>
+              <div className={`${styles.sectionHead} ${styles.sectionHeadTight}`}>
                 <span className={styles.step}>4</span>
                 <span className={styles.sectionTitle}>Review gates</span>
               </div>

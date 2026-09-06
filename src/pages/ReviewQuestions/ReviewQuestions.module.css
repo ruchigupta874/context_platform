@@ -144,3 +144,12 @@
   font-size: var(--fs-caption);
   color: var(--text-4);
 }
+
+/* Code block sitting under a SectionLabel. */
+.labelledCode {
+  margin-top: 8px;
+}
+
+.mutedIcon {
+  color: var(--text-5);
+}

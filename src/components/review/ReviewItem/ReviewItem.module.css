@@ -247,3 +247,9 @@
   font-size: var(--fs-tiny);
   color: var(--text-4);
 }
+
+/* Optical nudge, not a layout gap: pulls the arrowhead onto the end of the
+   line so the two read as one arrow. Stays off the spacing scale on purpose. */
+.tripleArrow svg {
+  margin-left: -5px;
+}

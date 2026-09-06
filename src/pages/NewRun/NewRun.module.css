@@ -341,3 +341,22 @@
   text-wrap: pretty;
   margin-top: -4px;
 }
+
+/* Section heading with no subtitle beneath it, so it sits tighter to its body. */
+.sectionHeadTight {
+  margin-bottom: 4px;
+}
+
+.mutedIcon {
+  color: var(--text-5);
+}
+
+/* Source chip glyph: tables read as ordinary catalogue rows, documents are
+   flagged because they are the ones that still need parsing. */
+.chipIconTable {
+  color: var(--text-3);
+}
+
+.chipIconDocument {
+  color: var(--warn);
+}

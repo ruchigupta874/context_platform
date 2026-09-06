@@ -152,7 +152,7 @@ export default function Ontology() {
                 <Icon
                   name="node"
                   size={13}
-                  style={{ color: active ? 'var(--accent)' : 'var(--border-input)' }}
+                  className={active ? styles.nodeIconActive : styles.nodeIcon}
                 />
                 <span
                   className={[
@@ -183,7 +183,7 @@ export default function Ontology() {
           </div>
           <div className={styles.uri}>{conceptIri(workspaceId, detail.name)}</div>
           <div className={styles.parentRow}>
-            <span style={{ color: 'var(--text-5)' }}>rdfs:subClassOf</span>
+            <span className={styles.predicate}>rdfs:subClassOf</span>
             <span className={styles.parentValue}>{detail.parent}</span>
           </div>
           <p className={styles.definition}>{detail.definition}</p>
@@ -266,7 +266,7 @@ export default function Ontology() {
             <SectionLabel note="how instances are materialised from the catalog">
               R2RML mapping
             </SectionLabel>
-            <CodeBlock style={{ marginTop: 8 }}>{detail.mapping}</CodeBlock>
+            <CodeBlock className={styles.labelledCode}>{detail.mapping}</CodeBlock>
           </div>
         </div>
       </div>
@@ -301,11 +301,11 @@ export default function Ontology() {
           />
           <div className={styles.legend}>
             <span className={styles.legendItem}>
-              <span className={styles.legendSwatch} style={{ background: 'var(--ok)' }} />
+              <span className={`${styles.legendSwatch} ${styles.legendSwatchOk}`} />
               {QUESTION_COVERAGE.answerable} answerable
             </span>
             <span className={styles.legendItem}>
-              <span className={styles.legendSwatch} style={{ background: 'var(--warn-strong)' }} />
+              <span className={`${styles.legendSwatch} ${styles.legendSwatchWarn}`} />
               {QUESTION_COVERAGE.partial} partial
             </span>
           </div>

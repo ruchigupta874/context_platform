@@ -57,7 +57,7 @@ export default function WorkspaceRegistry() {
             <p className={styles.subtitle}>{REGISTRY_COPY.subtitle}</p>
           </div>
 
-          <section className={`${styles.featured} ${styles.card}`} style={{ cursor: 'default' }}>
+          <section className={`${styles.featured} ${styles.card}`}>
             <div className={styles.featuredTop}>
               <div className={styles.featuredBody}>
                 <div className={styles.eyebrow}>
@@ -118,7 +118,7 @@ export default function WorkspaceRegistry() {
                 <p className={styles.cardBlurb}>{workspace.blurb}</p>
                 <div className={styles.cardFoot}>
                   <span className={styles.cardFootStrong}>{workspace.concepts}</span> concepts
-                  <span style={{ color: 'var(--border-strong)' }}>·</span>
+                  <span className={styles.cardFootDot}>·</span>
                   <span className={styles.cardFootStrong}>{workspace.relations}</span> relations
                   <span className={styles.cardFootSpacer} />
                 </div>
