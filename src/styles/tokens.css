@@ -115,6 +115,17 @@
   --shadow-pop: 0 10px 28px rgba(22, 22, 29, 0.12), 0 1px 3px rgba(22, 22, 29, 0.08);
   --shadow-knob: 0 1px 2px rgba(22, 22, 29, 0.2);
 
+  /* ---- knowledge graph ---- */
+  /* The SVG canvas cannot use the text/border ramps directly: edges sit behind
+     nodes and need their own weighting, and a node outline has to read against
+     the node fill rather than the page. */
+  --graph-edge: #dcdce3;
+  --graph-edge-primary: #b4b4be;
+  --graph-node-stroke: #ffffff;
+  --graph-node-stroke-selected: #16161d;
+  --graph-label: #6e6e7a;
+  --graph-label-selected: #16161d;
+
   /* ---- motion ---- */
   /* Decelerating curve: quick to start, settles softly. No overshoot — this is
      an operations tool, and bouncing controls read as noise at this density. */

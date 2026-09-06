@@ -18,6 +18,7 @@ import { GRAPH_TOTALS, BUILT_BY_RUN } from '@/mocks/graph';
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { buildPath } from '@/routes/paths';
 import { joinMeta, pluralize } from '@/utils/format';
+import { SOURCE_KIND } from '@/config/constants/sources';
 import styles from './Overview.module.css';
 
 const STAGE_LABEL = Object.fromEntries(PIPELINE_STAGES.map((stage) => [stage.id, stage.label]));
@@ -316,7 +317,10 @@ export default function Overview() {
                       <li key={`${source.kind}-${source.id}`}>
                         <div className={styles.driftRow}>
                           <span className={styles.rowIcon}>
-                            <Icon name={source.kind === 'table' ? 'database' : 'doc'} size={14} />
+                            <Icon
+                              name={source.kind === SOURCE_KIND.table ? 'database' : 'doc'}
+                              size={14}
+                            />
                           </span>
                           <span className={styles.driftName}>{source.name}</span>
                           <Chip tone="warn">{source.drift}</Chip>

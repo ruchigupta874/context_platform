@@ -20,12 +20,14 @@ export function sourceStatus(source, triggeredIds) {
  * indexed has nothing to read yet.
  */
 export function canExtract(source, triggeredIds) {
-  return sourceStatus(source, triggeredIds).id !== 'triggered' && source.indexed !== false;
+  return (
+    sourceStatus(source, triggeredIds).id !== SOURCE_STATE.triggered.id && source.indexed !== false
+  );
 }
 
 /** Label on the row action — re-running an already-extracted source reads differently. */
 export function extractLabel(source, triggeredIds) {
   const state = sourceStatus(source, triggeredIds);
-  if (state.id === 'triggered') return 'Triggered';
+  if (state.id === SOURCE_STATE.triggered.id) return 'Triggered';
   return source.lastRun ? 'Re-extract' : 'Run extraction';
 }

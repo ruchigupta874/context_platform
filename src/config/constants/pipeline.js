@@ -81,3 +81,15 @@ export function stageRoute(stage, run) {
   if (stage.id === 'graph' && run?.output) return 'runGraph';
   return null;
 }
+
+/**
+ * Which of a run's screens is open. Stage ids double as view ids, with `index`
+ * standing for the run's own detail page.
+ */
+export const RUN_VIEW = {
+  index: 'index',
+  graph: 'graph',
+  ontology: 'ontology',
+  concepts: 'concepts',
+  questions: 'questions',
+};

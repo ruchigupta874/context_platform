@@ -19,6 +19,7 @@ import {
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { buildPath } from '@/routes/paths';
 import { pluralize } from '@/utils/format';
+import { SOURCE_KIND } from '@/config/constants/sources';
 import styles from './NewRun.module.css';
 
 const DEFAULT_GUIDANCE =
@@ -47,7 +48,7 @@ export default function NewRun() {
     return [...tables, ...docs].filter((source) => !removed.includes(source.id));
   }, [removed]);
 
-  const tableCount = sources.filter((s) => s.kind === 'table').length;
+  const tableCount = sources.filter((s) => s.kind === SOURCE_KIND.table).length;
   const docCount = sources.length - tableCount;
   const minutes = estimateMinutes({ tableCount, docCount, strategy });
 
@@ -96,9 +97,11 @@ export default function NewRun() {
                 {sources.map((source) => (
                   <span key={source.id} className={styles.chip}>
                     <Icon
-                      name={source.kind === 'table' ? 'database' : 'doc'}
+                      name={source.kind === SOURCE_KIND.table ? 'database' : 'doc'}
                       size={13}
-                      style={{ color: source.kind === 'table' ? 'var(--text-3)' : 'var(--warn)' }}
+                      style={{
+                        color: source.kind === SOURCE_KIND.table ? 'var(--text-3)' : 'var(--warn)',
+                      }}
                     />
                     {source.label}
                     <button

@@ -240,7 +240,13 @@ export default function KnowledgeGraph() {
                     y1={from.y}
                     x2={to.x}
                     y2={to.y}
-                    stroke={hot ? 'var(--accent)' : edge.primary ? '#b4b4be' : '#dcdce3'}
+                    stroke={
+                      hot
+                        ? 'var(--accent)'
+                        : edge.primary
+                          ? 'var(--graph-edge-primary)'
+                          : 'var(--graph-edge)'
+                    }
                     strokeWidth={hot ? 1.8 : edge.primary ? 1.4 : 1}
                     strokeDasharray={edge.inferred ? '4 4' : undefined}
                   />
@@ -293,7 +299,11 @@ export default function KnowledgeGraph() {
                       cy={node.y}
                       r={node.r}
                       fill={ENTITY_COLORS[node.type]}
-                      stroke={isSelected ? '#16161d' : '#ffffff'}
+                      stroke={
+                        isSelected
+                          ? 'var(--graph-node-stroke-selected)'
+                          : 'var(--graph-node-stroke)'
+                      }
                       strokeWidth={isSelected ? 2 : 1.6}
                     />
                     {showLabels && (
@@ -304,7 +314,7 @@ export default function KnowledgeGraph() {
                         fontFamily="var(--font-sans)"
                         fontSize="9.5"
                         fontWeight={node.root || isSelected ? 600 : 400}
-                        fill={isSelected ? '#16161d' : '#6e6e7a'}
+                        fill={isSelected ? 'var(--graph-label-selected)' : 'var(--graph-label)'}
                         opacity={dim ? 0.35 : 1}
                       >
                         {node.label}

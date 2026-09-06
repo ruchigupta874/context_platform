@@ -40,3 +40,9 @@ export const DOCUMENT_COLUMNS = [
 
 export const UPLOAD_HINT =
   'PDF, DOCX, MD, TXT, XLSX · up to 50 MB each · data dictionaries, policy docs, schema notes';
+
+/** What a source is. Drives the row icon and which tab a source belongs to. */
+export const SOURCE_KIND = {
+  table: 'table',
+  document: 'document',
+};

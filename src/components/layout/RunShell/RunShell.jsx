@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import Chip from '@/components/ui/Chip';
 import { EmptyState, Panel } from '@/components/ui/Surfaces';
 import StageStepper from '@/components/pipeline/StageStepper';
-import { STAGE_STATE, describeStages, stageRoute } from '@/config/constants/pipeline';
+import { RUN_VIEW, STAGE_STATE, describeStages, stageRoute } from '@/config/constants/pipeline';
 import { RUN_STATUS, RUN_STATUS_META } from '@/config/constants/runs';
 import { RUN_DETAIL, findRun } from '@/mocks/runs';
 import { useWorkspace } from '@/hooks/useWorkspace';
@@ -15,19 +15,19 @@ import { joinMeta } from '@/utils/format';
 import styles from './RunShell.module.css';
 
 const VIEW_LABEL = {
-  graph: 'Knowledge graph',
-  ontology: 'Ontology',
-  concepts: 'Concepts & relationships',
-  questions: 'Competency questions',
+  [RUN_VIEW.graph]: 'Knowledge graph',
+  [RUN_VIEW.ontology]: 'Ontology',
+  [RUN_VIEW.concepts]: 'Concepts & relationships',
+  [RUN_VIEW.questions]: 'Competency questions',
 };
 
 /** Which of the run's screens the path is on. Stage ids double as view ids. */
 function viewOf(pathname) {
-  if (pathname.endsWith('/review/concepts')) return 'concepts';
-  if (pathname.endsWith('/review/questions')) return 'questions';
-  if (pathname.endsWith('/ontology')) return 'ontology';
-  if (pathname.endsWith('/graph')) return 'graph';
-  return 'index';
+  if (pathname.endsWith('/review/concepts')) return RUN_VIEW.concepts;
+  if (pathname.endsWith('/review/questions')) return RUN_VIEW.questions;
+  if (pathname.endsWith('/ontology')) return RUN_VIEW.ontology;
+  if (pathname.endsWith('/graph')) return RUN_VIEW.graph;
+  return RUN_VIEW.index;
 }
 
 /**
@@ -117,9 +117,9 @@ export default function RunShell() {
           {
             label: runId,
             mono: true,
-            to: view === 'index' ? undefined : buildPath.runDetail(workspaceId, runId),
+            to: view === RUN_VIEW.index ? undefined : buildPath.runDetail(workspaceId, runId),
           },
-          ...(view === 'index' ? [] : [{ label: VIEW_LABEL[view] }]),
+          ...(view === RUN_VIEW.index ? [] : [{ label: VIEW_LABEL[view] }]),
         ]}
         note={topBarNote(view, run)}
         actions={topBarActions(view, run, () => navigate(buildPath.newRun(workspaceId)))}
@@ -184,7 +184,7 @@ export default function RunShell() {
  * has produced nothing has nothing to export or publish.
  */
 function topBarActions(view, run, onNewRun) {
-  if (view === 'concepts' || view === 'questions') return null;
+  if (view === RUN_VIEW.concepts || view === RUN_VIEW.questions) return null;
 
   if (!run.output) {
     return (
@@ -194,7 +194,7 @@ function topBarActions(view, run, onNewRun) {
     );
   }
 
-  if (view === 'ontology') {
+  if (view === RUN_VIEW.ontology) {
     return (
       <>
         <Button variant="secondary" iconLeft="download">
@@ -219,9 +219,10 @@ function topBarActions(view, run, onNewRun) {
 }
 
 function topBarNote(view, run) {
-  if (view === 'concepts' || view === 'questions') return '2 more runs waiting in the queue';
+  if (view === RUN_VIEW.concepts || view === RUN_VIEW.questions)
+    return '2 more runs waiting in the queue';
   if (!run.output) return null;
-  if (view === 'ontology') {
+  if (view === RUN_VIEW.ontology) {
     return joinMeta(
       run.output.version,
       `${run.output.concepts} concepts`,
