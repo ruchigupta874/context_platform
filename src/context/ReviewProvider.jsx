@@ -1,6 +1,6 @@
-import { useDecisions } from '../hooks/useDecisions';
-import { INITIAL_DECISIONS } from '../mocks/review';
-import { INITIAL_QUESTION_DECISIONS } from '../mocks/questions';
+import { useDecisions } from '@/hooks/useDecisions';
+import { INITIAL_DECISIONS } from '@/mocks/review';
+import { INITIAL_QUESTION_DECISIONS } from '@/mocks/questions';
 import { ReviewContext } from './reviewContext';
 
 /**

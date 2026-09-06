@@ -1,4 +1,4 @@
-import { DECISION } from '../config/constants/common';
+import { DECISION } from '@/config/constants/common';
 
 /**
  * Proposals from run R-2418. Shape mirrors what the review API will return:
@@ -47,7 +47,11 @@ export const CONCEPTS = [
       { id: 'e4', a: 'status', b: 'string', c: 'active', role: 'attribute' },
     ],
     signals: [
-      { id: 's1', text: 'Primary key, 611k rows, clean cardinality against customer', weight: 0.96 },
+      {
+        id: 's1',
+        text: 'Primary key, 611k rows, clean cardinality against customer',
+        weight: 0.96,
+      },
       { id: 's2', text: 'Glossary defines the term explicitly', weight: 0.93 },
       { id: 's3', text: 'Central to three downstream tables', weight: 0.88 },
     ],
@@ -178,7 +182,11 @@ export const CONCEPTS = [
       { id: 'e4', a: 'active', b: 'boolean', c: 'true', role: 'attribute' },
     ],
     signals: [
-      { id: 's1', text: 'Small dimension table, 2.4k rows, referenced by interaction', weight: 0.9 },
+      {
+        id: 's1',
+        text: 'Small dimension table, 2.4k rows, referenced by interaction',
+        weight: 0.9,
+      },
       { id: 's2', text: 'No description in the catalog and no glossary entry', weight: 0.68 },
       { id: 's3', text: 'Name overlaps with the AI sense of "agent" in the docs', weight: 0.55 },
     ],
@@ -236,7 +244,13 @@ export const CONCEPTS = [
     definitionSource: 'Inferred from the interaction.channel enumeration',
     sourceIcon: 'node',
     evidence: [
-      { id: 'e1', a: 'interaction.channel', b: 'string', c: 'voice, chat, email', role: 'enumeration' },
+      {
+        id: 'e1',
+        a: 'interaction.channel',
+        b: 'string',
+        c: 'voice, chat, email',
+        role: 'enumeration',
+      },
       { id: 'e2', a: '—', b: '—', c: '5 distinct values', role: 'cardinality' },
     ],
     signals: [
@@ -276,7 +290,13 @@ export const CONCEPTS = [
     definitionSource: 'Inferred by clustering customer.address_line1',
     sourceIcon: 'node',
     evidence: [
-      { id: 'e1', a: 'customer.address_line1', b: 'string', c: '14 Ashgrove Terrace', role: 'clustered' },
+      {
+        id: 'e1',
+        a: 'customer.address_line1',
+        b: 'string',
+        c: '14 Ashgrove Terrace',
+        role: 'clustered',
+      },
       { id: 'e2', a: '—', b: '—', c: '11% of clusters ambiguous', role: 'quality' },
     ],
     signals: [
@@ -296,7 +316,13 @@ export const CONCEPTS = [
     definitionSource: 'Inferred from unparsed address columns',
     sourceIcon: 'node',
     evidence: [
-      { id: 'e1', a: 'customer.address_line1', b: 'string', c: '14 Ashgrove Terrace', role: 'unparsed' },
+      {
+        id: 'e1',
+        a: 'customer.address_line1',
+        b: 'string',
+        c: '14 Ashgrove Terrace',
+        role: 'unparsed',
+      },
       { id: 'e2', a: 'customer.postcode', b: 'string', c: 'LS6 3QN', role: 'attribute' },
     ],
     signals: [
@@ -322,9 +348,21 @@ export const RELATIONS = [
     definitionSource: 'Foreign key contract.customer_id, confirmed by the glossary',
     sourceIcon: 'database',
     evidence: [
-      { id: 'e1', a: 'contract.customer_id', b: 'bigint', c: '→ customer.customer_id', role: 'foreign key' },
+      {
+        id: 'e1',
+        a: 'contract.customer_id',
+        b: 'bigint',
+        c: '→ customer.customer_id',
+        role: 'foreign key',
+      },
       { id: 'e2', a: 'coverage', b: '100%', c: '611k of 611k rows resolve', role: 'complete' },
-      { id: 'e3', a: 'fan-out', b: 'avg 1.27', c: 'max 41 contracts per customer', role: 'cardinality' },
+      {
+        id: 'e3',
+        a: 'fan-out',
+        b: 'avg 1.27',
+        c: 'max 41 contracts per customer',
+        role: 'cardinality',
+      },
     ],
     signals: [
       { id: 's1', text: 'Declared foreign key with full referential integrity', weight: 0.98 },
@@ -344,7 +382,13 @@ export const RELATIONS = [
     definitionSource: 'Foreign key invoice.contract_id',
     sourceIcon: 'database',
     evidence: [
-      { id: 'e1', a: 'invoice.contract_id', b: 'bigint', c: '→ contract.contract_id', role: 'foreign key' },
+      {
+        id: 'e1',
+        a: 'invoice.contract_id',
+        b: 'bigint',
+        c: '→ contract.contract_id',
+        role: 'foreign key',
+      },
       { id: 'e2', a: 'coverage', b: '99.8%', c: '14k orphaned invoices', role: 'near-complete' },
       { id: 'e3', a: 'fan-out', b: 'avg 11.8', c: 'one per billing period', role: 'cardinality' },
     ],
@@ -367,9 +411,27 @@ export const RELATIONS = [
     definitionSource: 'Foreign key payment.invoice_id',
     sourceIcon: 'database',
     evidence: [
-      { id: 'e1', a: 'payment.invoice_id', b: 'bigint', c: '→ invoice.invoice_id', role: 'foreign key' },
-      { id: 'e2', a: 'coverage', b: '96.1%', c: 'unpaid invoices have no rows', role: 'expected gap' },
-      { id: 'e3', a: 'fan-out', b: 'avg 1.04', c: 'max 9 payments per invoice', role: 'cardinality' },
+      {
+        id: 'e1',
+        a: 'payment.invoice_id',
+        b: 'bigint',
+        c: '→ invoice.invoice_id',
+        role: 'foreign key',
+      },
+      {
+        id: 'e2',
+        a: 'coverage',
+        b: '96.1%',
+        c: 'unpaid invoices have no rows',
+        role: 'expected gap',
+      },
+      {
+        id: 'e3',
+        a: 'fan-out',
+        b: 'avg 1.04',
+        c: 'max 9 payments per invoice',
+        role: 'cardinality',
+      },
     ],
     signals: [
       { id: 's1', text: 'Foreign key with sensible fan-out', weight: 0.94 },
@@ -390,7 +452,13 @@ export const RELATIONS = [
     definitionSource: 'Foreign key claim.customer_id, described in the claims policy',
     sourceIcon: 'doc',
     evidence: [
-      { id: 'e1', a: 'claim.customer_id', b: 'bigint', c: '→ customer.customer_id', role: 'foreign key' },
+      {
+        id: 'e1',
+        a: 'claim.customer_id',
+        b: 'bigint',
+        c: '→ customer.customer_id',
+        role: 'foreign key',
+      },
       { id: 'e2', a: 'coverage', b: '100%', c: '94k of 94k rows resolve', role: 'complete' },
       { id: 'e3', a: 'fan-out', b: 'avg 0.19', c: 'most customers file none', role: 'cardinality' },
     ],
@@ -408,11 +476,18 @@ export const RELATIONS = [
     confidence: 0.87,
     cardinality: '1 : N',
     kind: 'Object property',
-    definition: 'Links a customer to every recorded touchpoint they were part of, across all channels.',
+    definition:
+      'Links a customer to every recorded touchpoint they were part of, across all channels.',
     definitionSource: 'Foreign key interaction.customer_id',
     sourceIcon: 'database',
     evidence: [
-      { id: 'e1', a: 'interaction.customer_id', b: 'bigint', c: '→ customer.customer_id', role: 'foreign key' },
+      {
+        id: 'e1',
+        a: 'interaction.customer_id',
+        b: 'bigint',
+        c: '→ customer.customer_id',
+        role: 'foreign key',
+      },
       { id: 'e2', a: 'coverage', b: '94.2%', c: '180k anonymous interactions', role: 'partial' },
       { id: 'e3', a: 'fan-out', b: 'avg 6.4', c: 'heavy tail', role: 'cardinality' },
     ],
@@ -430,11 +505,18 @@ export const RELATIONS = [
     confidence: 0.85,
     cardinality: 'N : 1',
     kind: 'Object property',
-    definition: 'The staff member who took the interaction. Automated and self-service interactions have no agent.',
+    definition:
+      'The staff member who took the interaction. Automated and self-service interactions have no agent.',
     definitionSource: 'Foreign key interaction.agent_id',
     sourceIcon: 'database',
     evidence: [
-      { id: 'e1', a: 'interaction.agent_id', b: 'bigint', c: '→ agent.agent_id', role: 'foreign key' },
+      {
+        id: 'e1',
+        a: 'interaction.agent_id',
+        b: 'bigint',
+        c: '→ agent.agent_id',
+        role: 'foreign key',
+      },
       { id: 'e2', a: 'coverage', b: '71.5%', c: 'self-service rows are null', role: 'partial' },
       { id: 'e3', a: 'fan-in', b: 'avg 920', c: 'interactions per agent', role: 'cardinality' },
     ],
@@ -457,9 +539,21 @@ export const RELATIONS = [
     definitionSource: 'Key overlap analysis plus the contact centre taxonomy',
     sourceIcon: 'doc',
     evidence: [
-      { id: 'e1', a: 'call.interaction_id', b: 'bigint', c: '→ interaction.interaction_id', role: 'foreign key' },
+      {
+        id: 'e1',
+        a: 'call.interaction_id',
+        b: 'bigint',
+        c: '→ interaction.interaction_id',
+        role: 'foreign key',
+      },
       { id: 'e2', a: 'overlap', b: '100%', c: 'every call has an interaction', role: 'total' },
-      { id: 'e3', a: 'extra columns', b: '4', c: 'duration, queue, outcome, recording', role: 'specialisation' },
+      {
+        id: 'e3',
+        a: 'extra columns',
+        b: '4',
+        c: 'duration, queue, outcome, recording',
+        role: 'specialisation',
+      },
     ],
     signals: [
       { id: 's1', text: 'Total participation in one direction only', weight: 0.91 },
@@ -525,7 +619,13 @@ export const RELATIONS = [
     definitionSource: 'Inferred from address columns, no reference data',
     sourceIcon: 'node',
     evidence: [
-      { id: 'e1', a: 'customer.address_line1', b: 'string', c: '14 Ashgrove Terrace', role: 'unparsed' },
+      {
+        id: 'e1',
+        a: 'customer.address_line1',
+        b: 'string',
+        c: '14 Ashgrove Terrace',
+        role: 'unparsed',
+      },
       { id: 'e2', a: 'match rate', b: '61%', c: 'to a normalised form', role: 'weak' },
     ],
     signals: [

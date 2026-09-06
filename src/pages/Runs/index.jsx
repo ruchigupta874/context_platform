@@ -1,24 +1,19 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopBar from '../../components/layout/TopBar';
-import { PageBody } from '../../components/layout/AppShell';
-import PageHeader from '../../components/layout/PageHeader';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import SegmentedControl from '../../components/ui/SegmentedControl';
-import PipelineTrack from '../../components/pipeline/PipelineTrack';
-import {
-  DataTable,
-  DataTableBody,
-  DataTableHead,
-  DataTableRow,
-} from '../../components/ui/DataTable';
-import { RUN_COLUMNS, RUN_FILTERS, RUN_STATUS, RUN_STATUS_META } from '../../config/constants/runs';
-import { PIPELINE_STAGES, describeStages } from '../../config/constants/pipeline';
-import { RUNS } from '../../mocks/runs';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import PageHeader from '@/components/layout/PageHeader';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import SegmentedControl from '@/components/ui/SegmentedControl';
+import PipelineTrack from '@/components/pipeline/PipelineTrack';
+import { DataTable, DataTableBody, DataTableHead, DataTableRow } from '@/components/ui/DataTable';
+import { RUN_COLUMNS, RUN_FILTERS, RUN_STATUS, RUN_STATUS_META } from '@/config/constants/runs';
+import { PIPELINE_STAGES, describeStages } from '@/config/constants/pipeline';
+import { RUNS } from '@/mocks/runs';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
 import styles from './Runs.module.css';
 
 const EDGE_CLASS = {
@@ -71,7 +66,11 @@ export default function Runs() {
       <TopBar
         crumbs={[{ label: workspace.name }, { label: 'Runs' }]}
         actions={
-          <Button variant="primary" iconLeft="plus" onClick={() => navigate(buildPath.newRun(workspaceId))}>
+          <Button
+            variant="primary"
+            iconLeft="plus"
+            onClick={() => navigate(buildPath.newRun(workspaceId))}
+          >
             New extraction
           </Button>
         }
@@ -134,7 +133,12 @@ export default function Runs() {
                       size="lg"
                       icon={
                         meta.spinner ? (
-                          <Icon name="refresh" size={11} strokeWidth={1.8} className={styles.spin} />
+                          <Icon
+                            name="refresh"
+                            size={11}
+                            strokeWidth={1.8}
+                            className={styles.spin}
+                          />
                         ) : meta.alert ? (
                           <Icon name="alert" size={11} strokeWidth={1.6} />
                         ) : null

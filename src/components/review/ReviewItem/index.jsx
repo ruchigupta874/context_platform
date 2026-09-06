@@ -1,9 +1,9 @@
-import Icon from '../../ui/Icon';
-import Chip from '../../ui/Chip';
-import Checkbox from '../../ui/Checkbox';
-import { DECISION } from '../../../config/constants/common';
-import { EVIDENCE_TONES } from '../../../config/constants/review';
-import { confidenceTone, formatConfidence, signalTone } from '../../../utils/format';
+import Icon from '@/components/ui/Icon';
+import Chip from '@/components/ui/Chip';
+import Checkbox from '@/components/ui/Checkbox';
+import { DECISION } from '@/config/constants/common';
+import { EVIDENCE_TONES } from '@/config/constants/review';
+import { confidenceTone, formatConfidence, signalTone } from '@/utils/format';
 import styles from './ReviewItem.module.css';
 
 const TONE_CLASS = { ok: styles.toneOk, warn: styles.toneWarn, danger: styles.toneDanger };
@@ -38,7 +38,9 @@ export function ReviewListItem({
     >
       <Checkbox size="sm" checked={checked} onChange={onCheck} label={`Select ${name}`} />
       <div className={styles.body}>
-        <div className={[styles.name, rejected ? styles.rejected : ''].filter(Boolean).join(' ')}>{name}</div>
+        <div className={[styles.name, rejected ? styles.rejected : ''].filter(Boolean).join(' ')}>
+          {name}
+        </div>
         <div className={styles.sub}>{sub}</div>
       </div>
       <div>
@@ -50,7 +52,9 @@ export function ReviewListItem({
         {decision === DECISION.approved && (
           <Icon name="check" size={14} strokeWidth={2.2} className={styles.markApproved} />
         )}
-        {rejected && <Icon name="close" size={13} strokeWidth={2} className={styles.markRejected} />}
+        {rejected && (
+          <Icon name="close" size={13} strokeWidth={2} className={styles.markRejected} />
+        )}
       </div>
     </div>
   );

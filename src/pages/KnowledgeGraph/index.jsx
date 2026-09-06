@@ -1,28 +1,28 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Icon from '../../components/ui/Icon';
-import Checkbox from '../../components/ui/Checkbox';
-import SearchInput from '../../components/ui/SearchInput';
-import Toggle from '../../components/ui/Toggle';
-import { SectionLabel } from '../../components/ui/Surfaces';
-import RunOutputEmpty from '../../components/pipeline/RunOutputEmpty';
+import Icon from '@/components/ui/Icon';
+import Checkbox from '@/components/ui/Checkbox';
+import SearchInput from '@/components/ui/SearchInput';
+import Toggle from '@/components/ui/Toggle';
+import { SectionLabel } from '@/components/ui/Surfaces';
+import RunOutputEmpty from '@/components/pipeline/RunOutputEmpty';
 import {
   DEFAULT_DEPTH,
   DEPTH_OPTIONS,
   EDGE_LEGEND,
   ENTITY_COLORS,
   GRAPH_VIEWBOX,
-} from '../../config/constants/graph';
+} from '@/config/constants/graph';
 import {
   ENTITY_COUNTS,
   ENTITY_DETAILS,
   GRAPH_EDGES,
   GRAPH_NODES,
   ROOT_ENTITY,
-} from '../../mocks/graph';
-import { findRun } from '../../mocks/runs';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { entityIri } from '../../utils/format';
+} from '@/mocks/graph';
+import { findRun } from '@/mocks/runs';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { entityIri } from '@/utils/format';
 import styles from './KnowledgeGraph.module.css';
 
 export default function KnowledgeGraph() {
@@ -96,12 +96,11 @@ export default function KnowledgeGraph() {
     });
 
     return {
-      properties:
-        fixture?.properties ?? [
-          { id: 'p1', key: 'rdf:type', value: `ex:${selected.type}` },
-          { id: 'p2', key: 'rdfs:label', value: selected.label },
-          { id: 'p3', key: 'ex:sourceRun', value: runId },
-        ],
+      properties: fixture?.properties ?? [
+        { id: 'p1', key: 'rdf:type', value: `ex:${selected.type}` },
+        { id: 'p2', key: 'rdfs:label', value: selected.label },
+        { id: 'p3', key: 'ex:sourceRun', value: runId },
+      ],
       relationships: incident,
       sourceRow: fixture?.sourceRow ?? `${selected.type.toLowerCase()}#${selected.label}`,
       mapping: fixture?.mapping ?? `#${selected.type}Map`,
@@ -127,7 +126,12 @@ export default function KnowledgeGraph() {
           <div>
             <SectionLabel>Start from</SectionLabel>
             <div style={{ marginTop: 7 }}>
-              <SearchInput value={query} onChange={setQuery} placeholder="Search an entity" width="100%" />
+              <SearchInput
+                value={query}
+                onChange={setQuery}
+                placeholder="Search an entity"
+                width="100%"
+              />
             </div>
           </div>
           <div>
@@ -155,7 +159,11 @@ export default function KnowledgeGraph() {
         <div className={styles.types}>
           <div className={styles.typesHead}>
             <SectionLabel>Entity types</SectionLabel>
-            <button type="button" className={styles.selectAll} onClick={() => setHiddenTypes(new Set())}>
+            <button
+              type="button"
+              className={styles.selectAll}
+              onClick={() => setHiddenTypes(new Set())}
+            >
               All
             </button>
           </div>
@@ -180,7 +188,9 @@ export default function KnowledgeGraph() {
                   className={styles.typeSwatch}
                   style={{ background: ENTITY_COLORS[type], opacity: on ? 1 : 0.35 }}
                 />
-                <span className={[styles.typeName, on ? '' : styles.typeOff].filter(Boolean).join(' ')}>
+                <span
+                  className={[styles.typeName, on ? '' : styles.typeOff].filter(Boolean).join(' ')}
+                >
                   {type}
                 </span>
                 <span className={styles.typeCount}>{ENTITY_COUNTS[type]}</span>
@@ -198,7 +208,8 @@ export default function KnowledgeGraph() {
       <div className={styles.canvasColumn}>
         <div className={styles.canvasBar}>
           <span className={styles.canvasTitle}>
-            Neighbourhood of <span className={styles.canvasTitleStrong}>{nodesById[ROOT_ENTITY].label}</span>
+            Neighbourhood of{' '}
+            <span className={styles.canvasTitleStrong}>{nodesById[ROOT_ENTITY].label}</span>
           </span>
           <span className={styles.canvasCount}>
             {visibleNodes.length} of {run.output.nodes} shown
@@ -320,11 +331,16 @@ export default function KnowledgeGraph() {
       <aside className={styles.inspector}>
         <div className={styles.inspectorHead}>
           <div className={styles.inspectorType}>
-            <span className={styles.inspectorSwatch} style={{ background: ENTITY_COLORS[selected.type] }} />
+            <span
+              className={styles.inspectorSwatch}
+              style={{ background: ENTITY_COLORS[selected.type] }}
+            />
             <span className={styles.inspectorTypeLabel}>{selected.type}</span>
           </div>
           <div className={styles.inspectorLabel}>{selected.label}</div>
-          <div className={styles.inspectorIri}>{entityIri(workspaceId, selected.type, selected.label)}</div>
+          <div className={styles.inspectorIri}>
+            {entityIri(workspaceId, selected.type, selected.label)}
+          </div>
         </div>
 
         <div className={styles.inspectorBody}>

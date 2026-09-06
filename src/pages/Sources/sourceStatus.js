@@ -1,4 +1,4 @@
-import { SOURCE_STATE } from '../../config/constants/sources';
+import { SOURCE_STATE } from '@/config/constants/sources';
 
 /**
  * What the Status column says about one source.

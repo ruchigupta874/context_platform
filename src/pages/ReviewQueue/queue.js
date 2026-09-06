@@ -1,8 +1,8 @@
-import { CONFIDENCE_BANDS } from '../../config/constants/common';
-import { COVERAGE } from '../../config/constants/questions';
-import { CONCEPTS, PROPOSAL_RUN, RELATIONS } from '../../mocks/review';
-import { QUESTION_RUN, QUESTIONS } from '../../mocks/questions';
-import { relationLabel } from '../../utils/format';
+import { CONFIDENCE_BANDS } from '@/config/constants/common';
+import { COVERAGE } from '@/config/constants/questions';
+import { CONCEPTS, PROPOSAL_RUN, RELATIONS } from '@/mocks/review';
+import { QUESTION_RUN, QUESTIONS } from '@/mocks/questions';
+import { relationLabel } from '@/utils/format';
 
 /** Above this band an item is safe to wave through from a one-line summary. */
 const HIGH_CONFIDENCE = CONFIDENCE_BANDS[0].min;

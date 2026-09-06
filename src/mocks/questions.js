@@ -1,5 +1,5 @@
-import { DECISION } from '../config/constants/common';
-import { COVERAGE } from '../config/constants/questions';
+import { DECISION } from '@/config/constants/common';
+import { COVERAGE } from '@/config/constants/questions';
 
 const { covered, partial, notCovered } = COVERAGE;
 

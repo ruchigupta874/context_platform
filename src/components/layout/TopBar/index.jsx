@@ -1,10 +1,10 @@
 import { Fragment } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Icon from '../../ui/Icon';
-import Button from '../../ui/Button';
-import { useWorkspace } from '../../../hooks/useWorkspace';
-import { buildPath } from '../../../routes/paths';
-import { pluralize } from '../../../utils/format';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { pluralize } from '@/utils/format';
 import styles from './TopBar.module.css';
 
 /**
@@ -21,7 +21,10 @@ export default function TopBar({ crumbs = [], note, actions, showNewRun = false 
       <nav className={styles.crumbs} aria-label="Breadcrumb">
         {crumbs.map((crumb, index) => {
           const last = index === crumbs.length - 1;
-          const className = [last ? styles.crumbCurrent : styles.crumbLink, crumb.mono ? styles.mono : '']
+          const className = [
+            last ? styles.crumbCurrent : styles.crumbLink,
+            crumb.mono ? styles.mono : '',
+          ]
             .filter(Boolean)
             .join(' ');
           return (
@@ -52,7 +55,11 @@ export default function TopBar({ crumbs = [], note, actions, showNewRun = false 
       {actions}
 
       {showNewRun && (
-        <Button variant="primary" iconLeft="plus" onClick={() => navigate(buildPath.newRun(workspaceId))}>
+        <Button
+          variant="primary"
+          iconLeft="plus"
+          onClick={() => navigate(buildPath.newRun(workspaceId))}
+        >
           New extraction
         </Button>
       )}

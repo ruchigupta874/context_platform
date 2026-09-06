@@ -209,7 +209,10 @@
   color: inherit;
   cursor: pointer;
   box-shadow: var(--shadow-card);
-  transition: border-color var(--t-base), box-shadow var(--t-base), transform var(--t-base);
+  transition:
+    border-color var(--t-base),
+    box-shadow var(--t-base),
+    transform var(--t-base);
 }
 
 .card:hover {

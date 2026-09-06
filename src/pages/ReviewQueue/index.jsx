@@ -1,22 +1,22 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopBar from '../../components/layout/TopBar';
-import { PageBody } from '../../components/layout/AppShell';
-import PageHeader from '../../components/layout/PageHeader';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import Checkbox from '../../components/ui/Checkbox';
-import Toggle from '../../components/ui/Toggle';
-import SegmentedControl from '../../components/ui/SegmentedControl';
-import { EmptyState, Panel } from '../../components/ui/Surfaces';
-import { DECISION } from '../../config/constants/common';
-import { COVERAGE_TONES } from '../../config/constants/questions';
-import { useReviewDecisions } from '../../hooks/useReviewDecisions';
-import { useSelection } from '../../hooks/useSelection';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import { confidenceTone, pluralize } from '../../utils/format';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import PageHeader from '@/components/layout/PageHeader';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import Checkbox from '@/components/ui/Checkbox';
+import Toggle from '@/components/ui/Toggle';
+import SegmentedControl from '@/components/ui/SegmentedControl';
+import { EmptyState, Panel } from '@/components/ui/Surfaces';
+import { DECISION } from '@/config/constants/common';
+import { COVERAGE_TONES } from '@/config/constants/questions';
+import { useReviewDecisions } from '@/hooks/useReviewDecisions';
+import { useSelection } from '@/hooks/useSelection';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { confidenceTone, pluralize } from '@/utils/format';
 import { QUEUE_GROUPS, QUEUE_ITEMS, QUEUE_KINDS } from './queue';
 import styles from './ReviewQueue.module.css';
 
@@ -92,11 +92,7 @@ export default function ReviewQueue() {
             ariaLabel="Filter by item type"
           />
           <div className={styles.spacer} />
-          <Toggle
-            checked={decidableOnly}
-            onChange={setDecidableOnly}
-            label="Decidable here only"
-          />
+          <Toggle checked={decidableOnly} onChange={setDecidableOnly} label="Decidable here only" />
         </div>
 
         <div className={styles.scroll}>
@@ -143,7 +139,12 @@ export default function ReviewQueue() {
                       {pluralize(group.visible.length, 'item')}
                     </span>
                     <div className={styles.spacer} />
-                    <Button size="sm" variant="secondary" iconRight="arrowRight" onClick={() => openGate(group)}>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      iconRight="arrowRight"
+                      onClick={() => openGate(group)}
+                    >
                       Open gate
                     </Button>
                   </header>

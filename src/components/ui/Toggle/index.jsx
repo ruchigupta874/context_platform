@@ -1,6 +1,12 @@
 import styles from './Toggle.module.css';
 
-export default function Toggle({ checked = false, onChange, label, size = 'md', disabled = false }) {
+export default function Toggle({
+  checked = false,
+  onChange,
+  label,
+  size = 'md',
+  disabled = false,
+}) {
   const trackClasses = [styles.track, size === 'lg' ? styles.lg : '', checked ? styles.on : '']
     .filter(Boolean)
     .join(' ');

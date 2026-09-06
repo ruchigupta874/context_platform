@@ -1,4 +1,4 @@
-import { RUN_STATUS } from '../config/constants/runs';
+import { RUN_STATUS } from '@/config/constants/runs';
 
 export const RUNS = [
   {
@@ -66,9 +66,19 @@ export const RUN_DETAIL = {
     { key: 'Elapsed', value: '20m 04s' },
   ],
   activity: [
-    { id: 'a1', message: 'Run paused at the Concepts & relationships gate', at: '12 min ago', kind: 'gate' },
+    {
+      id: 'a1',
+      message: 'Run paused at the Concepts & relationships gate',
+      at: '12 min ago',
+      kind: 'gate',
+    },
     { id: 'a2', message: 'Extract finished, 89 columns profiled', at: '16 min ago', kind: 'done' },
-    { id: 'a3', message: 'meter_reading sampled rather than scanned in full', at: '17 min ago', kind: 'note' },
+    {
+      id: 'a3',
+      message: 'meter_reading sampled rather than scanned in full',
+      at: '17 min ago',
+      kind: 'note',
+    },
     { id: 'a4', message: 'Seeded from ContactCentre v7', at: '20 min ago', kind: 'done' },
     { id: 'a5', message: 'Run started by a.sikarwar', at: '20 min ago', kind: 'done' },
   ],
@@ -90,13 +100,38 @@ export const RUN_DETAIL = {
       listMeta: 'R-2418 · stage 1 of 4',
       lines: [
         { id: 'l1', lead: '09:41:02', message: 'Connected to prod_uc.cust360', tag: 'ok' },
-        { id: 'l2', lead: '09:41:09', message: 'Profiled customer (14 cols, 482k rows)', tag: 'ok' },
-        { id: 'l3', lead: '09:41:38', message: 'Profiled contract (10 cols, 611k rows)', tag: 'ok' },
+        {
+          id: 'l2',
+          lead: '09:41:09',
+          message: 'Profiled customer (14 cols, 482k rows)',
+          tag: 'ok',
+        },
+        {
+          id: 'l3',
+          lead: '09:41:38',
+          message: 'Profiled contract (10 cols, 611k rows)',
+          tag: 'ok',
+        },
         { id: 'l4', lead: '09:42:15', message: 'Profiled invoice, payment, claim', tag: 'ok' },
-        { id: 'l5', lead: '09:43:01', message: 'meter_reading sampled at 1% (84m rows)', tag: 'sampled' },
-        { id: 'l6', lead: '09:43:44', message: 'Chunked Customer Data Dictionary 2026.pdf', tag: 'ok' },
+        {
+          id: 'l5',
+          lead: '09:43:01',
+          message: 'meter_reading sampled at 1% (84m rows)',
+          tag: 'sampled',
+        },
+        {
+          id: 'l6',
+          lead: '09:43:44',
+          message: 'Chunked Customer Data Dictionary 2026.pdf',
+          tag: 'ok',
+        },
         { id: 'l7', lead: '09:44:20', message: 'Chunked Billing Domain Glossary.docx', tag: 'ok' },
-        { id: 'l8', lead: '09:44:51', message: 'Inferred 23 key candidates from naming and cardinality', tag: 'ok' },
+        {
+          id: 'l8',
+          lead: '09:44:51',
+          message: 'Inferred 23 key candidates from naming and cardinality',
+          tag: 'ok',
+        },
         { id: 'l9', lead: '09:45:14', message: 'Stage complete in 4m 12s', tag: 'done' },
       ],
     },
@@ -120,10 +155,30 @@ export const RUN_DETAIL = {
         { id: 'p3', lead: '0.93', message: 'Contract generates Invoice (1:N)', tag: 'relation' },
         { id: 'p4', lead: '0.88', message: 'Claim — class from uc.claim', tag: 'concept' },
         { id: 'p5', lead: '0.82', message: 'Call subClassOf Interaction', tag: 'relation' },
-        { id: 'p6', lead: '0.74', message: 'BillingAccount — inferred, no table of its own', tag: 'low' },
-        { id: 'p7', lead: '0.71', message: 'ClaimAssessment — from policy doc, 2 of 6 fields exist', tag: 'low' },
-        { id: 'p8', lead: '0.62', message: 'Tariff — glossary term, no matching table', tag: 'low' },
-        { id: 'p9', lead: '0.54', message: 'Household — inferred from address clustering', tag: 'low' },
+        {
+          id: 'p6',
+          lead: '0.74',
+          message: 'BillingAccount — inferred, no table of its own',
+          tag: 'low',
+        },
+        {
+          id: 'p7',
+          lead: '0.71',
+          message: 'ClaimAssessment — from policy doc, 2 of 6 fields exist',
+          tag: 'low',
+        },
+        {
+          id: 'p8',
+          lead: '0.62',
+          message: 'Tariff — glossary term, no matching table',
+          tag: 'low',
+        },
+        {
+          id: 'p9',
+          lead: '0.54',
+          message: 'Household — inferred from address clustering',
+          tag: 'low',
+        },
         { id: 'p10', lead: '0.44', message: 'Household contains Customer (1:N)', tag: 'low' },
       ],
     },

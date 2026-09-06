@@ -60,7 +60,8 @@ export const ENDPOINTS = {
     neighbourhood: (workspaceId, entityId, depth) =>
       `/workspaces/${workspaceId}/graph/neighbourhood?entity=${entityId}&depth=${depth}`,
     entity: (workspaceId, entityId) => `/workspaces/${workspaceId}/graph/entities/${entityId}`,
-    search: (workspaceId, term) => `/workspaces/${workspaceId}/graph/search?q=${encodeURIComponent(term)}`,
+    search: (workspaceId, term) =>
+      `/workspaces/${workspaceId}/graph/search?q=${encodeURIComponent(term)}`,
     query: (workspaceId) => `/workspaces/${workspaceId}/graph/query`,
   },
 };

@@ -1,17 +1,17 @@
 import { useMemo } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import TopBar from '../TopBar';
-import { PageBody } from '../AppShell';
-import Button from '../../ui/Button';
-import Chip from '../../ui/Chip';
-import { EmptyState, Panel } from '../../ui/Surfaces';
-import StageStepper from '../../pipeline/StageStepper';
-import { STAGE_STATE, describeStages, stageRoute } from '../../../config/constants/pipeline';
-import { RUN_STATUS, RUN_STATUS_META } from '../../../config/constants/runs';
-import { RUN_DETAIL, findRun } from '../../../mocks/runs';
-import { useWorkspace } from '../../../hooks/useWorkspace';
-import { buildPath } from '../../../routes/paths';
-import { joinMeta } from '../../../utils/format';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import { EmptyState, Panel } from '@/components/ui/Surfaces';
+import StageStepper from '@/components/pipeline/StageStepper';
+import { STAGE_STATE, describeStages, stageRoute } from '@/config/constants/pipeline';
+import { RUN_STATUS, RUN_STATUS_META } from '@/config/constants/runs';
+import { RUN_DETAIL, findRun } from '@/mocks/runs';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { joinMeta } from '@/utils/format';
 import styles from './RunShell.module.css';
 
 const VIEW_LABEL = {
@@ -51,7 +51,8 @@ export default function RunShell() {
   const stepperMeta = useMemo(
     () =>
       stages.reduce((acc, item) => {
-        if (item.state === STAGE_STATE.done) acc[item.id] = RUN_DETAIL.stages[item.id]?.duration ?? 'done';
+        if (item.state === STAGE_STATE.done)
+          acc[item.id] = RUN_DETAIL.stages[item.id]?.duration ?? 'done';
         else if (item.state === STAGE_STATE.gate) acc[item.id] = 'waiting on you';
         else if (item.state === STAGE_STATE.running) acc[item.id] = 'running';
         else acc[item.id] = 'blocked';
@@ -71,7 +72,9 @@ export default function RunShell() {
           ]}
         />
         <PageBody>
-          <Panel style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Panel
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
             <EmptyState
               icon="alert"
               title={`${runId} is not a run in this workspace`}
@@ -152,7 +155,10 @@ export default function RunShell() {
         meta={stepperMeta}
         isSelectable={(stage) => stage.id !== view && Boolean(stageRoute(stage, run))}
         onSelect={(stageId) => {
-          const target = stageRoute(stages.find((s) => s.id === stageId), run);
+          const target = stageRoute(
+            stages.find((s) => s.id === stageId),
+            run,
+          );
           if (target) navigate(buildPath[target](workspaceId, runId));
         }}
       />

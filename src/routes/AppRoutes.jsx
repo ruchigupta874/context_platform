@@ -1,18 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import AppShell from '../components/layout/AppShell';
-import RunShell from '../components/layout/RunShell';
-import RunDetail from '../pages/RunDetail';
-import WorkspaceRegistry from '../pages/WorkspaceRegistry';
-import ReviewQueue from '../pages/ReviewQueue';
-import Overview from '../pages/Overview';
-import Sources from '../pages/Sources';
-import NewRun from '../pages/NewRun';
-import Runs from '../pages/Runs';
-import ReviewConcepts from '../pages/ReviewConcepts';
-import ReviewQuestions from '../pages/ReviewQuestions';
-import Ontology from '../pages/Ontology';
-import KnowledgeGraph from '../pages/KnowledgeGraph';
-import Placeholder from '../pages/Placeholder';
+import AppShell from '@/components/layout/AppShell';
+import RunShell from '@/components/layout/RunShell';
+import RunDetail from '@/pages/RunDetail';
+import WorkspaceRegistry from '@/pages/WorkspaceRegistry';
+import ReviewQueue from '@/pages/ReviewQueue';
+import Overview from '@/pages/Overview';
+import Sources from '@/pages/Sources';
+import NewRun from '@/pages/NewRun';
+import Runs from '@/pages/Runs';
+import ReviewConcepts from '@/pages/ReviewConcepts';
+import ReviewQuestions from '@/pages/ReviewQuestions';
+import Ontology from '@/pages/Ontology';
+import KnowledgeGraph from '@/pages/KnowledgeGraph';
+import Placeholder from '@/pages/Placeholder';
 import { DEFAULT_WORKSPACE_ID } from './paths';
 
 /**

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { WORKSPACES, WORKSPACE_COUNTERS } from '@/mocks/workspaces';
+import { DEFAULT_WORKSPACE_ID } from '@/routes/paths';
 import { WorkspaceContext } from './workspaceContext';
-import { WORKSPACES, WORKSPACE_COUNTERS } from '../mocks/workspaces';
-import { DEFAULT_WORKSPACE_ID } from '../routes/paths';
 
 /**
  * Resolves the active workspace once from the route and shares it downwards,

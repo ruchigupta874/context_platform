@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import Icon from '../../ui/Icon';
-import { NAV_GROUPS } from '../../../config/navigation';
-import { useWorkspace } from '../../../hooks/useWorkspace';
+import Icon from '@/components/ui/Icon';
+import { NAV_GROUPS } from '@/config/navigation';
+import { useWorkspace } from '@/hooks/useWorkspace';
 import styles from './Sidebar.module.css';
 
 const BADGE_CLASS = {
@@ -49,7 +49,9 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className={[styles.sidebar, collapsed ? styles.collapsed : ''].filter(Boolean).join(' ')}>
+    <aside
+      className={[styles.sidebar, collapsed ? styles.collapsed : ''].filter(Boolean).join(' ')}
+    >
       <div className={styles.head}>
         {collapsed ? (
           /* At 56px there is only room for one control, and the one you want is
@@ -114,7 +116,9 @@ export default function Sidebar() {
                   </span>
                   <span className={styles.itemLabel}>{item.label}</span>
                   {count ? (
-                    <span className={[styles.badge, BADGE_CLASS[item.badgeTone]].join(' ')}>{count}</span>
+                    <span className={[styles.badge, BADGE_CLASS[item.badgeTone]].join(' ')}>
+                      {count}
+                    </span>
                   ) : null}
                 </NavLink>
               );

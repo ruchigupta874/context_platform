@@ -1,4 +1,4 @@
-import Icon from '../Icon';
+import Icon from '@/components/ui/Icon';
 import styles from './SearchInput.module.css';
 
 /** Controlled search field. `onChange` receives the string, not the event. */

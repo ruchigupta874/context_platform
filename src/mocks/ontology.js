@@ -5,7 +5,13 @@ export const ONTOLOGY_TREE = [
   { id: 'Agent', name: 'Agent', depth: 2, parent: 'Party', instances: '2.4k' },
   { id: 'Agreement', name: 'Agreement', depth: 1, parent: 'owl:Thing', instances: '611k' },
   { id: 'Contract', name: 'Contract', depth: 2, parent: 'Agreement', instances: '611k' },
-  { id: 'FinancialDocument', name: 'FinancialDocument', depth: 1, parent: 'owl:Thing', instances: '14.1m' },
+  {
+    id: 'FinancialDocument',
+    name: 'FinancialDocument',
+    depth: 1,
+    parent: 'owl:Thing',
+    instances: '14.1m',
+  },
   { id: 'Invoice', name: 'Invoice', depth: 2, parent: 'FinancialDocument', instances: '7.2m' },
   { id: 'Payment', name: 'Payment', depth: 2, parent: 'FinancialDocument', instances: '6.9m' },
   { id: 'Interaction', name: 'Interaction', depth: 1, parent: 'owl:Thing', instances: '3.1m' },
@@ -15,7 +21,13 @@ export const ONTOLOGY_TREE = [
   { id: 'BillingAccount', name: 'BillingAccount', depth: 1, parent: 'owl:Thing', instances: '38k' },
 ];
 
-export const DEFAULT_EXPANDED = ['owl:Thing', 'Party', 'Agreement', 'FinancialDocument', 'Interaction'];
+export const DEFAULT_EXPANDED = [
+  'owl:Thing',
+  'Party',
+  'Agreement',
+  'FinancialDocument',
+  'Interaction',
+];
 
 export const CLASS_DETAILS = {
   Customer: {
@@ -25,22 +37,68 @@ export const CLASS_DETAILS = {
     definition:
       'A party that holds one or more service contracts and is billed against them. Includes residential and small-business account holders, and excludes internal test accounts.',
     objectProperties: [
-      { id: 'o1', name: 'ex:holds', range: 'ex:Contract', cardinality: '0..*', inverse: 'ex:heldBy' },
+      {
+        id: 'o1',
+        name: 'ex:holds',
+        range: 'ex:Contract',
+        cardinality: '0..*',
+        inverse: 'ex:heldBy',
+      },
       { id: 'o2', name: 'ex:files', range: 'ex:Claim', cardinality: '0..*', inverse: 'ex:filedBy' },
-      { id: 'o3', name: 'ex:participatesIn', range: 'ex:Interaction', cardinality: '0..*', inverse: 'ex:involves' },
-      { id: 'o4', name: 'ex:billedUnder', range: 'ex:BillingAccount', cardinality: '1..1', inverse: 'ex:covers' },
+      {
+        id: 'o3',
+        name: 'ex:participatesIn',
+        range: 'ex:Interaction',
+        cardinality: '0..*',
+        inverse: 'ex:involves',
+      },
+      {
+        id: 'o4',
+        name: 'ex:billedUnder',
+        range: 'ex:BillingAccount',
+        cardinality: '1..1',
+        inverse: 'ex:covers',
+      },
     ],
     dataProperties: [
-      { id: 'd1', name: 'ex:customerId', type: 'xsd:long', from: 'customer.customer_id', required: true },
-      { id: 'd2', name: 'ex:fullName', type: 'xsd:string', from: 'customer.full_name', required: true },
-      { id: 'd3', name: 'ex:segment', type: 'xsd:string', from: 'customer.segment', required: false },
-      { id: 'd4', name: 'ex:createdAt', type: 'xsd:dateTime', from: 'customer.created_at', required: true },
+      {
+        id: 'd1',
+        name: 'ex:customerId',
+        type: 'xsd:long',
+        from: 'customer.customer_id',
+        required: true,
+      },
+      {
+        id: 'd2',
+        name: 'ex:fullName',
+        type: 'xsd:string',
+        from: 'customer.full_name',
+        required: true,
+      },
+      {
+        id: 'd3',
+        name: 'ex:segment',
+        type: 'xsd:string',
+        from: 'customer.segment',
+        required: false,
+      },
+      {
+        id: 'd4',
+        name: 'ex:createdAt',
+        type: 'xsd:dateTime',
+        from: 'customer.created_at',
+        required: true,
+      },
     ],
     axioms: [
       { id: 'a1', text: 'Customer rdfs:subClassOf Party', tag: 'inherited' },
       { id: 'a2', text: 'ex:customerId a owl:InverseFunctionalProperty', tag: 'key' },
       { id: 'a3', text: 'Customer owl:disjointWith Agent', tag: 'disjoint' },
-      { id: 'a4', text: 'Customer rdfs:subClassOf (ex:billedUnder exactly 1 BillingAccount)', tag: 'unverified' },
+      {
+        id: 'a4',
+        text: 'Customer rdfs:subClassOf (ex:billedUnder exactly 1 BillingAccount)',
+        tag: 'unverified',
+      },
     ],
     mapping: `<#CustomerMap>
   rr:logicalTable [ rr:tableName "prod_uc.cust360.customer" ] ;
@@ -60,18 +118,52 @@ export const CLASS_DETAILS = {
     definition:
       'A signed service agreement between the business and a customer, valid over a date range and carrying the terms that invoices are raised against.',
     objectProperties: [
-      { id: 'o1', name: 'ex:heldBy', range: 'ex:Customer', cardinality: '1..1', inverse: 'ex:holds' },
-      { id: 'o2', name: 'ex:generates', range: 'ex:Invoice', cardinality: '0..*', inverse: 'ex:raisedUnder' },
+      {
+        id: 'o1',
+        name: 'ex:heldBy',
+        range: 'ex:Customer',
+        cardinality: '1..1',
+        inverse: 'ex:holds',
+      },
+      {
+        id: 'o2',
+        name: 'ex:generates',
+        range: 'ex:Invoice',
+        cardinality: '0..*',
+        inverse: 'ex:raisedUnder',
+      },
     ],
     dataProperties: [
-      { id: 'd1', name: 'ex:contractId', type: 'xsd:long', from: 'contract.contract_id', required: true },
-      { id: 'd2', name: 'ex:startDate', type: 'xsd:date', from: 'contract.start_date', required: true },
-      { id: 'd3', name: 'ex:endDate', type: 'xsd:date', from: 'contract.end_date', required: false },
+      {
+        id: 'd1',
+        name: 'ex:contractId',
+        type: 'xsd:long',
+        from: 'contract.contract_id',
+        required: true,
+      },
+      {
+        id: 'd2',
+        name: 'ex:startDate',
+        type: 'xsd:date',
+        from: 'contract.start_date',
+        required: true,
+      },
+      {
+        id: 'd3',
+        name: 'ex:endDate',
+        type: 'xsd:date',
+        from: 'contract.end_date',
+        required: false,
+      },
       { id: 'd4', name: 'ex:status', type: 'xsd:string', from: 'contract.status', required: true },
     ],
     axioms: [
       { id: 'a1', text: 'Contract rdfs:subClassOf Agreement', tag: 'inherited' },
-      { id: 'a2', text: 'Contract rdfs:subClassOf (ex:heldBy exactly 1 Customer)', tag: 'cardinality' },
+      {
+        id: 'a2',
+        text: 'Contract rdfs:subClassOf (ex:heldBy exactly 1 Customer)',
+        tag: 'cardinality',
+      },
       { id: 'a3', text: 'ex:endDate rdfs:range xsd:date', tag: 'range' },
     ],
     mapping: `<#ContractMap>
@@ -97,13 +189,43 @@ export const CLASS_DETAILS = {
     definition:
       'A billing document issued against a contract for one billing period, listing charges and the amount due.',
     objectProperties: [
-      { id: 'o1', name: 'ex:raisedUnder', range: 'ex:Contract', cardinality: '1..1', inverse: 'ex:generates' },
-      { id: 'o2', name: 'ex:settledBy', range: 'ex:Payment', cardinality: '0..*', inverse: 'ex:settles' },
+      {
+        id: 'o1',
+        name: 'ex:raisedUnder',
+        range: 'ex:Contract',
+        cardinality: '1..1',
+        inverse: 'ex:generates',
+      },
+      {
+        id: 'o2',
+        name: 'ex:settledBy',
+        range: 'ex:Payment',
+        cardinality: '0..*',
+        inverse: 'ex:settles',
+      },
     ],
     dataProperties: [
-      { id: 'd1', name: 'ex:invoiceId', type: 'xsd:long', from: 'invoice.invoice_id', required: true },
-      { id: 'd2', name: 'ex:amountDue', type: 'xsd:decimal', from: 'invoice.amount_due', required: true },
-      { id: 'd3', name: 'ex:issuedOn', type: 'xsd:date', from: 'invoice.issued_on', required: true },
+      {
+        id: 'd1',
+        name: 'ex:invoiceId',
+        type: 'xsd:long',
+        from: 'invoice.invoice_id',
+        required: true,
+      },
+      {
+        id: 'd2',
+        name: 'ex:amountDue',
+        type: 'xsd:decimal',
+        from: 'invoice.amount_due',
+        required: true,
+      },
+      {
+        id: 'd3',
+        name: 'ex:issuedOn',
+        type: 'xsd:date',
+        from: 'invoice.issued_on',
+        required: true,
+      },
     ],
     axioms: [
       { id: 'a1', text: 'Invoice rdfs:subClassOf FinancialDocument', tag: 'inherited' },
@@ -144,7 +266,8 @@ export const VALIDATION_FINDINGS = [
     id: 'v2',
     tone: 'warn',
     title: 'Agent has no definition source',
-    detail: 'Neither the catalog nor any uploaded document defines the term. Consider adding a description.',
+    detail:
+      'Neither the catalog nor any uploaded document defines the term. Consider adding a description.',
   },
   {
     id: 'v3',

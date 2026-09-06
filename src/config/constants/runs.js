@@ -8,10 +8,28 @@ export const RUN_STATUS = {
 };
 
 export const RUN_STATUS_META = {
-  [RUN_STATUS.needsReview]: { label: 'Needs review', tone: TONE.warn, edge: true, action: 'Review', primary: true },
-  [RUN_STATUS.running]: { label: 'Running', tone: TONE.info, edge: true, action: 'Watch', spinner: true },
+  [RUN_STATUS.needsReview]: {
+    label: 'Needs review',
+    tone: TONE.warn,
+    edge: true,
+    action: 'Review',
+    primary: true,
+  },
+  [RUN_STATUS.running]: {
+    label: 'Running',
+    tone: TONE.info,
+    edge: true,
+    action: 'Watch',
+    spinner: true,
+  },
   [RUN_STATUS.complete]: { label: 'Complete', tone: TONE.ok, action: 'Open graph' },
-  [RUN_STATUS.failed]: { label: 'Failed', tone: TONE.danger, edge: true, action: 'View log', alert: true },
+  [RUN_STATUS.failed]: {
+    label: 'Failed',
+    tone: TONE.danger,
+    edge: true,
+    action: 'View log',
+    alert: true,
+  },
 };
 
 export const RUN_FILTERS = [
@@ -35,7 +53,8 @@ export const STRATEGIES = [
   {
     id: 'schema',
     name: 'Schema-first',
-    blurb: 'Reads table structure, keys and profiles. Fast and literal, but blind to business language.',
+    blurb:
+      'Reads table structure, keys and profiles. Fast and literal, but blind to business language.',
   },
   {
     id: 'document',

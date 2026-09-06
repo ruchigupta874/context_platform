@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { PageBody } from '../layout/AppShell';
-import Button from '../ui/Button';
-import { EmptyState, Panel } from '../ui/Surfaces';
-import { PIPELINE_STAGES } from '../../config/constants/pipeline';
-import { RUN_STATUS } from '../../config/constants/runs';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
+import { PageBody } from '@/components/layout/AppShell';
+import Button from '@/components/ui/Button';
+import { EmptyState, Panel } from '@/components/ui/Surfaces';
+import { PIPELINE_STAGES } from '@/config/constants/pipeline';
+import { RUN_STATUS } from '@/config/constants/runs';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
 
 const STAGE_LABEL = Object.fromEntries(PIPELINE_STAGES.map((stage) => [stage.id, stage.label]));
 

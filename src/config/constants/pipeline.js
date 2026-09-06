@@ -34,7 +34,8 @@ export const PIPELINE_STAGES = [
     label: 'Knowledge graph',
     icon: 'graph',
     gate: false,
-    blurb: 'Compiles the approved model into OWL classes and mappings, then executes them against live tables to materialise entities and edges.',
+    blurb:
+      'Compiles the approved model into OWL classes and mappings, then executes them against live tables to materialise entities and edges.',
   },
 ];
 

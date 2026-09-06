@@ -1,22 +1,19 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Icon from "../../components/ui/Icon";
-import Button from "../../components/ui/Button";
-import Chip from "../../components/ui/Chip";
-import SearchInput from "../../components/ui/SearchInput";
-import { StatGrid } from "../../components/ui/Surfaces";
-import {
-  WORKSPACE_STATUS_TONES,
-  REGISTRY_COPY,
-} from "../../config/constants/workspaces";
-import { WORKSPACES, WORKSPACE_STATS } from "../../mocks/workspaces";
-import { buildPath } from "../../routes/paths";
-import { pluralize } from "../../utils/format";
-import styles from "./WorkspaceRegistry.module.css";
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import SearchInput from '@/components/ui/SearchInput';
+import { StatGrid } from '@/components/ui/Surfaces';
+import { WORKSPACE_STATUS_TONES, REGISTRY_COPY } from '@/config/constants/workspaces';
+import { WORKSPACES, WORKSPACE_STATS } from '@/mocks/workspaces';
+import { buildPath } from '@/routes/paths';
+import { pluralize } from '@/utils/format';
+import styles from './WorkspaceRegistry.module.css';
 
 export default function WorkspaceRegistry() {
   const navigate = useNavigate();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(WORKSPACES[0].id);
 
   // Derived, not stored: filtering is a pure function of the query.
@@ -34,9 +31,7 @@ export default function WorkspaceRegistry() {
 
   // The header panel is a view of whichever card is selected, so its identity
   // stays in step with the grid even though the KPI numbers are still static.
-  const selected =
-    WORKSPACES.find((workspace) => workspace.id === selectedId) ??
-    WORKSPACES[0];
+  const selected = WORKSPACES.find((workspace) => workspace.id === selectedId) ?? WORKSPACES[0];
 
   const open = (workspaceId) => navigate(buildPath.overview(workspaceId));
 
@@ -62,33 +57,20 @@ export default function WorkspaceRegistry() {
             <p className={styles.subtitle}>{REGISTRY_COPY.subtitle}</p>
           </div>
 
-          <section
-            className={`${styles.featured} ${styles.card}`}
-            style={{ cursor: "default" }}
-          >
+          <section className={`${styles.featured} ${styles.card}`} style={{ cursor: 'default' }}>
             <div className={styles.featuredTop}>
               <div className={styles.featuredBody}>
                 <div className={styles.eyebrow}>
-                  <span className={styles.eyebrowLabel}>
-                    {REGISTRY_COPY.selectedLabel}
-                  </span>
-                  <Chip tone="warn">
-                    {pluralize(selected.activeRuns, "run")} active
-                  </Chip>
+                  <span className={styles.eyebrowLabel}>{REGISTRY_COPY.selectedLabel}</span>
+                  <Chip tone="warn">{pluralize(selected.activeRuns, 'run')} active</Chip>
                 </div>
                 <div className={styles.featuredName}>{selected.name}</div>
                 <div className={styles.featuredMeta}>
-                  <span className={styles.featuredDomain}>
-                    {selected.businessDomain}
-                  </span>
+                  <span className={styles.featuredDomain}>{selected.businessDomain}</span>
                 </div>
               </div>
               <div className={styles.featuredActions}>
-                <Button
-                  variant="primary"
-                  iconRight="arrowRight"
-                  onClick={() => open(selected.id)}
-                >
+                <Button variant="primary" iconRight="arrowRight" onClick={() => open(selected.id)}>
                   Open
                 </Button>
               </div>
@@ -105,9 +87,7 @@ export default function WorkspaceRegistry() {
               aria-label="Search workspaces"
             />
             <div className={styles.spacer} />
-            <span className={styles.count}>
-              {pluralize(visible.length, "workspace")}
-            </span>
+            <span className={styles.count}>{pluralize(visible.length, 'workspace')}</span>
           </div>
 
           <div className={styles.grid}>
@@ -116,16 +96,13 @@ export default function WorkspaceRegistry() {
                 key={workspace.id}
                 role="button"
                 tabIndex={0}
-                className={[
-                  styles.card,
-                  selectedId === workspace.id ? styles.cardSelected : "",
-                ]
+                className={[styles.card, selectedId === workspace.id ? styles.cardSelected : '']
                   .filter(Boolean)
-                  .join(" ")}
+                  .join(' ')}
                 onClick={() => setSelectedId(workspace.id)}
                 onDoubleClick={() => open(workspace.id)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") open(workspace.id);
+                  if (event.key === 'Enter') open(workspace.id);
                 }}
               >
                 <div className={styles.cardTop}>
@@ -134,25 +111,15 @@ export default function WorkspaceRegistry() {
                   </span>
                   <div className={styles.cardBody}>
                     <div className={styles.cardName}>{workspace.name}</div>
-                    <div className={styles.cardDomain}>
-                      {workspace.businessDomain}
-                    </div>
+                    <div className={styles.cardDomain}>{workspace.businessDomain}</div>
                   </div>
-                  <Chip tone={WORKSPACE_STATUS_TONES[workspace.status]}>
-                    {workspace.status}
-                  </Chip>
+                  <Chip tone={WORKSPACE_STATUS_TONES[workspace.status]}>{workspace.status}</Chip>
                 </div>
                 <p className={styles.cardBlurb}>{workspace.blurb}</p>
                 <div className={styles.cardFoot}>
-                  <span className={styles.cardFootStrong}>
-                    {workspace.concepts}
-                  </span>{" "}
-                  concepts
-                  <span style={{ color: "var(--border-strong)" }}>·</span>
-                  <span className={styles.cardFootStrong}>
-                    {workspace.relations}
-                  </span>{" "}
-                  relations
+                  <span className={styles.cardFootStrong}>{workspace.concepts}</span> concepts
+                  <span style={{ color: 'var(--border-strong)' }}>·</span>
+                  <span className={styles.cardFootStrong}>{workspace.relations}</span> relations
                   <span className={styles.cardFootSpacer} />
                 </div>
               </div>
@@ -162,12 +129,8 @@ export default function WorkspaceRegistry() {
               <span className={styles.newCardIcon}>
                 <Icon name="plus" size={16} />
               </span>
-              <span className={styles.newCardTitle}>
-                {REGISTRY_COPY.newCardTitle}
-              </span>
-              <span className={styles.newCardHint}>
-                {REGISTRY_COPY.newCardHint}
-              </span>
+              <span className={styles.newCardTitle}>{REGISTRY_COPY.newCardTitle}</span>
+              <span className={styles.newCardHint}>{REGISTRY_COPY.newCardHint}</span>
             </button>
           </div>
         </div>

@@ -1,23 +1,23 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopBar from '../../components/layout/TopBar';
-import { PageBody } from '../../components/layout/AppShell';
-import PageHeader from '../../components/layout/PageHeader';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import ProgressBar from '../../components/ui/ProgressBar';
-import PipelineTrack from '../../components/pipeline/PipelineTrack';
-import { EmptyState, Panel, PanelHeader, StatGrid } from '../../components/ui/Surfaces';
-import { RUN_STATUS } from '../../config/constants/runs';
-import { PIPELINE_STAGES, describeStages } from '../../config/constants/pipeline';
-import { RUNS } from '../../mocks/runs';
-import { TABLES, DOCUMENTS, LAST_SYNCED } from '../../mocks/sources';
-import { QUESTION_COVERAGE, VALIDATION_FINDINGS } from '../../mocks/ontology';
-import { GRAPH_TOTALS, BUILT_BY_RUN } from '../../mocks/graph';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import { joinMeta, pluralize } from '../../utils/format';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import PageHeader from '@/components/layout/PageHeader';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import ProgressBar from '@/components/ui/ProgressBar';
+import PipelineTrack from '@/components/pipeline/PipelineTrack';
+import { EmptyState, Panel, PanelHeader, StatGrid } from '@/components/ui/Surfaces';
+import { RUN_STATUS } from '@/config/constants/runs';
+import { PIPELINE_STAGES, describeStages } from '@/config/constants/pipeline';
+import { RUNS } from '@/mocks/runs';
+import { TABLES, DOCUMENTS, LAST_SYNCED } from '@/mocks/sources';
+import { QUESTION_COVERAGE, VALIDATION_FINDINGS } from '@/mocks/ontology';
+import { GRAPH_TOTALS, BUILT_BY_RUN } from '@/mocks/graph';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { joinMeta, pluralize } from '@/utils/format';
 import styles from './Overview.module.css';
 
 const STAGE_LABEL = Object.fromEntries(PIPELINE_STAGES.map((stage) => [stage.id, stage.label]));
@@ -81,15 +81,17 @@ export default function Overview() {
       to: runTarget(run, workspaceId),
     }));
 
-    const errors = VALIDATION_FINDINGS.filter((finding) => finding.tone === 'danger').map((finding) => ({
-      key: finding.id,
-      tone: 'danger',
-      icon: 'shield',
-      title: finding.title,
-      detail: finding.detail,
-      meta: workspace.version,
-      to: buildPath.runOntology(workspaceId, BUILT_BY_RUN),
-    }));
+    const errors = VALIDATION_FINDINGS.filter((finding) => finding.tone === 'danger').map(
+      (finding) => ({
+        key: finding.id,
+        tone: 'danger',
+        icon: 'shield',
+        title: finding.title,
+        detail: finding.detail,
+        meta: workspace.version,
+        to: buildPath.runOntology(workspaceId, BUILT_BY_RUN),
+      }),
+    );
 
     return [...failed, ...gates, ...errors];
   }, [workspaceId, workspace.version]);
@@ -106,7 +108,8 @@ export default function Overview() {
     [],
   );
 
-  const unanswered = QUESTION_COVERAGE.total - QUESTION_COVERAGE.answerable - QUESTION_COVERAGE.partial;
+  const unanswered =
+    QUESTION_COVERAGE.total - QUESTION_COVERAGE.answerable - QUESTION_COVERAGE.partial;
 
   const versionStats = [
     { id: 'concepts', label: 'Concepts', value: String(workspace.concepts) },
@@ -126,7 +129,9 @@ export default function Overview() {
             title="Overview"
             subtitle="Connect the tables and documents this workspace should model. Nothing is extracted until you start a run."
           />
-          <Panel style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Panel
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
             <EmptyState
               icon="database"
               title="No sources connected yet"
@@ -258,9 +263,14 @@ export default function Overview() {
                       >
                         <div className={styles.flightTop}>
                           <span className={styles.rowTitle}>{run.id}</span>
-                          <span className={styles.rowMeta}>{joinMeta(run.strategy, run.startedAt)}</span>
+                          <span className={styles.rowMeta}>
+                            {joinMeta(run.strategy, run.startedAt)}
+                          </span>
                         </div>
-                        <PipelineTrack stages={describeStages(run.stage, run.status)} note={run.stageNote} />
+                        <PipelineTrack
+                          stages={describeStages(run.stage, run.status)}
+                          note={run.stageNote}
+                        />
                       </button>
                     </li>
                   ))}
@@ -290,7 +300,10 @@ export default function Overview() {
 
           <div className={styles.split}>
             <Panel>
-              <PanelHeader title="Drifted since last build" meta={`${drifted.length} of ${sourceCount}`} />
+              <PanelHeader
+                title="Drifted since last build"
+                meta={`${drifted.length} of ${sourceCount}`}
+              />
               {drifted.length === 0 ? (
                 <div className={styles.quiet}>
                   <Icon name="check" size={14} />
@@ -314,9 +327,14 @@ export default function Overview() {
                   </ul>
                   <div className={styles.panelFoot}>
                     <span className={styles.footNote}>
-                      {workspace.version} was built before these changed, so the graph does not reflect them.
+                      {workspace.version} was built before these changed, so the graph does not
+                      reflect them.
                     </span>
-                    <Button size="sm" iconRight="arrowRight" onClick={() => navigate(buildPath.newRun(workspaceId))}>
+                    <Button
+                      size="sm"
+                      iconRight="arrowRight"
+                      onClick={() => navigate(buildPath.newRun(workspaceId))}
+                    >
                       Re-extract these
                     </Button>
                   </div>
@@ -339,7 +357,8 @@ export default function Overview() {
                 <ul className={styles.legend}>
                   <li>
                     <span className={`${styles.key} ${styles.keyOk}`} />
-                    <span className={styles.legendValue}>{QUESTION_COVERAGE.answerable}</span> answerable
+                    <span className={styles.legendValue}>{QUESTION_COVERAGE.answerable}</span>{' '}
+                    answerable
                   </li>
                   <li>
                     <span className={`${styles.key} ${styles.keyWarn}`} />

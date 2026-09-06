@@ -1,9 +1,14 @@
-import Icon from '../Icon';
+import Icon from '@/components/ui/Icon';
 import styles from './Surfaces.module.css';
 
 /** Bordered white card. `flush` uses the tighter radius used inside page bodies. */
 export function Panel({ children, pad = false, flush = false, className = '', style }) {
-  const classes = [styles.panel, flush ? styles.panelFlush : '', pad ? styles.panelPad : '', className]
+  const classes = [
+    styles.panel,
+    flush ? styles.panelFlush : '',
+    pad ? styles.panelPad : '',
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
   return (
@@ -36,7 +41,9 @@ export function SectionLabel({ children, note, className = '' }) {
 export function StatGrid({ stats, columns, soft = false, small = false, className = '' }) {
   return (
     <div
-      className={[styles.statGrid, soft ? styles.statGridSoft : '', className].filter(Boolean).join(' ')}
+      className={[styles.statGrid, soft ? styles.statGridSoft : '', className]
+        .filter(Boolean)
+        .join(' ')}
       style={{ gridTemplateColumns: `repeat(${columns ?? stats.length}, minmax(0, 1fr))` }}
     >
       {stats.map((stat) => (

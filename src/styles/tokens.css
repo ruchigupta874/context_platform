@@ -67,8 +67,8 @@
   --entity-billing-account: #4a6076;
 
   /* ---- typography ---- */
-  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --font-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
   --fs-micro: 10px;
   --fs-tiny: 10.5px;

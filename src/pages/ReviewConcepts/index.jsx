@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Chip from '../../components/ui/Chip';
-import Checkbox from '../../components/ui/Checkbox';
-import SearchInput from '../../components/ui/SearchInput';
-import SegmentedControl from '../../components/ui/SegmentedControl';
-import Toggle from '../../components/ui/Toggle';
-import { SectionLabel } from '../../components/ui/Surfaces';
-import DecisionActions from '../../components/review/DecisionActions';
+import Chip from '@/components/ui/Chip';
+import Checkbox from '@/components/ui/Checkbox';
+import SearchInput from '@/components/ui/SearchInput';
+import SegmentedControl from '@/components/ui/SegmentedControl';
+import Toggle from '@/components/ui/Toggle';
+import { SectionLabel } from '@/components/ui/Surfaces';
+import DecisionActions from '@/components/review/DecisionActions';
 import {
   BulkActions,
   Definition,
@@ -22,21 +22,26 @@ import {
   GateToolbar,
   LinkChips,
   ToolbarSpacer,
-} from '../../components/review/ReviewGate';
-import { EvidenceTable, ReviewListItem, SignalList, TripleDisplay } from '../../components/review/ReviewItem';
-import { DECISION } from '../../config/constants/common';
+} from '@/components/review/ReviewGate';
+import {
+  EvidenceTable,
+  ReviewListItem,
+  SignalList,
+  TripleDisplay,
+} from '@/components/review/ReviewItem';
+import { DECISION } from '@/config/constants/common';
 import {
   CONCEPT_EVIDENCE_COLUMNS,
   GATE_COPY,
   RELATION_EVIDENCE_COLUMNS,
   REVIEW_TABS,
-} from '../../config/constants/review';
-import { CONCEPTS, RELATIONS } from '../../mocks/review';
-import { useReviewDecisions } from '../../hooks/useReviewDecisions';
-import { useSelection } from '../../hooks/useSelection';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import { conceptIri, confidenceTone, formatConfidence, relationLabel } from '../../utils/format';
+} from '@/config/constants/review';
+import { CONCEPTS, RELATIONS } from '@/mocks/review';
+import { useReviewDecisions } from '@/hooks/useReviewDecisions';
+import { useSelection } from '@/hooks/useSelection';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { conceptIri, confidenceTone, formatConfidence, relationLabel } from '@/utils/format';
 
 const LIST_COLUMNS = '34px 1fr 62px 24px';
 
@@ -60,7 +65,12 @@ export default function ReviewConcepts() {
   const rows = useMemo(
     () =>
       isConcepts
-        ? CONCEPTS.map((c) => ({ id: c.id, name: c.name, sub: `ex:${c.name} · ${c.source}`, confidence: c.confidence }))
+        ? CONCEPTS.map((c) => ({
+            id: c.id,
+            name: c.name,
+            sub: `ex:${c.name} · ${c.source}`,
+            confidence: c.confidence,
+          }))
         : RELATIONS.map((r) => ({
             id: r.id,
             name: relationLabel(r),
@@ -79,10 +89,7 @@ export default function ReviewConcepts() {
     });
   }, [rows, query, undecidedOnly, decisions]);
 
-  const allIds = useMemo(
-    () => [...CONCEPTS.map((c) => c.id), ...RELATIONS.map((r) => r.id)],
-    [],
-  );
+  const allIds = useMemo(() => [...CONCEPTS.map((c) => c.id), ...RELATIONS.map((r) => r.id)], []);
   const tally = decisions.tally(allIds);
 
   const selectedId = isConcepts ? selectedConcept : selectedRelation;
@@ -90,7 +97,6 @@ export default function ReviewConcepts() {
     ? CONCEPTS.find((c) => c.id === selectedId)
     : RELATIONS.find((r) => r.id === selectedId);
   const currentDecision = decisions.decisionFor(selectedId);
-
 
   const visibleIds = visible.map((row) => row.id);
   const allChecked = checks.allSelected(visibleIds);
@@ -164,7 +170,9 @@ export default function ReviewConcepts() {
                 decision={decisions.decisionFor(row.id)}
                 selected={selectedId === row.id}
                 checked={checks.isSelected(row.id)}
-                onSelect={() => (isConcepts ? setSelectedConcept(row.id) : setSelectedRelation(row.id))}
+                onSelect={() =>
+                  isConcepts ? setSelectedConcept(row.id) : setSelectedRelation(row.id)
+                }
                 onCheck={() => checks.toggle(row.id)}
               />
             ))}
@@ -173,7 +181,11 @@ export default function ReviewConcepts() {
 
         <GateDetail>
           <GateDetailHeader
-            title={isConcepts ? detail.name : `${detail.subject} — ${detail.predicate} → ${detail.object}`}
+            title={
+              isConcepts
+                ? detail.name
+                : `${detail.subject} — ${detail.predicate} → ${detail.object}`
+            }
             mono={!isConcepts}
             badges={
               <>
@@ -213,7 +225,9 @@ export default function ReviewConcepts() {
 
             <div>
               <SectionLabel
-                note={isConcepts ? 'columns that support this class' : 'how the link was established'}
+                note={
+                  isConcepts ? 'columns that support this class' : 'how the link was established'
+                }
               >
                 {isConcepts ? 'Grounded in' : 'Join evidence'}
               </SectionLabel>
@@ -241,7 +255,9 @@ export default function ReviewConcepts() {
       <GateFooter
         tally={tally}
         undecidedWarning={GATE_COPY.undecidedWarning(tally.undecided)}
-        onApproveRest={() => decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)}
+        onApproveRest={() =>
+          decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)
+        }
         primaryLabel={GATE_COPY.continue(tally.approved)}
         onPrimary={() => navigate(buildPath.reviewQuestions(workspaceId, runId))}
       />

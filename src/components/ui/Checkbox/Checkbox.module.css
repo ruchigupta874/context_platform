@@ -10,7 +10,9 @@
   justify-content: center;
   flex: none;
   padding: 0;
-  transition: background var(--t-fast), border-color var(--t-fast);
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
 }
 
 .sm {

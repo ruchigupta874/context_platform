@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import SearchInput from '../../components/ui/SearchInput';
-import SegmentedControl from '../../components/ui/SegmentedControl';
-import { Banner, CodeBlock, SectionLabel } from '../../components/ui/Surfaces';
-import DecisionActions from '../../components/review/DecisionActions';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import SearchInput from '@/components/ui/SearchInput';
+import SegmentedControl from '@/components/ui/SegmentedControl';
+import { Banner, CodeBlock, SectionLabel } from '@/components/ui/Surfaces';
+import DecisionActions from '@/components/review/DecisionActions';
 import {
   GateDetail,
   GateDetailBody,
@@ -17,8 +17,8 @@ import {
   GateSplit,
   GateToolbar,
   ToolbarSpacer,
-} from '../../components/review/ReviewGate';
-import { DECISION } from '../../config/constants/common';
+} from '@/components/review/ReviewGate';
+import { DECISION } from '@/config/constants/common';
 import {
   COVERAGE,
   COVERAGE_FILTERS,
@@ -26,12 +26,12 @@ import {
   QUESTION_ACTION_LABELS,
   REQUIREMENT_STATUS,
   VERDICTS,
-} from '../../config/constants/questions';
-import { QUESTIONS } from '../../mocks/questions';
-import { useReviewDecisions } from '../../hooks/useReviewDecisions';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import gateStyles from '../../components/review/ReviewGate/ReviewGate.module.css';
+} from '@/config/constants/questions';
+import { QUESTIONS } from '@/mocks/questions';
+import { useReviewDecisions } from '@/hooks/useReviewDecisions';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import gateStyles from '@/components/review/ReviewGate/ReviewGate.module.css';
 import styles from './ReviewQuestions.module.css';
 
 export default function ReviewQuestions() {
@@ -75,9 +75,9 @@ export default function ReviewQuestions() {
 
   // Questions the reviewer kept that the model still cannot answer — the gap this gate exists to surface.
   const gaps = QUESTIONS.filter(
-    (item) => decisions.decisionFor(item.id) === DECISION.approved && item.coverage !== COVERAGE.covered,
+    (item) =>
+      decisions.decisionFor(item.id) === DECISION.approved && item.coverage !== COVERAGE.covered,
   ).length;
-
 
   return (
     <GateShell>
@@ -89,7 +89,13 @@ export default function ReviewQuestions() {
           size="lg"
           ariaLabel="Filter by coverage"
         />
-        <SearchInput value={query} onChange={setQuery} placeholder="Filter questions" width={210} subtle />
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder="Filter questions"
+          width={210}
+          subtle
+        />
         <ToolbarSpacer />
         <Button variant="ghost" iconLeft="plus">
           Write your own question
@@ -120,7 +126,11 @@ export default function ReviewQuestions() {
                 >
                   <span className={styles.number}>{item.number}</span>
                   <div className={styles.body}>
-                    <div className={[styles.text, dropped ? styles.dropped : ''].filter(Boolean).join(' ')}>
+                    <div
+                      className={[styles.text, dropped ? styles.dropped : '']
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
                       {item.text}
                     </div>
                     <div className={styles.tags}>
@@ -132,7 +142,9 @@ export default function ReviewQuestions() {
                     {decision === DECISION.approved && (
                       <Icon name="check" size={14} strokeWidth={2.2} className={styles.markKept} />
                     )}
-                    {dropped && <Icon name="close" size={13} strokeWidth={2} className={styles.markDropped} />}
+                    {dropped && (
+                      <Icon name="close" size={13} strokeWidth={2} className={styles.markDropped} />
+                    )}
                   </span>
                 </div>
               );
@@ -164,7 +176,12 @@ export default function ReviewQuestions() {
           </header>
 
           <GateDetailBody>
-            <Banner tone={verdict.tone} icon={verdict.icon} title={verdict.title} note={verdict.note} />
+            <Banner
+              tone={verdict.tone}
+              icon={verdict.icon}
+              title={verdict.title}
+              note={verdict.note}
+            />
 
             <div>
               <SectionLabel>The ontology must carry</SectionLabel>
@@ -209,7 +226,11 @@ export default function ReviewQuestions() {
         primaryLabel="Build the ontology"
         onPrimary={() => navigate(buildPath.runOntology(workspaceId, runId))}
         secondary={
-          <Button variant="secondary" size="lg" onClick={() => navigate(buildPath.reviewConcepts(workspaceId, runId))}>
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => navigate(buildPath.reviewConcepts(workspaceId, runId))}
+          >
             Back to concepts
           </Button>
         }

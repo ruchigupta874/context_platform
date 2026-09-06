@@ -1,5 +1,5 @@
-import Button from '../ui/Button';
-import { DECISION } from '../../config/constants/common';
+import Button from '@/components/ui/Button';
+import { DECISION } from '@/config/constants/common';
 
 /**
  * Approve / reject pair for the currently open item.
@@ -13,14 +13,25 @@ export default function DecisionActions({
   onApprove,
   onReject,
   onEdit,
-  labels = { approve: { idle: 'Approve', done: 'Approved' }, reject: { idle: 'Reject', done: 'Rejected' } },
+  labels = {
+    approve: { idle: 'Approve', done: 'Approved' },
+    reject: { idle: 'Reject', done: 'Rejected' },
+  },
 }) {
   const approved = decision === DECISION.approved;
   const rejected = decision === DECISION.rejected;
 
   return (
     <>
-      {onEdit && <Button variant="secondary" size="icon" iconLeft="edit" onClick={onEdit} aria-label="Edit" />}
+      {onEdit && (
+        <Button
+          variant="secondary"
+          size="icon"
+          iconLeft="edit"
+          onClick={onEdit}
+          aria-label="Edit"
+        />
+      )}
       <Button
         variant={rejected ? 'rejectActive' : 'reject'}
         iconLeft="close"

@@ -1,12 +1,12 @@
 import { Navigate, useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import { Panel, PanelHeader, SectionLabel, StatGrid, StatPairs } from '../../components/ui/Surfaces';
-import { PIPELINE_STAGES, STAGE_STATE } from '../../config/constants/pipeline';
-import { BLOCKED_LINE, LOG_TAG_TONES, RUN_DETAIL } from '../../mocks/runs';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import { Panel, PanelHeader, SectionLabel, StatGrid, StatPairs } from '@/components/ui/Surfaces';
+import { PIPELINE_STAGES, STAGE_STATE } from '@/config/constants/pipeline';
+import { BLOCKED_LINE, LOG_TAG_TONES, RUN_DETAIL } from '@/mocks/runs';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
 import styles from './RunDetail.module.css';
 
 const ICON_TONE_CLASS = {
@@ -109,7 +109,9 @@ export default function RunDetail() {
                       .filter(Boolean)
                       .join(' ')}
                   />
-                  {index < RUN_DETAIL.activity.length - 1 && <span className={styles.activityLine} />}
+                  {index < RUN_DETAIL.activity.length - 1 && (
+                    <span className={styles.activityLine} />
+                  )}
                 </div>
                 <div className={styles.activityBody}>
                   <div className={styles.activityText}>{entry.message}</div>

@@ -1,25 +1,30 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopBar from '../../components/layout/TopBar';
-import { PageBody } from '../../components/layout/AppShell';
-import PageHeader from '../../components/layout/PageHeader';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import SearchInput from '../../components/ui/SearchInput';
-import { Banner } from '../../components/ui/Surfaces';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import PageHeader from '@/components/layout/PageHeader';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import SearchInput from '@/components/ui/SearchInput';
+import { Banner } from '@/components/ui/Surfaces';
 import {
   DataTable,
   DataTableBody,
   DataTableFooter,
   DataTableHead,
   DataTableRow,
-} from '../../components/ui/DataTable';
-import { DOCUMENT_COLUMNS, SOURCE_TABS, TABLE_COLUMNS, UPLOAD_HINT } from '../../config/constants/sources';
-import { CATALOG, CURRENT_VERSION, DOCUMENTS, LAST_SYNCED, TABLES } from '../../mocks/sources';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import { pluralize } from '../../utils/format';
+} from '@/components/ui/DataTable';
+import {
+  DOCUMENT_COLUMNS,
+  SOURCE_TABS,
+  TABLE_COLUMNS,
+  UPLOAD_HINT,
+} from '@/config/constants/sources';
+import { CATALOG, CURRENT_VERSION, DOCUMENTS, LAST_SYNCED, TABLES } from '@/mocks/sources';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { pluralize } from '@/utils/format';
 import { canExtract, extractLabel, sourceStatus } from './sourceStatus';
 import styles from './Sources.module.css';
 
@@ -75,7 +80,11 @@ export default function Sources() {
       <TopBar
         crumbs={[{ label: workspace.name }, { label: 'Data sources' }]}
         actions={
-          <Button variant="primary" iconLeft="plus" onClick={() => navigate(buildPath.newRun(workspaceId))}>
+          <Button
+            variant="primary"
+            iconLeft="plus"
+            onClick={() => navigate(buildPath.newRun(workspaceId))}
+          >
             New extraction
           </Button>
         }
@@ -120,7 +129,12 @@ export default function Sources() {
                 {CATALOG}
                 <Icon name="chevronDown" size={13} style={{ color: 'var(--text-5)' }} />
               </div>
-              <SearchInput value={query} onChange={setQuery} placeholder="Filter tables" width={200} />
+              <SearchInput
+                value={query}
+                onChange={setQuery}
+                placeholder="Filter tables"
+                width={200}
+              />
               <div className={styles.spacer} />
               <span className={styles.syncNote}>Last synced {LAST_SYNCED}</span>
             </div>
@@ -137,12 +151,19 @@ export default function Sources() {
               <DataTableHead columns={TABLE_COLUMNS} />
               <DataTableBody>
                 {visibleTables.map((table) => (
-                  <DataTableRow key={table.id} columns={TABLE_COLUMNS} flagged={Boolean(table.drift)}>
+                  <DataTableRow
+                    key={table.id}
+                    columns={TABLE_COLUMNS}
+                    flagged={Boolean(table.drift)}
+                  >
                     <div className={styles.tableName}>{table.name}</div>
                     <div className={styles.num}>{table.cols}</div>
                     <div className={styles.num}>{table.rows}</div>
                     <div
-                      className={[styles.description, table.description ? '' : styles.descriptionEmpty]
+                      className={[
+                        styles.description,
+                        table.description ? '' : styles.descriptionEmpty,
+                      ]
                         .filter(Boolean)
                         .join(' ')}
                     >
@@ -186,7 +207,11 @@ export default function Sources() {
               <DataTableHead columns={DOCUMENT_COLUMNS} />
               <DataTableBody>
                 {DOCUMENTS.map((doc) => (
-                  <DataTableRow key={doc.id} columns={DOCUMENT_COLUMNS} flagged={Boolean(doc.drift)}>
+                  <DataTableRow
+                    key={doc.id}
+                    columns={DOCUMENT_COLUMNS}
+                    flagged={Boolean(doc.drift)}
+                  >
                     <div className={styles.docName}>
                       <Icon name="doc" size={15} style={{ color: 'var(--text-4)' }} />
                       <span className={styles.docNameText}>{doc.name}</span>

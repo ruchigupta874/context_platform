@@ -1,4 +1,4 @@
-import { buildPath } from '../routes/paths';
+import { buildPath } from '@/routes/paths';
 
 /**
  * Sidebar model. Grouped exactly as the design: the sidebar answers
@@ -20,15 +20,27 @@ export const NAV_GROUPS = [
     id: 'extraction',
     label: 'Extraction',
     items: [
-      { id: 'runs', label: 'Runs', icon: 'play', to: buildPath.runs, badge: 'activeRuns', badgeTone: 'info' },
-      { id: 'review', label: 'Review queue', icon: 'inbox', to: buildPath.reviewQueue, badge: 'pendingReviews', badgeTone: 'warn' },
+      {
+        id: 'runs',
+        label: 'Runs',
+        icon: 'play',
+        to: buildPath.runs,
+        badge: 'activeRuns',
+        badgeTone: 'info',
+      },
+      {
+        id: 'review',
+        label: 'Review queue',
+        icon: 'inbox',
+        to: buildPath.reviewQueue,
+        badge: 'pendingReviews',
+        badgeTone: 'warn',
+      },
     ],
   },
   {
     id: 'knowledge',
     label: 'Knowledge',
-    items: [
-      { id: 'graph', label: 'Knowledge graph', icon: 'graph', to: buildPath.graph },
-    ],
+    items: [{ id: 'graph', label: 'Knowledge graph', icon: 'graph', to: buildPath.graph }],
   },
 ];

@@ -1,8 +1,8 @@
-import { Outlet } from "react-router-dom";
-import Sidebar from "../Sidebar";
-import WorkspaceProvider from "../../../context/WorkspaceProvider";
-import ReviewProvider from "../../../context/ReviewProvider";
-import styles from "./AppShell.module.css";
+import { Outlet } from 'react-router-dom';
+import Sidebar from '@/components/layout/Sidebar';
+import WorkspaceProvider from '@/context/WorkspaceProvider';
+import ReviewProvider from '@/context/ReviewProvider';
+import styles from './AppShell.module.css';
 
 /**
  * Workspace chrome. Every page inside a workspace renders through here, so the
@@ -24,19 +24,14 @@ export default function AppShell() {
 }
 
 /** Page body wrapper. `scroll` for whole-page scrolling, otherwise internal panes scroll. */
-export function PageBody({
-  children,
-  scroll = false,
-  pad = true,
-  className = "",
-}) {
+export function PageBody({ children, scroll = false, pad = true, className = '' }) {
   const classes = [
     styles.content,
     scroll ? styles.scroll : styles.fixed,
-    pad ? styles.pad : "",
+    pad ? styles.pad : '',
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
   return <main className={classes}>{children}</main>;
 }

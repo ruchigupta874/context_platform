@@ -48,7 +48,9 @@
   background: var(--bg-panel);
   font: inherit;
   color: inherit;
-  transition: background var(--t-fast), border-color var(--t-fast);
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
 }
 
 .clickable {

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { STAGE_STATE } from '../../../config/constants/pipeline';
+import { STAGE_STATE } from '@/config/constants/pipeline';
 import styles from './PipelineTrack.module.css';
 
 const DOT_CLASS = {
@@ -28,7 +28,11 @@ export default function PipelineTrack({ stages, note, noteTone }) {
           return (
             <Fragment key={stage.id}>
               {index > 0 && (
-                <span className={[styles.line, index <= reached ? styles.lineDone : ''].filter(Boolean).join(' ')} />
+                <span
+                  className={[styles.line, index <= reached ? styles.lineDone : '']
+                    .filter(Boolean)
+                    .join(' ')}
+                />
               )}
               <span
                 className={[styles.dot, current ? styles.dotCurrent : '', DOT_CLASS[stage.state]]

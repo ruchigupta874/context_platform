@@ -1,24 +1,24 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopBar from '../../components/layout/TopBar';
-import { PageBody } from '../../components/layout/AppShell';
-import PageHeader from '../../components/layout/PageHeader';
-import Icon from '../../components/ui/Icon';
-import Button from '../../components/ui/Button';
-import Chip from '../../components/ui/Chip';
-import Toggle from '../../components/ui/Toggle';
-import { Panel, SectionLabel, StatPairs } from '../../components/ui/Surfaces';
-import { DEFAULT_STRATEGY, STRATEGIES, estimateMinutes } from '../../config/constants/runs';
-import { PIPELINE_STAGES } from '../../config/constants/pipeline';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import PageHeader from '@/components/layout/PageHeader';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Chip from '@/components/ui/Chip';
+import Toggle from '@/components/ui/Toggle';
+import { Panel, SectionLabel, StatPairs } from '@/components/ui/Surfaces';
+import { DEFAULT_STRATEGY, STRATEGIES, estimateMinutes } from '@/config/constants/runs';
+import { PIPELINE_STAGES } from '@/config/constants/pipeline';
 import {
   DEFAULT_DOCUMENT_SELECTION,
   DEFAULT_TABLE_SELECTION,
   DOCUMENTS,
   TABLES,
-} from '../../mocks/sources';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { buildPath } from '../../routes/paths';
-import { pluralize } from '../../utils/format';
+} from '@/mocks/sources';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { buildPath } from '@/routes/paths';
+import { pluralize } from '@/utils/format';
 import styles from './NewRun.module.css';
 
 const DEFAULT_GUIDANCE =
@@ -122,7 +122,11 @@ export default function NewRun() {
                 <span className={styles.step}>2</span>
                 <span className={styles.sectionTitle}>Extraction strategy</span>
               </div>
-              <div className={styles.strategyGrid} role="radiogroup" aria-label="Extraction strategy">
+              <div
+                className={styles.strategyGrid}
+                role="radiogroup"
+                aria-label="Extraction strategy"
+              >
                 {STRATEGIES.map((option) => {
                   const active = strategy === option.id;
                   return (
@@ -131,11 +135,17 @@ export default function NewRun() {
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      className={[styles.strategy, active ? styles.strategyActive : ''].filter(Boolean).join(' ')}
+                      className={[styles.strategy, active ? styles.strategyActive : '']
+                        .filter(Boolean)
+                        .join(' ')}
                       onClick={() => setStrategy(option.id)}
                     >
                       <span className={styles.strategyTop}>
-                        <span className={[styles.radio, active ? styles.radioActive : ''].filter(Boolean).join(' ')}>
+                        <span
+                          className={[styles.radio, active ? styles.radioActive : '']
+                            .filter(Boolean)
+                            .join(' ')}
+                        >
                           <span className={styles.radioDot} />
                         </span>
                         <span className={styles.strategyName}>{option.name}</span>
@@ -154,8 +164,8 @@ export default function NewRun() {
                 <span className={styles.optional}>optional</span>
               </div>
               <p className={styles.sectionNote}>
-                Naming conventions, entities to avoid, or terms your business insists on. This steers concept
-                naming more than anything else here.
+                Naming conventions, entities to avoid, or terms your business insists on. This
+                steers concept naming more than anything else here.
               </p>
               <textarea
                 className={styles.textarea}
@@ -178,8 +188,8 @@ export default function NewRun() {
                 <span className={styles.sectionTitle}>Review gates</span>
               </div>
               <p className={styles.sectionNote}>
-                The run pauses at each gate you keep on and waits for a decision. Nothing downstream is built
-                until you approve.
+                The run pauses at each gate you keep on and waits for a decision. Nothing downstream
+                is built until you approve.
               </p>
               <div className={styles.gates}>
                 <div className={styles.gate}>
@@ -189,7 +199,8 @@ export default function NewRun() {
                       <Chip tone="neutral">REQUIRED</Chip>
                     </div>
                     <div className={styles.gateDesc}>
-                      Approve the classes and the links between them before anything is built on top.
+                      Approve the classes and the links between them before anything is built on
+                      top.
                     </div>
                   </div>
                   <Toggle checked disabled size="lg" />
@@ -198,11 +209,13 @@ export default function NewRun() {
                   <div className={styles.gateBody}>
                     <div className={styles.gateName}>
                       Competency questions
-                      <Chip tone={questionGate ? 'ok' : 'neutral'}>{questionGate ? 'ON' : 'OFF'}</Chip>
+                      <Chip tone={questionGate ? 'ok' : 'neutral'}>
+                        {questionGate ? 'ON' : 'OFF'}
+                      </Chip>
                     </div>
                     <div className={styles.gateDesc}>
-                      Approve the questions the ontology must be able to answer. Turn off to accept all
-                      generated questions.
+                      Approve the questions the ontology must be able to answer. Turn off to accept
+                      all generated questions.
                     </div>
                   </div>
                   <Toggle checked={questionGate} onChange={setQuestionGate} size="lg" />
@@ -255,7 +268,8 @@ export default function NewRun() {
               Run extraction
             </Button>
             <p className={styles.railNote}>
-              Runs in the background. Leave this page, start another run, come back when a gate needs you.
+              Runs in the background. Leave this page, start another run, come back when a gate
+              needs you.
             </p>
           </Panel>
         </div>

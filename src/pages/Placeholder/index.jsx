@@ -1,7 +1,7 @@
-import TopBar from '../../components/layout/TopBar';
-import { PageBody } from '../../components/layout/AppShell';
-import { EmptyState, Panel } from '../../components/ui/Surfaces';
-import { useWorkspace } from '../../hooks/useWorkspace';
+import TopBar from '@/components/layout/TopBar';
+import { PageBody } from '@/components/layout/AppShell';
+import { EmptyState, Panel } from '@/components/ui/Surfaces';
+import { useWorkspace } from '@/hooks/useWorkspace';
 
 /**
  * Stands in for nav destinations that are routed but not designed yet.
@@ -18,7 +18,10 @@ export default function Placeholder({ title, icon = 'grid', hint }) {
           <EmptyState
             icon={icon}
             title={`${title} is not built yet`}
-            hint={hint ?? 'The route exists so navigation works end to end. Drop the real screen in here.'}
+            hint={
+              hint ??
+              'The route exists so navigation works end to end. Drop the real screen in here.'
+            }
           />
         </Panel>
       </PageBody>

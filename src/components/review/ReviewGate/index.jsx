@@ -1,6 +1,6 @@
-import Icon from '../../ui/Icon';
-import Button from '../../ui/Button';
-import ProgressBar from '../../ui/ProgressBar';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import ProgressBar from '@/components/ui/ProgressBar';
 import styles from './ReviewGate.module.css';
 
 /** Layout primitives for a review gate. Both gates compose from these. */
@@ -17,7 +17,13 @@ export function ToolbarSpacer() {
   return <div className={styles.spacer} />;
 }
 
-export function BulkActions({ count, onApprove, onReject, approveLabel = 'Approve', rejectLabel = 'Reject' }) {
+export function BulkActions({
+  count,
+  onApprove,
+  onReject,
+  approveLabel = 'Approve',
+  rejectLabel = 'Reject',
+}) {
   if (count === 0) return null;
   return (
     <div className={styles.bulk}>
@@ -98,7 +104,12 @@ export function LinkChips({ items, onSelect }) {
   return (
     <div className={styles.chipRow}>
       {items.map((item) => (
-        <button key={item.id} type="button" className={styles.linkChip} onClick={() => onSelect(item.id)}>
+        <button
+          key={item.id}
+          type="button"
+          className={styles.linkChip}
+          onClick={() => onSelect(item.id)}
+        >
           <Icon name="link" size={12} style={{ color: 'var(--text-5)' }} />
           {item.label}
         </button>
@@ -111,7 +122,14 @@ export function LinkChips({ items, onSelect }) {
  * The gate footer. Its job is to make the cost of leaving items undecided
  * visible before the reviewer commits — hence the explicit undecided warning.
  */
-export function GateFooter({ tally, undecidedWarning, onApproveRest, primaryLabel, onPrimary, secondary }) {
+export function GateFooter({
+  tally,
+  undecidedWarning,
+  onApproveRest,
+  primaryLabel,
+  onPrimary,
+  secondary,
+}) {
   return (
     <footer className={styles.footer}>
       <div className={styles.progress}>

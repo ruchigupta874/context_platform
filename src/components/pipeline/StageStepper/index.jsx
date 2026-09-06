@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
-import Icon from '../../ui/Icon';
-import { STAGE_STATE } from '../../../config/constants/pipeline';
+import Icon from '@/components/ui/Icon';
+import { STAGE_STATE } from '@/config/constants/pipeline';
 import styles from './StageStepper.module.css';
 
 const DISC_CLASS = {
@@ -41,7 +41,10 @@ export default function StageStepper({
           <Fragment key={stage.id}>
             {index > 0 && (
               <span
-                className={[styles.connector, index <= stageProgress(stages) ? styles.connectorDone : '']
+                className={[
+                  styles.connector,
+                  index <= stageProgress(stages) ? styles.connectorDone : '',
+                ]
                   .filter(Boolean)
                   .join(' ')}
               />
@@ -75,7 +78,10 @@ export default function StageStepper({
                 </span>
                 {showMeta && meta[stage.id] && (
                   <span
-                    className={[styles.meta, stage.state === STAGE_STATE.gate ? styles.metaGate : '']
+                    className={[
+                      styles.meta,
+                      stage.state === STAGE_STATE.gate ? styles.metaGate : '',
+                    ]
                       .filter(Boolean)
                       .join(' ')}
                   >
@@ -93,8 +99,6 @@ export default function StageStepper({
 
 /** Index of the furthest stage reached — connectors up to here read as complete. */
 function stageProgress(stages) {
-  const lastActive = [...stages]
-    .reverse()
-    .find((stage) => stage.state !== STAGE_STATE.pending);
+  const lastActive = [...stages].reverse().find((stage) => stage.state !== STAGE_STATE.pending);
   return lastActive ? lastActive.index : 0;
 }

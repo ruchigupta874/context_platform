@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Icon from '../../components/ui/Icon';
-import Chip from '../../components/ui/Chip';
-import SearchInput from '../../components/ui/SearchInput';
-import ProgressBar from '../../components/ui/ProgressBar';
-import { Banner, CodeBlock, SectionLabel } from '../../components/ui/Surfaces';
-import RunOutputEmpty from '../../components/pipeline/RunOutputEmpty';
+import Icon from '@/components/ui/Icon';
+import Chip from '@/components/ui/Chip';
+import SearchInput from '@/components/ui/SearchInput';
+import ProgressBar from '@/components/ui/ProgressBar';
+import { Banner, CodeBlock, SectionLabel } from '@/components/ui/Surfaces';
+import RunOutputEmpty from '@/components/pipeline/RunOutputEmpty';
 import {
   AXIOM_TONES,
   CLASS_DETAILS,
@@ -14,15 +14,20 @@ import {
   ONTOLOGY_TREE,
   QUESTION_COVERAGE,
   VALIDATION_FINDINGS,
-} from '../../mocks/ontology';
-import { findRun } from '../../mocks/runs';
-import { useWorkspace } from '../../hooks/useWorkspace';
-import { conceptIri } from '../../utils/format';
+} from '@/mocks/ontology';
+import { findRun } from '@/mocks/runs';
+import { useWorkspace } from '@/hooks/useWorkspace';
+import { conceptIri } from '@/utils/format';
 import styles from './Ontology.module.css';
 
 const OBJECT_COLUMNS = '1.2fr 1fr 82px 1fr';
 const DATA_COLUMNS = '1.1fr 100px 1.3fr 82px';
-const DOT_CLASS = { ok: styles.dotOk, info: styles.dotInfo, danger: styles.dotDanger, neutral: styles.dotOk };
+const DOT_CLASS = {
+  ok: styles.dotOk,
+  info: styles.dotInfo,
+  danger: styles.dotDanger,
+  neutral: styles.dotOk,
+};
 
 function fallbackDetail(id) {
   return {
@@ -46,10 +51,7 @@ export default function Ontology() {
   const [expanded, setExpanded] = useState(() => new Set(DEFAULT_EXPANDED));
   const [query, setQuery] = useState('');
 
-  const hasChildren = useMemo(
-    () => (id) => ONTOLOGY_TREE.some((node) => node.parent === id),
-    [],
-  );
+  const hasChildren = useMemo(() => (id) => ONTOLOGY_TREE.some((node) => node.parent === id), []);
 
   /** A node is visible when every ancestor is expanded — or when a search is active. */
   const visibleNodes = useMemo(() => {
@@ -78,7 +80,9 @@ export default function Ontology() {
     });
   };
 
-  const coveragePercent = Math.round((QUESTION_COVERAGE.answerable / QUESTION_COVERAGE.total) * 100);
+  const coveragePercent = Math.round(
+    (QUESTION_COVERAGE.answerable / QUESTION_COVERAGE.total) * 100,
+  );
 
   // Hooks above run unconditionally; the bail-out has to come after them.
   if (!run?.output) return <RunOutputEmpty artifact="Ontology" run={run} runId={runId} />;
@@ -87,7 +91,13 @@ export default function Ontology() {
     <div className={styles.layout}>
       <div className={styles.tree}>
         <div className={styles.treeSearch}>
-          <SearchInput value={query} onChange={setQuery} placeholder="Find a class" width="100%" subtle />
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="Find a class"
+            width="100%"
+            subtle
+          />
         </div>
         <div className={styles.treeLabel}>Class hierarchy</div>
         <div className={styles.treeBody}>
@@ -171,7 +181,11 @@ export default function Ontology() {
                   <div>Inverse</div>
                 </div>
                 {detail.objectProperties.map((property) => (
-                  <div key={property.id} className={styles.propRow} style={{ gridTemplateColumns: OBJECT_COLUMNS }}>
+                  <div
+                    key={property.id}
+                    className={styles.propRow}
+                    style={{ gridTemplateColumns: OBJECT_COLUMNS }}
+                  >
                     <div className={styles.propName}>{property.name}</div>
                     <div>{property.range}</div>
                     <div className={styles.propMuted}>{property.cardinality}</div>
@@ -193,7 +207,11 @@ export default function Ontology() {
                   <div>Required</div>
                 </div>
                 {detail.dataProperties.map((property) => (
-                  <div key={property.id} className={styles.propRow} style={{ gridTemplateColumns: DATA_COLUMNS }}>
+                  <div
+                    key={property.id}
+                    className={styles.propRow}
+                    style={{ gridTemplateColumns: DATA_COLUMNS }}
+                  >
                     <div className={styles.propName}>{property.name}</div>
                     <div className={styles.propMuted}>{property.type}</div>
                     <div>{property.from}</div>
@@ -225,7 +243,9 @@ export default function Ontology() {
           )}
 
           <div>
-            <SectionLabel note="how instances are materialised from the catalog">R2RML mapping</SectionLabel>
+            <SectionLabel note="how instances are materialised from the catalog">
+              R2RML mapping
+            </SectionLabel>
             <CodeBlock style={{ marginTop: 8 }}>{detail.mapping}</CodeBlock>
           </div>
         </div>
@@ -275,7 +295,12 @@ export default function Ontology() {
           <SectionLabel>Validation</SectionLabel>
           <div className={styles.validationList}>
             {VALIDATION_FINDINGS.map((finding) => (
-              <Banner key={finding.id} tone={finding.tone} title={finding.title} note={finding.detail} />
+              <Banner
+                key={finding.id}
+                tone={finding.tone}
+                title={finding.title}
+                note={finding.detail}
+              />
             ))}
           </div>
         </div>

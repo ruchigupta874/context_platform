@@ -65,7 +65,10 @@ export function DataTableRow({
 
 export function DataTable({ children, fill = true, className = '' }) {
   return (
-    <div className={[styles.table, fill ? styles.fill : '', className].filter(Boolean).join(' ')} role="table">
+    <div
+      className={[styles.table, fill ? styles.fill : '', className].filter(Boolean).join(' ')}
+      role="table"
+    >
       {children}
     </div>
   );

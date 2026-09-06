@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { DECISION } from '../config/constants/common';
+import { DECISION } from '@/config/constants/common';
 
 /**
  * Approve / reject state for a review gate.
@@ -53,10 +53,7 @@ export function useDecisions(initial = {}) {
     [decisions],
   );
 
-  const undecidedIds = useCallback(
-    (allIds) => allIds.filter((id) => !decisions[id]),
-    [decisions],
-  );
+  const undecidedIds = useCallback((allIds) => allIds.filter((id) => !decisions[id]), [decisions]);
 
   return useMemo(
     () => ({ decisions, decisionFor, decide, decideMany, approve, reject, tally, undecidedIds }),

@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ReviewContext } from '../context/reviewContext';
+import { ReviewContext } from '@/context/reviewContext';
 
 export function useReviewDecisions() {
   const context = useContext(ReviewContext);

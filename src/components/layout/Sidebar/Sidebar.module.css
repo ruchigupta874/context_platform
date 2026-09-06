@@ -5,7 +5,9 @@
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  transition: width var(--t-fast), flex-basis var(--t-fast);
+  transition:
+    width var(--t-fast),
+    flex-basis var(--t-fast);
 }
 
 .collapsed {
