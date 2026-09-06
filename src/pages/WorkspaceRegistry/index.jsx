@@ -4,10 +4,8 @@ import Icon from "../../components/ui/Icon";
 import Button from "../../components/ui/Button";
 import Chip from "../../components/ui/Chip";
 import SearchInput from "../../components/ui/SearchInput";
-import SegmentedControl from "../../components/ui/SegmentedControl";
 import { StatGrid } from "../../components/ui/Surfaces";
 import {
-  WORKSPACE_FILTERS,
   WORKSPACE_STATUS_TONES,
   REGISTRY_COPY,
 } from "../../config/constants/workspaces";
@@ -19,10 +17,9 @@ import styles from "./WorkspaceRegistry.module.css";
 export default function WorkspaceRegistry() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("all");
   const [selectedId, setSelectedId] = useState(WORKSPACES[0].id);
 
-  // Derived, not stored: filtering is a pure function of query + status.
+  // Derived, not stored: filtering is a pure function of the query.
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return WORKSPACES.filter((workspace) => {
@@ -31,10 +28,9 @@ export default function WorkspaceRegistry() {
         workspace.name.toLowerCase().includes(needle) ||
         workspace.businessDomain.toLowerCase().includes(needle) ||
         workspace.blurb.toLowerCase().includes(needle);
-      const matchesStatus = status === "all" || workspace.status === status;
-      return matchesQuery && matchesStatus;
+      return matchesQuery;
     });
-  }, [query, status]);
+  }, [query]);
 
   // The header panel is a view of whichever card is selected, so its identity
   // stays in step with the grid even though the KPI numbers are still static.
@@ -85,18 +81,9 @@ export default function WorkspaceRegistry() {
                   <span className={styles.featuredDomain}>
                     {selected.businessDomain}
                   </span>
-                  {/* <span className={styles.featuredIri}>{selected.iri}</span> */}
                 </div>
               </div>
               <div className={styles.featuredActions}>
-                {/* <div className={styles.versionPicker}>
-                  {selected.version} · {selected.status.toLowerCase()}
-                  <Icon
-                    name="chevronDown"
-                    size={13}
-                    style={{ color: "var(--text-5)" }}
-                  />
-                </div> */}
                 <Button
                   variant="primary"
                   iconRight="arrowRight"
@@ -117,12 +104,6 @@ export default function WorkspaceRegistry() {
               width={260}
               aria-label="Search workspaces"
             />
-            {/* <SegmentedControl
-              options={WORKSPACE_FILTERS}
-              value={status}
-              onChange={setStatus}
-              ariaLabel="Filter by status"
-            /> */}
             <div className={styles.spacer} />
             <span className={styles.count}>
               {pluralize(visible.length, "workspace")}
@@ -173,7 +154,6 @@ export default function WorkspaceRegistry() {
                   </span>{" "}
                   relations
                   <span className={styles.cardFootSpacer} />
-                  {/* <span>{workspace.version}</span> */}
                 </div>
               </div>
             ))}
