@@ -12,10 +12,26 @@ migration. Both are deferred deliberately; see [Deferred](#deferred).
 
 ---
 
-## What this codebase is missing
+## Current state
 
-The naming, the token system, and the component boundaries are already good. The
-gaps are enforcement, folder topology, and a data layer.
+**The restructure described below has been carried out** — the nine steps in
+[The plan](#the-plan) are complete, one commit each. What follows is therefore
+the standard to hold, not a to-do list; the "Today" notes in each section
+describe what was found before the work and are kept because they explain why
+each rule exists.
+
+Still open, by decision: tests, TypeScript, and wiring the data layer (§5).
+`lib/api.js` stays unused until there is a backend.
+
+Verified after every step: `npm run lint` clean with jsx-a11y at `error`, and
+`npm run build` succeeding. The route walk is a browser check and has not been
+run — see [Verify after every step](#verify-after-every-step).
+
+<details>
+<summary>What was fixed</summary>
+
+The naming, the token system, and the component boundaries were already good.
+The gaps were enforcement, folder topology, and a data layer.
 
 | Gap                                                          | Where                      |
 | ------------------------------------------------------------ | -------------------------- |
@@ -30,6 +46,8 @@ gaps are enforcement, folder topology, and a data layer.
 | No overlay widgets built; 4 dead `chevronDown` placeholders  | [§7](#7-ui-widgets--radix) |
 | `SegmentedControl` claims tab semantics it doesn't implement | [§8](#8-accessibility)     |
 | No Prettier, no jsx-a11y, no import ordering, no CI          | [§9](#9-tooling)           |
+
+</details>
 
 ---
 
@@ -559,17 +577,32 @@ Missing entirely today. All of it is one afternoon, and it stops the drift.
 Ordered so mechanical, reversible work happens first. **There are no tests here**,
 so this ordering _is_ the safety net — do not reorder, and commit between steps.
 
-| #   | Step                                                                             | Covers |
-| --- | -------------------------------------------------------------------------------- | ------ |
-| 1   | Path aliases, Prettier, ESLint a11y + import order, `.env.example`               | §2, §9 |
-| 2   | Rename `index.jsx` files, fold in the 3 flat components, rename the 2 hooks      | §4     |
-| 3   | PropTypes on all shared components                                               | §4     |
-| 4   | Tokenise graph colours, centralise remaining constants, kill literal comparisons | §3, §6 |
-| 5   | Button types, SegmentedControl semantics, jsx-a11y warnings                      | §8     |
-| 6   | Static inline styles → CSS modules; extract the duplicated panel style           | §6     |
-| 7   | ErrorBoundary, route-level lazy loading, first Radix dropdown                    | §5, §7 |
-| 8   | Feature folders — one feature at a time, smallest first                          | §1     |
-| 9   | Split the five oversized components                                              | §4     |
+All nine are done, one commit each. Keep the ordering in mind for future work.
+
+| #   | Step                                                                        | Covers |      |
+| --- | --------------------------------------------------------------------------- | ------ | ---- |
+| 1   | Path aliases, Prettier, ESLint a11y + import order, `.env.example`          | §2, §9 | done |
+| 2   | Rename `index.jsx` files, fold in the 3 flat components, rename the 2 hooks | §4     | done |
+| 3   | PropTypes on all shared components                                          | §4     | done |
+| 4   | Tokenise graph colours, centralise constants, kill literal comparisons      | §3, §6 | done |
+| 5   | SegmentedControl semantics, tree keyboard support, jsx-a11y                 | §8     | done |
+| 6   | Static inline styles into CSS modules; extract the duplicated panel style   | §6     | done |
+| 7   | ErrorBoundary, route-level lazy loading, first Radix dropdown               | §5, §7 | done |
+| 8   | Feature folders — one feature at a time, smallest first                     | §1     | done |
+| 9   | Split the oversized components                                              | §4     | done |
+
+Three deviations from the plan as written, all recorded in the commits:
+
+- **Feature barrels export shared API but not pages.** Exporting pages made every
+  barrel pull in every other feature's pages and closed an import cycle
+  (workspaces → runs → workspaces). The router imports pages by path instead.
+- **`eslint-plugin-import` caps its peer range at ESLint 9**, so ordering uses
+  `eslint-plugin-import-x`. Its resolver interface does not take the alias config,
+  so `no-cycle` and `no-unresolved` are off; ordering and duplicates are lexical
+  and work.
+- **Page-local constants were not moved to `config/constants` first.** They were
+  going to move again into their feature in step 8, so the intermediate hop was
+  skipped.
 
 **Order for step 8:** `sources` → `ontology` → `graph` → `workspaces` → `runs` →
 `review`. Smallest first, so the pattern is proven before the hard ones.
