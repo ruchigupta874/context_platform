@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
-import { useWorkspace } from '@/hooks/useWorkspace';
+import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
 import { pluralize } from '@/utils/format';
 import styles from './TopBar.module.css';

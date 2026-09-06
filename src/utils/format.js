@@ -1,5 +1,5 @@
 import { CONFIDENCE_BANDS, ORG_NAMESPACE, TONE } from '@/config/constants/common';
-import { SIGNAL_BANDS } from '@/config/constants/review';
+import { SIGNAL_BANDS } from '@/features/review';
 
 /** Confidence always reads to two places — 0.9 and 0.90 must not look different. */
 export const formatConfidence = (value) => value.toFixed(2);

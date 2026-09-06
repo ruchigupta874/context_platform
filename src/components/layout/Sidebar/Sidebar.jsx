@@ -10,8 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import { NAV_GROUPS } from '@/config/navigation';
-import { useWorkspace } from '@/hooks/useWorkspace';
-import { WORKSPACES } from '@/mocks/workspaces';
+import { useWorkspace, WORKSPACES } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
 import styles from './Sidebar.module.css';
 

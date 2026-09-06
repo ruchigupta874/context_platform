@@ -1,26 +1,21 @@
 import { Outlet } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Sidebar from '@/components/layout/Sidebar';
-import WorkspaceProvider from '@/context/WorkspaceProvider';
-import ReviewProvider from '@/context/ReviewProvider';
 import styles from './AppShell.module.css';
 
 /**
  * Workspace chrome. Every page inside a workspace renders through here, so the
- * sidebar is mounted once and does not remount on navigation.
+ * sidebar is mounted once and does not remount on navigation. Context lives in
+ * app/Providers, which wraps this route.
  */
 export default function AppShell() {
   return (
-    <WorkspaceProvider>
-      <ReviewProvider>
-        <div className={styles.shell}>
-          <Sidebar />
-          <div className={styles.main}>
-            <Outlet />
-          </div>
-        </div>
-      </ReviewProvider>
-    </WorkspaceProvider>
+    <div className={styles.shell}>
+      <Sidebar />
+      <div className={styles.main}>
+        <Outlet />
+      </div>
+    </div>
   );
 }
 
