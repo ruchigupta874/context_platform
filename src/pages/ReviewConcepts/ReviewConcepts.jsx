@@ -37,7 +37,7 @@ import {
   REVIEW_TABS,
 } from '@/config/constants/review';
 import { CONCEPTS, RELATIONS } from '@/mocks/review';
-import { useReviewDecisions } from '@/hooks/useReviewDecisions';
+import { useReviewContext } from '@/hooks/useReviewContext';
 import { useSelection } from '@/hooks/useSelection';
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { buildPath } from '@/routes/paths';
@@ -56,7 +56,7 @@ export default function ReviewConcepts() {
   const [selectedConcept, setSelectedConcept] = useState(CONCEPTS[0].id);
   const [selectedRelation, setSelectedRelation] = useState(RELATIONS[0].id);
 
-  const decisions = useReviewDecisions();
+  const decisions = useReviewContext();
   const checks = useSelection();
 
   const isConcepts = tab === 'concepts';

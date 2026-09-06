@@ -8,7 +8,7 @@ import { DECISION } from '@/config/constants/common';
  * rejected: undecided items are dropped silently at the end of the gate, and the
  * footer has to be able to say so. Collapsing the two would hide that.
  */
-export function useDecisions(initial = {}) {
+export function useDecisionState(initial = {}) {
   const [decisions, setDecisions] = useState(initial);
 
   const decisionFor = useCallback((id) => decisions[id], [decisions]);

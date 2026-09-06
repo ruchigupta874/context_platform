@@ -28,7 +28,7 @@ import {
   VERDICTS,
 } from '@/config/constants/questions';
 import { QUESTIONS } from '@/mocks/questions';
-import { useReviewDecisions } from '@/hooks/useReviewDecisions';
+import { useReviewContext } from '@/hooks/useReviewContext';
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { buildPath } from '@/routes/paths';
 import gateStyles from '@/components/review/ReviewGate/ReviewGate.module.css';
@@ -43,7 +43,7 @@ export default function ReviewQuestions() {
   const [filter, setFilter] = useState('all');
   const [selectedId, setSelectedId] = useState('q4');
 
-  const decisions = useReviewDecisions();
+  const decisions = useReviewContext();
 
   const counts = useMemo(
     () =>

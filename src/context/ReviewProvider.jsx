@@ -1,4 +1,4 @@
-import { useDecisions } from '@/hooks/useDecisions';
+import { useDecisionState } from '@/hooks/useDecisionState';
 import { INITIAL_DECISIONS } from '@/mocks/review';
 import { INITIAL_QUESTION_DECISIONS } from '@/mocks/questions';
 import { ReviewContext } from './reviewContext';
@@ -13,7 +13,7 @@ import { ReviewContext } from './reviewContext';
 const SEED = { ...INITIAL_DECISIONS, ...INITIAL_QUESTION_DECISIONS };
 
 export default function ReviewProvider({ children }) {
-  const decisions = useDecisions(SEED);
+  const decisions = useDecisionState(SEED);
 
   return <ReviewContext.Provider value={decisions}>{children}</ReviewContext.Provider>;
 }

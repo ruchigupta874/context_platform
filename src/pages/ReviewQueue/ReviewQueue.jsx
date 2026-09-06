@@ -12,7 +12,7 @@ import SegmentedControl from '@/components/ui/SegmentedControl';
 import { EmptyState, Panel } from '@/components/ui/Surfaces';
 import { DECISION } from '@/config/constants/common';
 import { COVERAGE_TONES } from '@/config/constants/questions';
-import { useReviewDecisions } from '@/hooks/useReviewDecisions';
+import { useReviewContext } from '@/hooks/useReviewContext';
 import { useSelection } from '@/hooks/useSelection';
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { buildPath } from '@/routes/paths';
@@ -25,7 +25,7 @@ const KIND_ICON = { concept: 'node', relation: 'link', question: 'help' };
 export default function ReviewQueue() {
   const navigate = useNavigate();
   const { workspace, workspaceId } = useWorkspace();
-  const decisions = useReviewDecisions();
+  const decisions = useReviewContext();
   const checks = useSelection([]);
 
   const [kind, setKind] = useState('all');
