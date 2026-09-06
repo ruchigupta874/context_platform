@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/Icon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu';
 import { NAV_GROUPS } from '@/config/navigation';
 import { useWorkspace } from '@/hooks/useWorkspace';
+import { WORKSPACES } from '@/mocks/workspaces';
+import { buildPath } from '@/routes/paths';
 import styles from './Sidebar.module.css';
 
 const BADGE_CLASS = {
@@ -32,6 +42,7 @@ function readCollapsed() {
 
 export default function Sidebar() {
   const { workspace, workspaceId, counters } = useWorkspace();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(readCollapsed);
 
   useEffect(() => {
@@ -68,16 +79,37 @@ export default function Sidebar() {
           </button>
         ) : (
           <>
-            <button type="button" className={styles.switcher}>
-              {mark}
-              <span className={styles.switcherBody}>
-                <span className={styles.switcherName}>{workspace.name}</span>
-                <span className={styles.switcherMeta}>
-                  {workspace.version} · {workspace.status.toLowerCase()}
-                </span>
-              </span>
-              <Icon name="chevronDown" size={13} className={styles.switcherCaret} />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <button type="button" className={styles.switcher}>
+                  {mark}
+                  <span className={styles.switcherBody}>
+                    <span className={styles.switcherName}>{workspace.name}</span>
+                    <span className={styles.switcherMeta}>
+                      {workspace.version} · {workspace.status.toLowerCase()}
+                    </span>
+                  </span>
+                  <Icon name="chevronDown" size={13} className={styles.switcherCaret} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent width={216}>
+                <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                {WORKSPACES.map((item) => (
+                  <DropdownMenuItem
+                    key={item.id}
+                    icon="database"
+                    selected={item.id === workspaceId}
+                    onSelect={() => navigate(buildPath.overview(item.id))}
+                  >
+                    {item.name}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem icon="grid" onSelect={() => navigate(buildPath.workspaces())}>
+                  All workspaces
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button
               type="button"
               className={styles.collapse}

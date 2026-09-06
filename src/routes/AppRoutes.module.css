@@ -1,0 +1,6 @@
+/* Deliberately blank space rather than a spinner: routes resolve in a frame or
+   two on a warm cache, and a flashing spinner reads as breakage. */
+.pending {
+  flex: 1;
+  min-height: 0;
+}
