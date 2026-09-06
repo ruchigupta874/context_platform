@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { PageBody } from '@/components/layout/AppShell';
 import Button from '@/components/ui/Button';
 import { EmptyState, Panel } from '@/components/ui/Surfaces';
@@ -67,3 +68,9 @@ function describe(artifact, run, runId) {
 }
 
 const article = (noun) => (/^[aeiou]/.test(noun) ? `an ${noun}` : `a ${noun}`);
+
+RunOutputEmpty.propTypes = {
+  artifact: PropTypes.string.isRequired,
+  run: PropTypes.object,
+  runId: PropTypes.string,
+};

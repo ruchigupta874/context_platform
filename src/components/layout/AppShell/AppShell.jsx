@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Sidebar from '@/components/layout/Sidebar';
 import WorkspaceProvider from '@/context/WorkspaceProvider';
 import ReviewProvider from '@/context/ReviewProvider';
@@ -35,3 +36,10 @@ export function PageBody({ children, scroll = false, pad = true, className = '' 
     .join(' ');
   return <main className={classes}>{children}</main>;
 }
+
+PageBody.propTypes = {
+  children: PropTypes.node,
+  scroll: PropTypes.bool,
+  pad: PropTypes.bool,
+  className: PropTypes.string,
+};

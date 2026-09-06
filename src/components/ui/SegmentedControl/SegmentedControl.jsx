@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
+import { ICON_NAMES } from '@/components/ui/Icon/paths';
 import styles from './SegmentedControl.module.css';
 
 /**
@@ -30,3 +32,18 @@ export default function SegmentedControl({ options, value, onChange, size = 'md'
     </div>
   );
 }
+
+SegmentedControl.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.node.isRequired,
+      icon: PropTypes.oneOf(ICON_NAMES),
+      count: PropTypes.number,
+    }),
+  ).isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  size: PropTypes.oneOf(['md', 'lg']),
+  ariaLabel: PropTypes.string,
+};

@@ -1,6 +1,8 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
 import ProgressBar from '@/components/ui/ProgressBar';
+import { ICON_NAMES } from '@/components/ui/Icon/paths';
 import styles from './ReviewGate.module.css';
 
 /** Layout primitives for a review gate. Both gates compose from these. */
@@ -178,3 +180,63 @@ export function GateFooter({
     </footer>
   );
 }
+
+const childrenOnly = { children: PropTypes.node };
+
+GateShell.propTypes = childrenOnly;
+GateToolbar.propTypes = childrenOnly;
+GateSplit.propTypes = childrenOnly;
+GateListBody.propTypes = childrenOnly;
+GateDetail.propTypes = childrenOnly;
+GateDetailBody.propTypes = childrenOnly;
+
+BulkActions.propTypes = {
+  count: PropTypes.number.isRequired,
+  onApprove: PropTypes.func,
+  onReject: PropTypes.func,
+  approveLabel: PropTypes.string,
+  rejectLabel: PropTypes.string,
+};
+
+GateList.propTypes = {
+  children: PropTypes.node,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
+
+GateListHead.propTypes = { columns: PropTypes.string.isRequired, children: PropTypes.node };
+
+GateDetailHeader.propTypes = {
+  title: PropTypes.node,
+  mono: PropTypes.bool,
+  badges: PropTypes.node,
+  uri: PropTypes.node,
+  actions: PropTypes.node,
+};
+
+Definition.propTypes = {
+  children: PropTypes.node,
+  source: PropTypes.node,
+  sourceIcon: PropTypes.oneOf(ICON_NAMES),
+};
+
+LinkChips.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({ id: PropTypes.string.isRequired, label: PropTypes.node }),
+  ),
+  onSelect: PropTypes.func,
+};
+
+GateFooter.propTypes = {
+  tally: PropTypes.shape({
+    approved: PropTypes.number.isRequired,
+    rejected: PropTypes.number.isRequired,
+    decided: PropTypes.number.isRequired,
+    undecided: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired,
+  }).isRequired,
+  undecidedWarning: PropTypes.node,
+  onApproveRest: PropTypes.func,
+  primaryLabel: PropTypes.node,
+  onPrimary: PropTypes.func,
+  secondary: PropTypes.node,
+};

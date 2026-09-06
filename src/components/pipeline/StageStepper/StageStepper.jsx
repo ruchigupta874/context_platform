@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import { STAGE_STATE } from '@/config/constants/pipeline';
 import styles from './StageStepper.module.css';
@@ -102,3 +103,20 @@ function stageProgress(stages) {
   const lastActive = [...stages].reverse().find((stage) => stage.state !== STAGE_STATE.pending);
   return lastActive ? lastActive.index : 0;
 }
+
+StageStepper.propTypes = {
+  stages: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.node,
+      index: PropTypes.number,
+      state: PropTypes.oneOf(Object.values(STAGE_STATE)).isRequired,
+    }),
+  ).isRequired,
+  selectedId: PropTypes.string,
+  onSelect: PropTypes.func,
+  isSelectable: PropTypes.func,
+  variant: PropTypes.oneOf(['compact', 'full']),
+  showMeta: PropTypes.bool,
+  meta: PropTypes.objectOf(PropTypes.node),
+};

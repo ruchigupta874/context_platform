@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import styles from './Toggle.module.css';
 
 export default function Toggle({
@@ -27,3 +28,11 @@ export default function Toggle({
     </button>
   );
 }
+
+Toggle.propTypes = {
+  checked: PropTypes.bool,
+  onChange: PropTypes.func,
+  label: PropTypes.node,
+  size: PropTypes.oneOf(['md', 'lg']),
+  disabled: PropTypes.bool,
+};

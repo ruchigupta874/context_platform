@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Button from '@/components/ui/Button';
 import { DECISION } from '@/config/constants/common';
 
@@ -51,3 +52,19 @@ export default function DecisionActions({
     </>
   );
 }
+
+const decisionLabelShape = PropTypes.shape({
+  idle: PropTypes.string.isRequired,
+  done: PropTypes.string.isRequired,
+});
+
+DecisionActions.propTypes = {
+  decision: PropTypes.oneOf(Object.values(DECISION)),
+  onApprove: PropTypes.func,
+  onReject: PropTypes.func,
+  onEdit: PropTypes.func,
+  labels: PropTypes.shape({
+    approve: decisionLabelShape,
+    reject: decisionLabelShape,
+  }),
+};

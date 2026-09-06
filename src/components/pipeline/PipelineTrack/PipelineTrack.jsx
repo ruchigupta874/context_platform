@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { STAGE_STATE } from '@/config/constants/pipeline';
+import { TONE } from '@/config/constants/common';
 import styles from './PipelineTrack.module.css';
 
 const DOT_CLASS = {
@@ -59,3 +61,15 @@ export default function PipelineTrack({ stages, note, noteTone }) {
     </div>
   );
 }
+
+PipelineTrack.propTypes = {
+  stages: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.node,
+      state: PropTypes.oneOf(Object.values(STAGE_STATE)).isRequired,
+    }),
+  ).isRequired,
+  note: PropTypes.node,
+  noteTone: PropTypes.oneOf(Object.values(TONE)),
+};

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import styles from './PageHeader.module.css';
 
 export default function PageHeader({ title, subtitle, actions }) {
@@ -11,3 +12,9 @@ export default function PageHeader({ title, subtitle, actions }) {
     </header>
   );
 }
+
+PageHeader.propTypes = {
+  title: PropTypes.node,
+  subtitle: PropTypes.node,
+  actions: PropTypes.node,
+};

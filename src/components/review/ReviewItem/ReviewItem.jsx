@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import Chip from '@/components/ui/Chip';
 import Checkbox from '@/components/ui/Checkbox';
@@ -128,3 +129,37 @@ export function TripleDisplay({ subject, predicate, object, cardinality }) {
     </div>
   );
 }
+
+ReviewListItem.propTypes = {
+  columns: PropTypes.string.isRequired,
+  name: PropTypes.node,
+  sub: PropTypes.node,
+  confidence: PropTypes.number,
+  decision: PropTypes.oneOf(Object.values(DECISION)),
+  selected: PropTypes.bool,
+  checked: PropTypes.bool,
+  onSelect: PropTypes.func,
+  onCheck: PropTypes.func,
+};
+
+SignalList.propTypes = {
+  signals: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      text: PropTypes.node.isRequired,
+      weight: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+};
+
+EvidenceTable.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+  rows: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string.isRequired })).isRequired,
+};
+
+TripleDisplay.propTypes = {
+  subject: PropTypes.node,
+  predicate: PropTypes.node,
+  object: PropTypes.node,
+  cardinality: PropTypes.node,
+};

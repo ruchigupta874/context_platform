@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
 import { useWorkspace } from '@/hooks/useWorkspace';
@@ -66,3 +67,16 @@ export default function TopBar({ crumbs = [], note, actions, showNewRun = false 
     </header>
   );
 }
+
+TopBar.propTypes = {
+  crumbs: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.node.isRequired,
+      to: PropTypes.string,
+      mono: PropTypes.bool,
+    }),
+  ),
+  note: PropTypes.node,
+  actions: PropTypes.node,
+  showNewRun: PropTypes.bool,
+};

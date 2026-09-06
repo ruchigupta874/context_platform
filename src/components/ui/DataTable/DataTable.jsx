@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import styles from './DataTable.module.css';
 
 /**
@@ -85,3 +86,37 @@ export function DataTableFooter({ children, tall = false }) {
     </div>
   );
 }
+
+const columnsShape = PropTypes.arrayOf(
+  PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    label: PropTypes.node,
+    width: PropTypes.string.isRequired,
+  }),
+);
+
+DataTableHead.propTypes = {
+  columns: columnsShape.isRequired,
+  leading: PropTypes.node,
+  compact: PropTypes.bool,
+};
+
+DataTableRow.propTypes = {
+  columns: columnsShape.isRequired,
+  children: PropTypes.node,
+  onClick: PropTypes.func,
+  selected: PropTypes.bool,
+  flagged: PropTypes.bool,
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  className: PropTypes.string,
+};
+
+DataTable.propTypes = {
+  children: PropTypes.node,
+  fill: PropTypes.bool,
+  className: PropTypes.string,
+};
+
+DataTableBody.propTypes = { children: PropTypes.node };
+
+DataTableFooter.propTypes = { children: PropTypes.node, tall: PropTypes.bool };

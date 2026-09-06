@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
+import { ICON_NAMES } from '@/components/ui/Icon/paths';
 import styles from './Button.module.css';
 
 /**
@@ -33,3 +35,23 @@ export default function Button({
     </button>
   );
 }
+
+Button.propTypes = {
+  children: PropTypes.node,
+  variant: PropTypes.oneOf([
+    'primary',
+    'secondary',
+    'ghost',
+    'approve',
+    'approveActive',
+    'reject',
+    'rejectActive',
+    'warn',
+    'warnOutline',
+  ]),
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'icon']),
+  iconLeft: PropTypes.oneOf(ICON_NAMES),
+  iconRight: PropTypes.oneOf(ICON_NAMES),
+  block: PropTypes.bool,
+  className: PropTypes.string,
+};

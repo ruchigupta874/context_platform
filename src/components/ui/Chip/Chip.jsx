@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+import { TONE } from '@/config/constants/common';
 import styles from './Chip.module.css';
 
 /** Small status label. `tone` maps to the semantic token families in tokens.css. */
@@ -28,3 +30,13 @@ export default function Chip({
     </span>
   );
 }
+
+Chip.propTypes = {
+  children: PropTypes.node,
+  tone: PropTypes.oneOf(Object.values(TONE)),
+  size: PropTypes.oneOf(['sm', 'lg']),
+  mono: PropTypes.bool,
+  dot: PropTypes.bool,
+  icon: PropTypes.node,
+  className: PropTypes.string,
+};

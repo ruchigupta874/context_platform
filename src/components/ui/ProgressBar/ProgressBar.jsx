@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+import { TONE } from '@/config/constants/common';
 import styles from './ProgressBar.module.css';
 
 /**
@@ -18,3 +20,15 @@ export default function ProgressBar({ segments, total, label }) {
     </div>
   );
 }
+
+ProgressBar.propTypes = {
+  segments: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired,
+      tone: PropTypes.oneOf(Object.values(TONE)).isRequired,
+    }),
+  ).isRequired,
+  total: PropTypes.number.isRequired,
+  label: PropTypes.string,
+};

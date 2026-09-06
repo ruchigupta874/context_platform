@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import styles from './SearchInput.module.css';
 
@@ -24,3 +25,12 @@ export default function SearchInput({
     </div>
   );
 }
+
+SearchInput.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  subtle: PropTypes.bool,
+  'aria-label': PropTypes.string,
+};

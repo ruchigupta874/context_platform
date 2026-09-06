@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
+import { ICON_NAMES } from '@/components/ui/Icon/paths';
 import styles from './Surfaces.module.css';
 
 /** Bordered white card. `flush` uses the tighter radius used inside page bodies. */
@@ -125,3 +127,63 @@ export function EmptyState({ icon, title, hint, action }) {
     </div>
   );
 }
+
+Panel.propTypes = {
+  children: PropTypes.node,
+  pad: PropTypes.bool,
+  flush: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.object,
+};
+
+PanelHeader.propTypes = { title: PropTypes.node, meta: PropTypes.node };
+
+SectionLabel.propTypes = {
+  children: PropTypes.node,
+  note: PropTypes.node,
+  className: PropTypes.string,
+};
+
+StatGrid.propTypes = {
+  stats: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.node.isRequired,
+      value: PropTypes.node.isRequired,
+      tone: PropTypes.oneOf(['ok', 'warn']),
+    }),
+  ).isRequired,
+  columns: PropTypes.number,
+  soft: PropTypes.bool,
+  small: PropTypes.bool,
+  className: PropTypes.string,
+};
+
+StatPairs.propTypes = {
+  pairs: PropTypes.arrayOf(
+    PropTypes.shape({ key: PropTypes.string.isRequired, value: PropTypes.node }),
+  ).isRequired,
+  keyWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
+
+CodeBlock.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  style: PropTypes.object,
+};
+
+Banner.propTypes = {
+  tone: PropTypes.oneOf(['warn', 'ok', 'danger', 'info']),
+  title: PropTypes.node,
+  note: PropTypes.node,
+  icon: PropTypes.oneOf(ICON_NAMES),
+  actions: PropTypes.node,
+  className: PropTypes.string,
+};
+
+EmptyState.propTypes = {
+  icon: PropTypes.oneOf(ICON_NAMES),
+  title: PropTypes.node,
+  hint: PropTypes.node,
+  action: PropTypes.node,
+};

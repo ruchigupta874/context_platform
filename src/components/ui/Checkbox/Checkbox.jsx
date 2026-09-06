@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import styles from './Checkbox.module.css';
 
@@ -24,3 +25,10 @@ export default function Checkbox({ checked = false, onChange, size = 'md', label
     </button>
   );
 }
+
+Checkbox.propTypes = {
+  checked: PropTypes.bool,
+  onChange: PropTypes.func,
+  size: PropTypes.oneOf(['sm', 'md']),
+  label: PropTypes.string,
+};
