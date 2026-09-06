@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/DataTable';
 import {
   DOCUMENT_COLUMNS,
+  SOURCE_TAB,
   SOURCE_TABS,
   TABLE_COLUMNS,
   UPLOAD_HINT,
@@ -101,16 +102,15 @@ export default function Sources() {
           }
         />
 
-        <div className={styles.tabs} role="tablist">
+        <div className={styles.tabs} role="group" aria-label="Source type">
           {SOURCE_TABS.map((sourceTab) => {
             const active = tab === sourceTab.id;
-            const count = sourceTab.id === 'tables' ? TABLES.length : DOCUMENTS.length;
+            const count = sourceTab.id === SOURCE_TAB.tables ? TABLES.length : DOCUMENTS.length;
             return (
               <button
                 key={sourceTab.id}
                 type="button"
-                role="tab"
-                aria-selected={active}
+                aria-pressed={active}
                 className={[styles.tab, active ? styles.tabActive : ''].filter(Boolean).join(' ')}
                 onClick={() => setTab(sourceTab.id)}
               >
@@ -121,7 +121,7 @@ export default function Sources() {
           })}
         </div>
 
-        {tab === 'tables' ? (
+        {tab === SOURCE_TAB.tables ? (
           <div className={styles.panel}>
             <div className={styles.controls}>
               <div className={styles.catalogPicker}>

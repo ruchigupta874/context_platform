@@ -46,3 +46,9 @@ export const SOURCE_KIND = {
   table: 'table',
   document: 'document',
 };
+
+/** Which source list the Sources page is showing. Mirrors SOURCE_TABS ids. */
+export const SOURCE_TAB = {
+  tables: 'tables',
+  documents: 'documents',
+};
