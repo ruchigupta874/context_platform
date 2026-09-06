@@ -1,18 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Chip from '@/components/ui/Chip';
 import Checkbox from '@/components/ui/Checkbox';
 import SearchInput from '@/components/ui/SearchInput';
 import SegmentedControl from '@/components/ui/SegmentedControl';
 import Toggle from '@/components/ui/Toggle';
-import { SectionLabel } from '@/components/ui/Surfaces';
-import DecisionActions from '@/features/review/components/DecisionActions';
 import {
   BulkActions,
-  Definition,
-  GateDetail,
-  GateDetailBody,
-  GateDetailHeader,
   GateFooter,
   GateList,
   GateListBody,
@@ -20,28 +13,18 @@ import {
   GateShell,
   GateSplit,
   GateToolbar,
-  LinkChips,
   ToolbarSpacer,
 } from '@/features/review/components/ReviewGate';
-import {
-  EvidenceTable,
-  ReviewListItem,
-  SignalList,
-  TripleDisplay,
-} from '@/features/review/components/ReviewItem';
+import { ReviewListItem } from '@/features/review/components/ReviewItem';
 import { DECISION } from '@/config/constants/common';
-import {
-  CONCEPT_EVIDENCE_COLUMNS,
-  GATE_COPY,
-  RELATION_EVIDENCE_COLUMNS,
-  REVIEW_TABS,
-} from '@/features/review/constants';
+import { GATE_COPY, REVIEW_TABS } from '@/features/review/constants';
 import { CONCEPTS, RELATIONS } from '@/features/review/mocks';
 import { useReviewContext } from '@/features/review/useReviewContext';
 import { useSelection } from '@/hooks/useSelection';
 import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
-import { conceptIri, confidenceTone, formatConfidence, relationLabel } from '@/utils/format';
+import { relationLabel } from '@/utils/format';
+import ConceptDetail from './ConceptDetail';
 
 const LIST_COLUMNS = '34px 1fr 62px 24px';
 
@@ -179,77 +162,16 @@ export default function ReviewConcepts() {
           </GateListBody>
         </GateList>
 
-        <GateDetail>
-          <GateDetailHeader
-            title={
-              isConcepts
-                ? detail.name
-                : `${detail.subject} — ${detail.predicate} → ${detail.object}`
-            }
-            mono={!isConcepts}
-            badges={
-              <>
-                <Chip tone="accent">{isConcepts ? 'OWL CLASS' : detail.kind.toUpperCase()}</Chip>
-                <Chip tone={confidenceTone(detail.confidence)} mono>
-                  {formatConfidence(detail.confidence)} confidence
-                </Chip>
-              </>
-            }
-            uri={conceptIri(workspaceId, isConcepts ? detail.name : detail.predicate)}
-            actions={
-              <DecisionActions
-                decision={currentDecision}
-                onApprove={() => decisions.approve(selectedId)}
-                onReject={() => decisions.reject(selectedId)}
-                onEdit={() => {}}
-              />
-            }
-          />
-
-          <GateDetailBody>
-            {!isConcepts && (
-              <TripleDisplay
-                subject={detail.subject}
-                predicate={detail.predicate}
-                object={detail.object}
-                cardinality={detail.cardinality}
-              />
-            )}
-
-            <div>
-              <SectionLabel>Definition</SectionLabel>
-              <Definition source={detail.definitionSource} sourceIcon={detail.sourceIcon}>
-                {detail.definition}
-              </Definition>
-            </div>
-
-            <div>
-              <SectionLabel
-                note={
-                  isConcepts ? 'columns that support this class' : 'how the link was established'
-                }
-              >
-                {isConcepts ? 'Grounded in' : 'Join evidence'}
-              </SectionLabel>
-              <EvidenceTable
-                columns={isConcepts ? CONCEPT_EVIDENCE_COLUMNS : RELATION_EVIDENCE_COLUMNS}
-                rows={detail.evidence}
-              />
-            </div>
-
-            <div>
-              <SectionLabel>Why this confidence</SectionLabel>
-              <SignalList signals={detail.signals} />
-            </div>
-
-            {isConcepts && relatedLinks.length > 0 && (
-              <div>
-                <SectionLabel>Proposed relationships</SectionLabel>
-                <LinkChips items={relatedLinks} onSelect={jumpToRelation} />
-              </div>
-            )}
-          </GateDetailBody>
-        </GateDetail>
+        <ConceptDetail
+          detail={detail}
+          isConcept={isConcepts}
+          decision={currentDecision}
+          onApprove={() => decisions.approve(selectedId)}
+          onReject={() => decisions.reject(selectedId)}
+          workspaceId={workspaceId}
+          relatedLinks={relatedLinks}
+          onSelectRelation={jumpToRelation}
+        />
       </GateSplit>
 
       <GateFooter

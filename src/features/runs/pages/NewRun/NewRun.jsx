@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from '@/components/layout/TopBar';
 import { PageBody } from '@/components/layout/AppShell';
@@ -7,64 +6,34 @@ import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
 import Chip from '@/components/ui/Chip';
 import Toggle from '@/components/ui/Toggle';
-import { Panel, SectionLabel, StatPairs } from '@/components/ui/Surfaces';
-import { DEFAULT_STRATEGY, STRATEGIES, estimateMinutes } from '@/features/runs/constants';
-import { PIPELINE_STAGES } from '@/features/runs/pipeline';
-import {
-  DEFAULT_DOCUMENT_SELECTION,
-  DEFAULT_TABLE_SELECTION,
-  DOCUMENTS,
-  TABLES,
-  SOURCE_KIND,
-} from '@/features/sources';
+import { Panel } from '@/components/ui/Surfaces';
+import { STRATEGIES } from '@/features/runs/constants';
+import { SOURCE_KIND } from '@/features/sources';
 import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
-import { pluralize } from '@/utils/format';
+import RunSummaryRail from './RunSummaryRail';
+import { useNewRunForm } from './useNewRunForm';
 import styles from './NewRun.module.css';
 
-const DEFAULT_GUIDANCE =
-  'Use singular CamelCase class names. Treat "party" and "account holder" as Customer. Do not create separate classes for soft-deleted rows.';
-
+/** Configure an extraction: what to read, how hard to look, where to stop. */
 export default function NewRun() {
   const navigate = useNavigate();
   const { workspace, workspaceId } = useWorkspace();
-
-  const [strategy, setStrategy] = useState(DEFAULT_STRATEGY);
-  const [guidance, setGuidance] = useState(DEFAULT_GUIDANCE);
-  const [questionGate, setQuestionGate] = useState(true);
-  const [removed, setRemoved] = useState([]);
-
-  const sources = useMemo(() => {
-    const tables = TABLES.filter((t) => DEFAULT_TABLE_SELECTION.includes(t.id)).map((t) => ({
-      id: t.id,
-      label: t.name,
-      kind: 'table',
-    }));
-    const docs = DOCUMENTS.filter((d) => DEFAULT_DOCUMENT_SELECTION.includes(d.id)).map((d) => ({
-      id: d.id,
-      label: d.name,
-      kind: 'document',
-    }));
-    return [...tables, ...docs].filter((source) => !removed.includes(source.id));
-  }, [removed]);
-
-  const tableCount = sources.filter((s) => s.kind === SOURCE_KIND.table).length;
-  const docCount = sources.length - tableCount;
-  const minutes = estimateMinutes({ tableCount, docCount, strategy });
-
-  // Gates are derived from the pipeline definition plus the one toggle the user controls.
-  const stages = PIPELINE_STAGES.map((stage) => {
-    const isGate = stage.gate && (stage.id !== 'questions' || questionGate);
-    return { ...stage, active: isGate };
-  });
-  const gateCount = stages.filter((s) => s.active).length;
-
-  const summary = [
-    { key: 'Sources', value: `${tableCount} tables + ${docCount} docs` },
-    { key: 'Strategy', value: STRATEGIES.find((s) => s.id === strategy).name },
-    { key: 'Review gates', value: pluralize(gateCount, 'gate') },
-    { key: 'Est. duration', value: `~${minutes} min to first gate` },
-  ];
+  const form = useNewRunForm();
+  const {
+    strategy,
+    setStrategy,
+    guidance,
+    setGuidance,
+    questionGate,
+    setQuestionGate,
+    setRemoved,
+    sources,
+    tableCount,
+    docCount,
+    stages,
+    summary,
+  } = form;
 
   return (
     <>
@@ -228,55 +197,12 @@ export default function NewRun() {
               </div>
             </Panel>
           </div>
-
-          <Panel className={styles.rail}>
-            <SectionLabel>Run summary</SectionLabel>
-            <StatPairs pairs={summary} keyWidth={92} />
-            <div className={styles.divider} />
-
-            <div>
-              <SectionLabel>Stages</SectionLabel>
-              <div className={styles.stageList}>
-                {stages.map((stage, index) => (
-                  <div key={stage.id} className={styles.stageItem}>
-                    <div className={styles.stageRail}>
-                      <span
-                        className={[styles.stageDot, stage.active ? styles.stageDotGate : '']
-                          .filter(Boolean)
-                          .join(' ')}
-                      />
-                      {index < stages.length - 1 && <span className={styles.stageLine} />}
-                    </div>
-                    <div className={styles.stageBody}>
-                      <div className={styles.stageName}>{stage.label}</div>
-                      <div
-                        className={[styles.stageMeta, stage.active ? styles.stageMetaGate : '']
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {stage.active ? 'Pauses for review' : 'Automatic'}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Button
-              variant="primary"
-              size="lg"
-              iconLeft="play"
-              block
-              disabled={sources.length === 0}
-              onClick={() => navigate(buildPath.runs(workspaceId))}
-            >
-              Run extraction
-            </Button>
-            <p className={styles.railNote}>
-              Runs in the background. Leave this page, start another run, come back when a gate
-              needs you.
-            </p>
-          </Panel>
+          <RunSummaryRail
+            summary={summary}
+            stages={stages}
+            canRun={sources.length > 0}
+            onRun={() => navigate(buildPath.runs(workspaceId))}
+          />
         </div>
       </PageBody>
     </>
