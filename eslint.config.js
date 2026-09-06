@@ -37,12 +37,6 @@ export default defineConfig([
       // import-x v4's resolver interface does not take the alias config here.
       // Ordering and duplicate detection are lexical, so they work as-is.
       'import-x/no-duplicates': 'error',
-
-      // Downgraded only so the tooling commit stays scoped. One real violation
-      // (the Ontology tree caret) is fixed in the accessibility step, which
-      // flips these back to 'error'.
-      'jsx-a11y/click-events-have-key-events': 'warn',
-      'jsx-a11y/no-static-element-interactions': 'warn',
     },
   },
 ]);

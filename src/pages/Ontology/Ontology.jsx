@@ -100,7 +100,7 @@ export default function Ontology() {
           />
         </div>
         <div className={styles.treeLabel}>Class hierarchy</div>
-        <div className={styles.treeBody}>
+        <div className={styles.treeBody} role="tree" aria-label="Class hierarchy">
           {visibleNodes.map((node) => {
             const active = selectedId === node.id;
             const children = hasChildren(node.id);
@@ -108,8 +108,10 @@ export default function Ontology() {
             return (
               <div
                 key={node.id}
-                role="button"
+                role="treeitem"
                 tabIndex={0}
+                aria-selected={active}
+                aria-expanded={children ? open : undefined}
                 className={[styles.node, active ? styles.nodeActive : ''].filter(Boolean).join(' ')}
                 style={{ paddingLeft: 8 + node.depth * 15 }}
                 onClick={() => setSelectedId(node.id)}
@@ -117,10 +119,28 @@ export default function Ontology() {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
                     setSelectedId(node.id);
+                    return;
+                  }
+                  // Arrow keys expand and collapse, which is how a tree is
+                  // driven from the keyboard. The caret is mouse-only.
+                  if (!children) return;
+                  if (event.key === 'ArrowRight' && !open) {
+                    event.preventDefault();
+                    toggleExpanded(node.id);
+                  }
+                  if (event.key === 'ArrowLeft' && open) {
+                    event.preventDefault();
+                    toggleExpanded(node.id);
                   }
                 }}
               >
-                <span
+                {/* Mouse affordance only: keyboard users expand with the arrow
+                    keys above, so this is hidden from assistive tech rather than
+                    exposed as a second control inside the treeitem. */}
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  aria-hidden="true"
                   className={[styles.caret, open ? styles.caretOpen : ''].filter(Boolean).join(' ')}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -128,7 +148,7 @@ export default function Ontology() {
                   }}
                 >
                   {children && <Icon name="chevronRight" size={11} strokeWidth={1.8} />}
-                </span>
+                </button>
                 <Icon
                   name="node"
                   size={13}

@@ -4,7 +4,7 @@ The single reference for how this codebase should be structured and written.
 Each section states **the rule**, **what this repo does today**, and **what to
 change**.
 
-Hand this to Claude with: *"Follow docs/react-guidelines.md."* For a full
+Hand this to Claude with: _"Follow docs/react-guidelines.md."_ For a full
 restructure, work through **The plan** at the bottom — one step at a time.
 
 **Out of scope by decision, not oversight:** automated tests, and a TypeScript
@@ -17,20 +17,19 @@ migration. Both are deferred deliberately; see [Deferred](#deferred).
 The naming, the token system, and the component boundaries are already good. The
 gaps are enforcement, folder topology, and a data layer.
 
-| Gap | Where |
-|---|---|
-| No prop contracts on 38 components | [§4](#4-components) |
-| Features spread across six top-level folders | [§1](#1-folder-structure) |
-| 183 deep relative imports (`../../../`) | [§2](#2-imports) |
-| Every component file named `index.jsx` (20 of them) | [§4](#4-components) |
-| Pages import fixtures directly; the API layer is dead code | [§5](#5-state-and-data) |
-| No error boundary — one throw white-screens the app | [§5](#5-state-and-data) |
-| No code splitting — the graph ships to everyone | [§5](#5-state-and-data) |
-| Hardcoded hex colours, static values in `style={{}}` | [§6](#6-styling) |
-| No overlay widgets built; 4 dead `chevronDown` placeholders | [§7](#7-ui-widgets--radix) |
-| `SegmentedControl` claims tab semantics it doesn't implement | [§8](#8-accessibility) |
-| 15 `<button>` without `type` | [§8](#8-accessibility) |
-| No Prettier, no jsx-a11y, no import ordering, no CI | [§9](#9-tooling) |
+| Gap                                                          | Where                      |
+| ------------------------------------------------------------ | -------------------------- |
+| No prop contracts on 38 components                           | [§4](#4-components)        |
+| Features spread across six top-level folders                 | [§1](#1-folder-structure)  |
+| 183 deep relative imports (`../../../`)                      | [§2](#2-imports)           |
+| Every component file named `index.jsx` (20 of them)          | [§4](#4-components)        |
+| Pages import fixtures directly; the API layer is dead code   | [§5](#5-state-and-data)    |
+| No error boundary — one throw white-screens the app          | [§5](#5-state-and-data)    |
+| No code splitting — the graph ships to everyone              | [§5](#5-state-and-data)    |
+| Hardcoded hex colours, static values in `style={{}}`         | [§6](#6-styling)           |
+| No overlay widgets built; 4 dead `chevronDown` placeholders  | [§7](#7-ui-widgets--radix) |
+| `SegmentedControl` claims tab semantics it doesn't implement | [§8](#8-accessibility)     |
+| No Prettier, no jsx-a11y, no import ordering, no CI          | [§9](#9-tooling)           |
 
 ---
 
@@ -42,10 +41,10 @@ components, hooks, constants and data together.
 **Today:** type-based (`components/`, `pages/`, `hooks/`, `context/`,
 `config/`, `mocks/`). That was right at the start and has now outgrown itself:
 
-| Feature | Folders it currently spans |
-|---|---|
+| Feature  | Folders it currently spans                                                   |
+| -------- | ---------------------------------------------------------------------------- |
 | `review` | `components/`, `config/`, `context/`, `hooks/`, `mocks/`, `pages/` — **six** |
-| `runs` | `components/`, `config/`, `mocks/`, `pages/`, `layout/` — **five** |
+| `runs`   | `components/`, `config/`, `mocks/`, `pages/`, `layout/` — **five**           |
 
 Adding one field to a review concept means editing four files in four
 directories. `components/pipeline/` and `components/review/` are already feature
@@ -107,9 +106,9 @@ file breaks a chain of them, and the depth hides where things come from.
 **Change to:**
 
 ```js
-import Button from '@/components/ui/Button';       // cross-folder → alias
-import { RUN_STATUS } from '@/features/runs';      // feature → its barrel
-import styles from './RunCard.module.css';         // sibling → relative
+import Button from '@/components/ui/Button'; // cross-folder → alias
+import { RUN_STATUS } from '@/features/runs'; // feature → its barrel
+import styles from './RunCard.module.css'; // sibling → relative
 ```
 
 Set it up in `vite.config.js`:
@@ -168,9 +167,9 @@ export const RUN_STATUS = {
 };
 
 export const RUN_STATUS_META = {
-  [RUN_STATUS.queued]:  { label: 'Queued',  tone: TONE.neutral, icon: 'clock' },
-  [RUN_STATUS.running]: { label: 'Running', tone: TONE.info,    icon: 'spinner' },
-  [RUN_STATUS.failed]:  { label: 'Failed',  tone: TONE.danger,  icon: 'alert' },
+  [RUN_STATUS.queued]: { label: 'Queued', tone: TONE.neutral, icon: 'clock' },
+  [RUN_STATUS.running]: { label: 'Running', tone: TONE.info, icon: 'spinner' },
+  [RUN_STATUS.failed]: { label: 'Failed', tone: TONE.danger, icon: 'alert' },
 };
 ```
 
@@ -208,12 +207,14 @@ catches a renamed or mistyped prop; it surfaces as `undefined` at runtime.
 
 ```js
 SegmentedControl.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    count: PropTypes.number,
-  })).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      icon: PropTypes.string,
+      count: PropTypes.number,
+    }),
+  ).isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   size: PropTypes.oneOf(['md', 'lg']),
@@ -242,12 +243,12 @@ Also give the three flat components folders like everything else: `Icon.jsx`,
 
 ### Naming
 
-| Thing | Convention | Example |
-|---|---|---|
-| Component | PascalCase, file matches | `ReviewGate.jsx` |
-| Hook | `use` + camelCase | `useReviewContext.js` |
-| Module | camelCase | `formatDuration.js` |
-| Constant | SCREAMING_SNAKE_CASE | `MAX_UPLOAD_BYTES` |
+| Thing     | Convention                     | Example                    |
+| --------- | ------------------------------ | -------------------------- |
+| Component | PascalCase, file matches       | `ReviewGate.jsx`           |
+| Hook      | `use` + camelCase              | `useReviewContext.js`      |
+| Module    | camelCase                      | `formatDuration.js`        |
+| Constant  | SCREAMING_SNAKE_CASE           | `MAX_UPLOAD_BYTES`         |
 | CSS class | camelCase, role not appearance | `.listHead` not `.greyRow` |
 
 - **Booleans read as questions:** `isLoading`, `hasError`, `canApprove`. Never
@@ -276,7 +277,7 @@ Also give the three flat components folders like everything else: `Icon.jsx`,
 - **Composition over configuration** — `children` and slots beat
   `renderHeader` / `showFooter` / `footerText` chains.
 - **A component must not know where it sits.** No margin, no `position:
-  absolute`, no fixed width inside a reusable component. Spacing is the parent's
+absolute`, no fixed width inside a reusable component. Spacing is the parent's
   job.
 - **Rule of three.** Copy once; extract on the third occurrence. Extracting after
   the first copy usually produces the wrong abstraction — and a wrong abstraction
@@ -288,13 +289,13 @@ Also give the three flat components folders like everything else: `Icon.jsx`,
 
 ### Classify state before placing it
 
-| Kind | Lives in | Example |
-|---|---|---|
-| Server data | fetch layer | run list, concepts |
-| URL state | the route | `?tab=concepts`, `:runId` |
-| Global client state | Context | current workspace |
-| Local UI state | `useState` | dropdown open, hover |
-| Derived state | **nothing — compute it** | filtered list, totals |
+| Kind                | Lives in                 | Example                   |
+| ------------------- | ------------------------ | ------------------------- |
+| Server data         | fetch layer              | run list, concepts        |
+| URL state           | the route                | `?tab=concepts`, `:runId` |
+| Global client state | Context                  | current workspace         |
+| Local UI state      | `useState`               | dropdown open, hover      |
+| Derived state       | **nothing — compute it** | filtered list, totals     |
 
 **Derived state is the most common mistake:**
 
@@ -316,7 +317,7 @@ const filtered = useMemo(() => runs.filter(isActive), [runs]);
   and a live progress counter re-renders everything on every tick.
 - **Memoise context values**, or every consumer re-renders on every parent render.
 - **Every context gets a hook that throws** outside its provider. Never export the
-  raw context. *(This repo already does this correctly.)*
+  raw context. _(This repo already does this correctly.)_
 
 ### The data layer
 
@@ -375,7 +376,7 @@ means. Adopting it costs one of:
   (`--text-3` vs `text-gray-500`) in one codebase, and an arbitrary "which
   system?" decision on every new component. Strictly worse than either alone.
 
-Your tokens are also *semantic* (`--text-3`, `--ok-tint`, `--accent-ring`), which
+Your tokens are also _semantic_ (`--text-3`, `--ok-tint`, `--accent-ring`), which
 is a level of intent Tailwind's utility classes don't express.
 
 **Tailwind would be right** on a greenfield project, or a team that keeps drifting
@@ -398,7 +399,7 @@ wholesale. None of those apply.
   were eyeballed. `marginLeft: -5` on an `Icon` inside `ReviewItem` is the worst
   — a parent nudging a shared component. Fix it in `ReviewItem.module.css`.
 - **Extract duplicated style objects.** The centred-panel `style={{ flex: 1,
-  display: 'flex', … }}` appears identically in `RunShell/index.jsx:74` and
+display: 'flex', … }}` appears identically in `RunShell/index.jsx:74` and
   `RunOutputEmpty.jsx:26`.
 - **No CSS-in-JS.** No styled-components, no Emotion.
 - **Class names describe role, not appearance.**
@@ -427,15 +428,15 @@ Toggle, ProgressBar, SearchInput, SegmentedControl, Surfaces, DataTable, Icon.
 
 ### What we never hand-build
 
-| Widget | Package |
-|---|---|
-| Modal / confirm | `@radix-ui/react-dialog` |
-| Dropdown menu | `@radix-ui/react-dropdown-menu` |
-| Select / combobox | `@radix-ui/react-select` |
-| Popover | `@radix-ui/react-popover` |
-| Tooltip | `@radix-ui/react-tooltip` |
-| Tabs | `@radix-ui/react-tabs` |
-| Accordion | `@radix-ui/react-accordion` |
+| Widget            | Package                         |
+| ----------------- | ------------------------------- |
+| Modal / confirm   | `@radix-ui/react-dialog`        |
+| Dropdown menu     | `@radix-ui/react-dropdown-menu` |
+| Select / combobox | `@radix-ui/react-select`        |
+| Popover           | `@radix-ui/react-popover`       |
+| Tooltip           | `@radix-ui/react-tooltip`       |
+| Tabs              | `@radix-ui/react-tabs`          |
+| Accordion         | `@radix-ui/react-accordion`     |
 
 These carry focus trapping and restoration, Escape handling, scroll locking,
 roving tabindex, typeahead, and collision-aware positioning. Each is easy to get
@@ -466,7 +467,7 @@ import styles from './PublishDialog.module.css';
       <Dialog.Title className={styles.title}>Publish ontology?</Dialog.Title>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog.Root>;
 ```
 
 **Start with the workspace switcher** in `Sidebar:77` — build it on
@@ -486,8 +487,9 @@ hand-rolling. No icon package — icons are inline SVG in `Icon.jsx`.
 
 ## 8. Accessibility
 
-- **Every `<button>` needs an explicit `type`.** 15 lack one today; the default
-  is `submit`, which silently submits any enclosing form.
+- **Every `<button>` needs an explicit `type`.** The default is `submit`, which
+  silently submits any enclosing form. Every button in the repo already sets
+  one — keep it that way.
 - **Fix `SegmentedControl`.** It sets `role="tablist"` / `role="tab"` /
   `aria-selected` but implements no arrow-key navigation and no `aria-controls`.
   A screen reader announces "tab 1 of 3", the user presses an arrow, nothing
@@ -496,9 +498,9 @@ hand-rolling. No icon package — icons are inline SVG in `Icon.jsx`.
   ReviewQueue) → `role="group"` + `aria-pressed`. Used as real tab navigation →
   complete the pattern, or replace with `@radix-ui/react-tabs`. If both usages
   exist, split into two components rather than adding a `mode` prop.
-  *(`Toggle` does the equivalent job correctly with `role="switch"` +
-  `aria-checked` — this is an inconsistency, not a knowledge gap.)*
-- Interactive means `<button>` or `<a>`. Never a `<div onClick>`. *(Clean today.)*
+  _(`Toggle` does the equivalent job correctly with `role="switch"` +
+  `aria-checked` — this is an inconsistency, not a knowledge gap.)_
+- Interactive means `<button>` or `<a>`. Never a `<div onClick>`. _(Clean today.)_
 - Every input has a `<label>`, or `aria-label` where the design has no visible
   text. Icon-only controls need an accessible name; decorative icons need
   `aria-hidden="true"`.
@@ -555,19 +557,19 @@ Missing entirely today. All of it is one afternoon, and it stops the drift.
 ## The plan
 
 Ordered so mechanical, reversible work happens first. **There are no tests here**,
-so this ordering *is* the safety net — do not reorder, and commit between steps.
+so this ordering _is_ the safety net — do not reorder, and commit between steps.
 
-| # | Step | Covers |
-|---|---|---|
-| 1 | Path aliases, Prettier, ESLint a11y + import order, `.env.example` | §2, §9 |
-| 2 | Rename `index.jsx` files, fold in the 3 flat components, rename the 2 hooks | §4 |
-| 3 | PropTypes on all shared components | §4 |
-| 4 | Tokenise graph colours, centralise remaining constants, kill literal comparisons | §3, §6 |
-| 5 | Button types, SegmentedControl semantics, jsx-a11y warnings | §8 |
-| 6 | Static inline styles → CSS modules; extract the duplicated panel style | §6 |
-| 7 | ErrorBoundary, route-level lazy loading, first Radix dropdown | §5, §7 |
-| 8 | Feature folders — one feature at a time, smallest first | §1 |
-| 9 | Split the five oversized components | §4 |
+| #   | Step                                                                             | Covers |
+| --- | -------------------------------------------------------------------------------- | ------ |
+| 1   | Path aliases, Prettier, ESLint a11y + import order, `.env.example`               | §2, §9 |
+| 2   | Rename `index.jsx` files, fold in the 3 flat components, rename the 2 hooks      | §4     |
+| 3   | PropTypes on all shared components                                               | §4     |
+| 4   | Tokenise graph colours, centralise remaining constants, kill literal comparisons | §3, §6 |
+| 5   | Button types, SegmentedControl semantics, jsx-a11y warnings                      | §8     |
+| 6   | Static inline styles → CSS modules; extract the duplicated panel style           | §6     |
+| 7   | ErrorBoundary, route-level lazy loading, first Radix dropdown                    | §5, §7 |
+| 8   | Feature folders — one feature at a time, smallest first                          | §1     |
+| 9   | Split the five oversized components                                              | §4     |
 
 **Order for step 8:** `sources` → `ontology` → `graph` → `workspaces` → `runs` →
 `review`. Smallest first, so the pattern is proven before the hard ones.
