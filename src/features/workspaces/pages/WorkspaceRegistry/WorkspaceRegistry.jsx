@@ -2,13 +2,14 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
-import Chip from '@/components/ui/Chip';
 import SearchInput from '@/components/ui/SearchInput';
-import { StatGrid } from '@/components/ui/Surfaces';
-import { WORKSPACE_STATUS_TONES, REGISTRY_COPY } from '@/features/workspaces/constants';
+import Brand from '@/components/layout/Brand';
+import { REGISTRY_COPY } from '@/features/workspaces/constants';
 import { WORKSPACES, WORKSPACE_STATS } from '@/features/workspaces/mocks';
 import { buildPath } from '@/routes/paths';
 import { pluralize } from '@/utils/format';
+import FeaturedWorkspace from './FeaturedWorkspace';
+import WorkspaceCard from './WorkspaceCard';
 import styles from './WorkspaceRegistry.module.css';
 
 export default function WorkspaceRegistry() {
@@ -29,7 +30,11 @@ export default function WorkspaceRegistry() {
     });
   }, [query]);
 
-  // The header panel is a view of whichever card is selected, so its identity
+  // Counted across every workspace, not just the visible ones — a run does not
+  // stop because you typed in the search box.
+  const activeRuns = WORKSPACES.reduce((total, workspace) => total + workspace.activeRuns, 0);
+
+  // The featured panel is a view of whichever card is selected, so its identity
   // stays in step with the grid even though the KPI numbers are still static.
   const selected = WORKSPACES.find((workspace) => workspace.id === selectedId) ?? WORKSPACES[0];
 
@@ -38,10 +43,7 @@ export default function WorkspaceRegistry() {
   return (
     <div className={styles.page}>
       <header className={styles.topbar}>
-        <span className={styles.mark}>
-          <Icon name="graph" size={15} strokeWidth={1.5} />
-        </span>
-        <span className={styles.wordmark}>Context Platform</span>
+        <Brand />
         <span className={styles.version}>v0.4.0</span>
         <div className={styles.spacer} />
         <Button variant="primary" iconLeft="plus" disabled>
@@ -52,31 +54,21 @@ export default function WorkspaceRegistry() {
 
       <div className={styles.scroll}>
         <div className={styles.container}>
-          <div>
+          <div className={styles.intro}>
             <h1 className={styles.title}>{REGISTRY_COPY.title}</h1>
             <p className={styles.subtitle}>{REGISTRY_COPY.subtitle}</p>
           </div>
 
-          <section className={`${styles.featured} ${styles.card}`}>
-            <div className={styles.featuredTop}>
-              <div className={styles.featuredBody}>
-                <div className={styles.eyebrow}>
-                  <span className={styles.eyebrowLabel}>{REGISTRY_COPY.selectedLabel}</span>
-                  <Chip tone="warn">{pluralize(selected.activeRuns, 'run')} active</Chip>
-                </div>
-                <div className={styles.featuredName}>{selected.name}</div>
-                <div className={styles.featuredMeta}>
-                  <span className={styles.featuredDomain}>{selected.businessDomain}</span>
-                </div>
-              </div>
-              <div className={styles.featuredActions}>
-                <Button variant="primary" iconRight="arrowRight" onClick={() => open(selected.id)}>
-                  Open
-                </Button>
-              </div>
-            </div>
-            <StatGrid stats={WORKSPACE_STATS} columns={6} />
-          </section>
+          <FeaturedWorkspace
+            workspace={selected}
+            stats={WORKSPACE_STATS}
+            onOpen={() => open(selected.id)}
+          />
+
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle}>{REGISTRY_COPY.sectionTitle}</h2>
+            <span className={styles.sectionMeta}>{pluralize(activeRuns, 'run')} active</span>
+          </div>
 
           <div className={styles.filters}>
             <SearchInput
@@ -91,38 +83,15 @@ export default function WorkspaceRegistry() {
           </div>
 
           <div className={styles.grid}>
-            {visible.map((workspace) => (
-              <div
+            {visible.map((workspace, index) => (
+              <WorkspaceCard
                 key={workspace.id}
-                role="button"
-                tabIndex={0}
-                className={[styles.card, selectedId === workspace.id ? styles.cardSelected : '']
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => setSelectedId(workspace.id)}
-                onDoubleClick={() => open(workspace.id)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') open(workspace.id);
-                }}
-              >
-                <div className={styles.cardTop}>
-                  <span className={styles.cardIcon}>
-                    <Icon name="database" size={14} />
-                  </span>
-                  <div className={styles.cardBody}>
-                    <div className={styles.cardName}>{workspace.name}</div>
-                    <div className={styles.cardDomain}>{workspace.businessDomain}</div>
-                  </div>
-                  <Chip tone={WORKSPACE_STATUS_TONES[workspace.status]}>{workspace.status}</Chip>
-                </div>
-                <p className={styles.cardBlurb}>{workspace.blurb}</p>
-                <div className={styles.cardFoot}>
-                  <span className={styles.cardFootStrong}>{workspace.concepts}</span> concepts
-                  <span className={styles.cardFootDot}>·</span>
-                  <span className={styles.cardFootStrong}>{workspace.relations}</span> relations
-                  <span className={styles.cardFootSpacer} />
-                </div>
-              </div>
+                workspace={workspace}
+                index={index}
+                isSelected={workspace.id === selectedId}
+                onSelect={() => setSelectedId(workspace.id)}
+                onOpen={() => open(workspace.id)}
+              />
             ))}
 
             <button type="button" className={styles.newCard} disabled>

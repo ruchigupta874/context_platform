@@ -1,8 +1,13 @@
 import { TONE } from '@/config/constants/common';
 
+/**
+ * The two kinds of source, in the order they read. `unit` is the noun the
+ * screen counts them in, so "10 tables" and "5 documents" come from the tab
+ * rather than from a branch at every call site.
+ */
 export const SOURCE_TABS = [
-  { id: 'tables', label: 'Catalog tables' },
-  { id: 'documents', label: 'Documents' },
+  { id: 'tables', label: 'Catalog tables', icon: 'database', unit: 'table' },
+  { id: 'documents', label: 'Documents', icon: 'doc', unit: 'document' },
 ];
 
 /**

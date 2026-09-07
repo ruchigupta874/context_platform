@@ -4,74 +4,99 @@
   height: 14px;
 }
 
-.segment {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-.grow {
-  flex: 1;
-}
-
 .line {
   flex: 1;
   height: 2px;
   border-radius: 1px;
-  background: #ebebef;
+  background: var(--border);
 }
 
 .lineDone {
-  background: var(--ok);
+  background: var(--accent);
+}
+
+/* The stage is mid-flight: the fill leaves the node it started from and fades
+   rather than claiming a position it cannot know. */
+.lineRunning {
+  background: linear-gradient(90deg, var(--info) 0%, var(--info-tint) 55%, var(--border) 100%);
 }
 
 .dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  border: 2px solid #dcdce3;
+  border: 2px solid var(--border-strong);
   background: var(--bg-panel);
   flex: none;
 }
 
-.dotCurrent {
-  width: 11px;
-  height: 11px;
+/* Past stages are filled and small; the stage the run is at is an open ring and
+   larger, so the eye lands on where the run is rather than where it has been. */
+.dotDone {
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
-.dotDone {
-  background: var(--ok);
-  border-color: var(--ok);
+.dotGate,
+.dotRunning,
+.dotFailed {
+  width: 13px;
+  height: 13px;
+  background: var(--bg-panel);
 }
 
 .dotGate {
-  background: var(--warn);
-  border-color: var(--warn);
+  border-color: var(--warn-strong);
 }
 
 .dotRunning {
-  background: var(--info);
   border-color: var(--info);
   animation: breathe 1.9s ease-in-out infinite;
 }
 
 .dotFailed {
-  background: var(--danger);
   border-color: var(--danger);
 }
 
-.note {
+.fraction {
+  flex: none;
+  margin-left: 12px;
+  font-family: var(--font-mono);
   font-size: var(--fs-caption);
-  color: var(--text-3);
-  margin-top: 6px;
+  font-weight: 500;
+  color: var(--accent);
 }
 
-.noteGate {
-  color: var(--warn);
+.note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+  margin-top: 7px;
+}
+
+.noteIcon {
+  flex: none;
+}
+
+.noteTarget {
   font-weight: 600;
 }
 
-.noteFailed {
+.noteOk {
+  color: var(--ok);
+}
+
+.noteInfo {
+  color: var(--info);
+}
+
+.noteWarn {
+  color: var(--warn);
+}
+
+.noteDanger {
   color: var(--danger);
 }
 

@@ -46,6 +46,14 @@
   font-size: var(--fs-base);
 }
 
+/* Hero scale. The only control on a page gets to be bigger than the ones that
+   sit in a toolbar. */
+.xl {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-lg);
+}
 .icon {
   width: 32px;
   height: 32px;
@@ -54,11 +62,27 @@
 }
 
 /* ---- variants ---- */
+/* The primary action, wherever it sits: the brand ramp plus a coloured shadow.
+   There is at most one of these per region, so it can afford to be the loudest
+   thing in it. */
 .primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--gradient-accent);
+  border-color: transparent;
   color: #fff;
   font-weight: 600;
+  box-shadow: var(--shadow-accent);
+}
+
+.primary:hover:not(:disabled) {
+  filter: none;
+  box-shadow: var(--shadow-accent-lift);
+  transform: translateY(-1px);
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-accent);
+  filter: brightness(0.96);
 }
 
 .secondary {

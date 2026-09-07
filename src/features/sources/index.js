@@ -6,7 +6,7 @@
  * other feature's pages and close an import cycle.
  */
 export * from './constants';
-export { sourceStatus, canExtract, extractLabel } from './sourceStatus';
+export { sourceStatus, canExtract, extractLabel, sourceCounts, sourceStats } from './sourceStatus';
 export {
   TABLES,
   DOCUMENTS,

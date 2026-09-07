@@ -69,6 +69,10 @@
   /* ---- typography ---- */
   --font-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  /* Serif is reserved for the entry surfaces — the landing hero and the
+     registry title. It says "this is the front door"; every operational screen
+     stays on the sans stack. */
+  --font-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
 
   --fs-micro: 10px;
   --fs-tiny: 10.5px;
@@ -133,4 +137,43 @@
   --t-fast: 0.12s var(--ease);
   --t-base: 0.18s var(--ease);
   --t-slow: 0.26s var(--ease);
+
+  /* ---- brand gradient ----
+     The entry surfaces (landing, workspace registry) carry a violet→blue ramp
+     the dense operational screens deliberately don't: it reads as identity,
+     not as state. --accent is the middle stop, so a gradient control and a
+     solid one are recognisably the same colour. */
+  --accent-violet: #7256e8;
+  --accent-blue: #3a6ad8;
+  --gradient-accent: linear-gradient(
+    105deg,
+    var(--accent-violet) 0%,
+    var(--accent) 52%,
+    var(--accent-blue) 100%
+  );
+  --gradient-rail: linear-gradient(
+    90deg,
+    var(--accent-violet) 0%,
+    var(--accent) 45%,
+    var(--accent-blue) 100%
+  );
+  --accent-glow: rgba(75, 69, 198, 0.26);
+  --accent-glow-soft: rgba(75, 69, 198, 0.08);
+  --shadow-accent: 0 8px 20px -8px rgba(75, 69, 198, 0.55);
+  --shadow-accent-lift: 0 12px 26px -8px rgba(75, 69, 198, 0.62);
+
+  /* ---- entry surfaces ----
+     A cooler, bluer wash than --bg-app, so arriving at the product feels like a
+     different room from working inside it. */
+  --bg-entry: #f4f6fb;
+  --bg-entry-deep: #eceff8;
+
+  /* ---- display type (entry surfaces only) ---- */
+  --fs-hero: clamp(36px, 4.6vw, 54px);
+  --fs-page-display: clamp(28px, 3.4vw, 40px);
+  --lh-display: 1.06;
+
+  /* Entry surfaces animate over a longer beat than controls do — content
+     settling on arrival, not a control responding to a click. */
+  --t-entry: 0.55s var(--ease);
 }

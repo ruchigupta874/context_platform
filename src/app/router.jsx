@@ -16,6 +16,7 @@ import styles from './router.module.css';
  * AppShell and RunShell stay eager: they are the chrome every route renders
  * inside, so splitting them would only add a waterfall.
  */
+const Landing = lazy(() => import('@/features/landing/pages/Landing'));
 const WorkspaceRegistry = lazy(() => import('@/features/workspaces/pages/WorkspaceRegistry'));
 const Overview = lazy(() => import('@/features/workspaces/pages/Overview'));
 const Sources = lazy(() => import('@/features/sources/pages/Sources'));
@@ -47,6 +48,9 @@ Screen.propTypes = { children: PropTypes.node };
 /**
  * Route tree.
  *
+ * / is the landing page — the only public surface, and the only route that
+ * renders no product chrome at all.
+ *
  * Everything under /w/:workspaceId renders inside AppShell, which owns the
  * sidebar and the workspace context. The registry sits outside it because it is
  * the screen you use before a workspace is chosen.
@@ -57,7 +61,14 @@ Screen.propTypes = { children: PropTypes.node };
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/workspaces" replace />} />
+      <Route
+        path="/"
+        element={
+          <Screen>
+            <Landing />
+          </Screen>
+        }
+      />
       <Route
         path="/workspaces"
         element={

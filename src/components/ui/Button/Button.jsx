@@ -5,7 +5,7 @@ import styles from './Button.module.css';
 
 /**
  * @param {'primary'|'secondary'|'ghost'|'approve'|'approveActive'|'reject'|'rejectActive'|'warn'|'warnOutline'} variant
- * @param {'sm'|'md'|'lg'|'icon'} size
+ * @param {'sm'|'md'|'lg'|'xl'|'icon'} size
  */
 export default function Button({
   children,
@@ -49,7 +49,7 @@ Button.propTypes = {
     'warn',
     'warnOutline',
   ]),
-  size: PropTypes.oneOf(['sm', 'md', 'lg', 'icon']),
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl', 'icon']),
   iconLeft: PropTypes.oneOf(ICON_NAMES),
   iconRight: PropTypes.oneOf(ICON_NAMES),
   block: PropTypes.bool,

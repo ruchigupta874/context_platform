@@ -15,6 +15,46 @@
   color: var(--text-4);
 }
 
+/* ---- run cell ---- */
+.runCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* The state's glyph, tinted. It repeats what the status chip says at the other
+   end of the row, which is the point: the row is wide, and the eye starts here. */
+.runBadge {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.badgeWarn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+
+.badgeInfo {
+  background: var(--info-tint);
+  color: var(--info);
+}
+
+.badgeOk {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+.badgeDanger {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
 .runId {
   font-family: var(--font-mono);
   font-size: var(--fs-base);
@@ -22,20 +62,40 @@
 }
 
 .runMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: var(--fs-caption);
   color: var(--text-5);
   margin-top: 2px;
 }
 
+/* When a run wants something, how long it has been wanting it is part of the
+   ask — so the timestamp carries the state's colour too. */
+.metaWarn {
+  color: var(--warn);
+}
+
+.metaInfo {
+  color: var(--info);
+}
+
+.metaOk {
+  color: var(--ok);
+}
+
+.metaDanger {
+  color: var(--danger);
+}
+
+/* ---- sources cell ---- */
 .sources {
   font-size: var(--fs-small);
   color: var(--text-2);
 }
 
 .strategy {
-  font-size: var(--fs-caption);
-  color: var(--text-5);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .pipelineCell {
@@ -47,8 +107,11 @@
   justify-content: flex-end;
 }
 
+/* The rail repeats the row's state at the page edge, where a column of them
+   reads as a list of what needs attention. !important because the table's own
+   transparent rail is a single class too, and load order decides otherwise. */
 .edgeWarn {
-  border-left-color: #e0a93c !important;
+  border-left-color: var(--warn-strong) !important;
 }
 
 .edgeInfo {
@@ -68,4 +131,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Rows carry their own action rather than being one big button, so hover is
+   not a click affordance here — it is a band that helps the eye hold a line
+   across a wide row. */
+.runRow:hover {
+  background: var(--bg-subtle);
 }

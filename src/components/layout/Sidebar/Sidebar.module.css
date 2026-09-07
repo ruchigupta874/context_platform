@@ -1,4 +1,5 @@
 .sidebar {
+  position: relative;
   width: var(--sidebar-w);
   flex: 0 0 var(--sidebar-w);
   background: var(--bg-panel);
@@ -30,7 +31,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 6px 0 14px;
+  /* Room on the right for the toggle that rides the divider. */
+  padding: 0 22px 0 14px;
   background: none;
   border: 0;
   text-align: left;
@@ -40,44 +42,55 @@
   background: var(--bg-hover);
 }
 
-.collapse {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  margin-right: 10px;
-  border: 0;
-  border-radius: 5px;
-  background: none;
-  color: var(--text-5);
-  display: flex;
-  align-items: center;
+/* At 56px only the mark fits, and it stays the switcher trigger — the way out
+   of a workspace should not disappear because the panel is narrow. */
+.collapsed .switcher {
+  padding: 0;
   justify-content: center;
 }
 
-.collapse:hover {
-  background: var(--bg-hover);
-  color: var(--text-2);
+.collapsed .switcherBody,
+.collapsed .switcherCaret {
+  display: none;
 }
 
-.expand {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: none;
+/*
+ * Collapse toggle. It sits on the divider itself — half over the sidebar, half
+ * over the page — because that line is the thing it moves. Centred on the top
+ * bar row so it reads as part of the chrome rather than as page content.
+ */
+.edgeToggle {
+  position: absolute;
+  top: calc((var(--topbar-h) - 22px) / 2);
+  right: -11px;
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-panel);
+  color: var(--text-4);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-raise);
+  transition:
+    color var(--t-fast),
+    border-color var(--t-fast),
+    box-shadow var(--t-fast);
 }
 
-.expand:hover {
-  background: var(--bg-hover);
+.edgeToggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .mark {
   width: 26px;
   height: 26px;
   border-radius: var(--radius);
-  background: var(--accent);
+  background: var(--gradient-accent);
   color: #fff;
   display: flex;
   align-items: center;
@@ -91,6 +104,9 @@
 }
 
 .switcherName {
+  /* Both lines are blocks: as inline spans the version wraps up onto the name
+     and the name never truncates. */
+  display: block;
   font-size: var(--fs-base);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -100,6 +116,7 @@
 }
 
 .switcherMeta {
+  display: block;
   font-family: var(--font-mono);
   font-size: var(--fs-micro);
   color: var(--text-5);
@@ -261,6 +278,38 @@
 .badgeDanger {
   background: var(--danger-tint);
   color: var(--danger);
+}
+
+.changeWorkspace {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: none;
+  color: var(--text-3);
+  font-size: var(--fs-small);
+  text-align: left;
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
+}
+
+.changeWorkspace:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.collapsed .changeWorkspace {
+  justify-content: center;
+  padding: 0;
+}
+
+.collapsed .changeLabel {
+  display: none;
 }
 
 .user {

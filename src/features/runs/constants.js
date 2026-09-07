@@ -7,10 +7,20 @@ export const RUN_STATUS = {
   failed: 'failed',
 };
 
+/**
+ * Everything the list, the shell and the status chip need to know about a run
+ * state, in one place.
+ *
+ * `icon` is the state's glyph — it appears on the row badge and in the note
+ * under the pipeline track, so a scanning eye can pair them without reading.
+ * `edge` marks the states worth a coloured rail on the row: a finished run is
+ * not asking for anything, so it gets none.
+ */
 export const RUN_STATUS_META = {
   [RUN_STATUS.needsReview]: {
     label: 'Needs review',
     tone: TONE.warn,
+    icon: 'pause',
     edge: true,
     action: 'Review',
     primary: true,
@@ -18,17 +28,23 @@ export const RUN_STATUS_META = {
   [RUN_STATUS.running]: {
     label: 'Running',
     tone: TONE.info,
+    icon: 'refresh',
     edge: true,
     action: 'Watch',
     spinner: true,
   },
-  [RUN_STATUS.complete]: { label: 'Complete', tone: TONE.ok, action: 'Open graph' },
+  [RUN_STATUS.complete]: {
+    label: 'Complete',
+    tone: TONE.ok,
+    icon: 'check',
+    action: 'Open graph',
+  },
   [RUN_STATUS.failed]: {
     label: 'Failed',
     tone: TONE.danger,
+    icon: 'alert',
     edge: true,
     action: 'View log',
-    alert: true,
   },
 };
 

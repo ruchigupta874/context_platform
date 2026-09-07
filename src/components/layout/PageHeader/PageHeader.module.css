@@ -12,9 +12,9 @@
 }
 
 .title {
-  font-size: var(--fs-title);
+  font-size: var(--fs-display);
   font-weight: 600;
-  letter-spacing: var(--ls-title);
+  letter-spacing: var(--ls-display);
   margin-bottom: 3px;
 }
 

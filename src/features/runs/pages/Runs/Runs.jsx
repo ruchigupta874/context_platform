@@ -10,16 +10,32 @@ import SegmentedControl from '@/components/ui/SegmentedControl';
 import PipelineTrack from '@/features/runs/components/PipelineTrack';
 import { DataTable, DataTableBody, DataTableHead, DataTableRow } from '@/components/ui/DataTable';
 import { RUN_COLUMNS, RUN_FILTERS, RUN_STATUS, RUN_STATUS_META } from '@/features/runs/constants';
+import { TONE } from '@/config/constants/common';
 import { PIPELINE_STAGES, describeStages } from '@/features/runs/pipeline';
 import { RUNS } from '@/features/runs/mocks';
 import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
 import styles from './Runs.module.css';
 
+/** Row rail, status badge and timestamp all take the run state's colour. */
 const EDGE_CLASS = {
   warn: styles.edgeWarn,
   info: styles.edgeInfo,
   danger: styles.edgeDanger,
+};
+
+const BADGE_CLASS = {
+  warn: styles.badgeWarn,
+  info: styles.badgeInfo,
+  ok: styles.badgeOk,
+  danger: styles.badgeDanger,
+};
+
+const META_CLASS = {
+  warn: styles.metaWarn,
+  info: styles.metaInfo,
+  ok: styles.metaOk,
+  danger: styles.metaDanger,
 };
 
 export default function Runs() {
@@ -101,36 +117,59 @@ export default function Runs() {
             {visible.map((run) => {
               const meta = RUN_STATUS_META[run.status];
               const stages = describeStages(run.stage, run.status);
-              const noteTone =
-                run.status === RUN_STATUS.needsReview
-                  ? 'warn'
-                  : run.status === RUN_STATUS.failed
-                    ? 'danger'
-                    : undefined;
 
               return (
                 <DataTableRow
                   key={run.id}
                   columns={RUN_COLUMNS}
                   height="72px"
-                  onClick={() => openRun(run)}
-                  className={meta.edge ? EDGE_CLASS[meta.tone] : ''}
+                  className={[styles.runRow, meta.edge ? EDGE_CLASS[meta.tone] : '']
+                    .filter(Boolean)
+                    .join(' ')}
                 >
-                  <div>
-                    <div className={styles.runId}>{run.id}</div>
-                    <div className={styles.runMeta}>{run.startedAt}</div>
+                  <div className={styles.runCell}>
+                    <span
+                      className={[styles.runBadge, BADGE_CLASS[meta.tone]]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      <Icon
+                        name={meta.icon}
+                        size={13}
+                        className={meta.spinner ? styles.spin : undefined}
+                      />
+                    </span>
+                    <div>
+                      <div className={styles.runId}>{run.id}</div>
+                      <div
+                        className={[styles.runMeta, META_CLASS[meta.tone]]
+                          .filter(Boolean)
+                          .join(' ')}
+                      >
+                        <Icon name="clock" size={11} />
+                        {run.startedAt}
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <div className={styles.sources}>{run.sources}</div>
-                    <div className={styles.strategy}>{run.strategy}</div>
+                    <div className={styles.strategy}>
+                      <Chip tone={TONE.neutral}>{run.strategy}</Chip>
+                    </div>
                   </div>
                   <div className={styles.pipelineCell}>
-                    <PipelineTrack stages={stages} note={run.stageNote} noteTone={noteTone} />
+                    <PipelineTrack
+                      stages={stages}
+                      note={run.stageNote}
+                      noteTone={meta.tone}
+                      noteIcon={meta.icon}
+                    />
                   </div>
                   <div>
                     <Chip
                       tone={meta.tone}
                       size="lg"
+                      dot={!meta.spinner}
                       icon={
                         meta.spinner ? (
                           <Icon
@@ -139,8 +178,6 @@ export default function Runs() {
                             strokeWidth={1.8}
                             className={styles.spin}
                           />
-                        ) : meta.alert ? (
-                          <Icon name="alert" size={11} strokeWidth={1.6} />
                         ) : null
                       }
                     >
@@ -152,6 +189,7 @@ export default function Runs() {
                       variant={meta.primary ? 'primary' : 'secondary'}
                       size="sm"
                       iconRight={meta.primary ? 'arrowRight' : undefined}
+                      onClick={() => openRun(run)}
                     >
                       {meta.action}
                     </Button>

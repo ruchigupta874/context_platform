@@ -24,8 +24,8 @@ npm run format    # prettier --write .
 
 ```
 src/app/          App, router, Providers, ErrorBoundary  (wiring only)
-src/features/     workspaces · sources · runs · review · ontology · graph
-src/components/   ui/ (generic primitives) · layout/ (AppShell, Sidebar, TopBar, PageHeader)
+src/features/     landing · workspaces · sources · runs · review · ontology · graph
+src/components/   ui/ (generic primitives) · layout/ (AppShell, Sidebar, TopBar, PageHeader, Brand)
 src/lib/          api.js, endpoints.js — written, not yet wired
 src/config/       navigation.js, constants/common.js (TONE, DENSITY, DECISION)
 src/hooks/        useSelection (the only genuinely cross-feature hook)
@@ -51,6 +51,11 @@ to-do list.
   cross-cutting ones (`TONE`, `DECISION`, `DENSITY`) sit in `config/constants/`.
   Never compare a status against a string literal — use the constant.
 - **Colours, spacing and type come from `tokens.css`.** No raw hex in a component.
+- **`primary` is the gradient, and there is at most one per region.** The brand
+  ramp is simply what a primary button looks like here — the top bar's New
+  extraction, a row's Review, the landing CTA — and everything else is
+  `secondary` or a semantic variant. `--font-serif` is for the landing hero and
+  the registry title only; every other screen stays on sans.
 - **Inline `style={{}}` only for runtime-computed values** — grid templates,
   progress widths, the ontology tree's computed indent. Static spacing belongs in
   the CSS module.

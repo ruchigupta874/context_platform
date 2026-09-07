@@ -52,75 +52,65 @@ export default function Sidebar() {
     }
   }, [collapsed]);
 
-  const mark = (
-    <span className={styles.mark}>
-      <Icon name="graph" size={15} strokeWidth={1.5} />
-    </span>
-  );
-
   return (
     <aside
       className={[styles.sidebar, collapsed ? styles.collapsed : ''].filter(Boolean).join(' ')}
     >
       <div className={styles.head}>
-        {collapsed ? (
-          /* At 56px there is only room for one control, and the one you want is
-             the way out — so the mark doubles as the expand button. */
-          <button
-            type="button"
-            className={styles.expand}
-            onClick={() => setCollapsed(false)}
-            aria-expanded={false}
-            aria-label="Expand sidebar"
-            title="Expand sidebar"
-          >
-            {mark}
-          </button>
-        ) : (
-          <>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <button type="button" className={styles.switcher}>
-                  {mark}
-                  <span className={styles.switcherBody}>
-                    <span className={styles.switcherName}>{workspace.name}</span>
-                    <span className={styles.switcherMeta}>
-                      {workspace.version} · {workspace.status.toLowerCase()}
-                    </span>
-                  </span>
-                  <Icon name="chevronDown" size={13} className={styles.switcherCaret} />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent width={216}>
-                <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
-                {WORKSPACES.map((item) => (
-                  <DropdownMenuItem
-                    key={item.id}
-                    icon="database"
-                    selected={item.id === workspaceId}
-                    onSelect={() => navigate(buildPath.overview(item.id))}
-                  >
-                    {item.name}
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem icon="grid" onSelect={() => navigate(buildPath.workspaces())}>
-                  All workspaces
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
             <button
               type="button"
-              className={styles.collapse}
-              onClick={() => setCollapsed(true)}
-              aria-expanded
-              aria-label="Collapse sidebar"
+              className={styles.switcher}
+              title={collapsed ? workspace.name : undefined}
             >
-              <Icon name="arrowLeft" size={14} />
+              <span className={styles.mark}>
+                <Icon name="graph" size={15} strokeWidth={1.5} />
+              </span>
+              <span className={styles.switcherBody}>
+                <span className={styles.switcherName}>{workspace.name}</span>
+                <span className={styles.switcherMeta}>
+                  {workspace.version} · {workspace.status.toLowerCase()}
+                </span>
+              </span>
+              <Icon name="chevronDown" size={13} className={styles.switcherCaret} />
             </button>
-          </>
-        )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent width={216}>
+            <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+            {WORKSPACES.map((item) => (
+              <DropdownMenuItem
+                key={item.id}
+                icon="database"
+                selected={item.id === workspaceId}
+                onSelect={() => navigate(buildPath.overview(item.id))}
+              >
+                {item.name}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem icon="grid" onSelect={() => navigate(buildPath.workspaces())}>
+              All workspaces
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      {/*
+       * The toggle rides the divider rather than sitting inside the panel: it
+       * belongs to the boundary it moves, and at 56px collapsed there is no
+       * room for it in the header anyway.
+       */}
+      <button
+        type="button"
+        className={styles.edgeToggle}
+        onClick={() => setCollapsed((current) => !current)}
+        aria-expanded={!collapsed}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        <Icon name={collapsed ? 'arrowRight' : 'arrowLeft'} size={12} />
+      </button>
 
       <nav className={styles.nav}>
         {NAV_GROUPS.map((group) => (
@@ -157,6 +147,16 @@ export default function Sidebar() {
           </div>
         ))}
       </nav>
+
+      <button
+        type="button"
+        className={styles.changeWorkspace}
+        onClick={() => navigate(buildPath.workspaces())}
+        title={collapsed ? 'Change workspace' : undefined}
+      >
+        <Icon name="arrowLeft" size={14} />
+        <span className={styles.changeLabel}>Change workspace</span>
+      </button>
 
       <div className={styles.user} title={collapsed ? CURRENT_USER.handle : undefined}>
         <span className={styles.avatar}>{CURRENT_USER.initials}</span>

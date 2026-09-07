@@ -6,7 +6,7 @@ import importX from 'eslint-plugin-import-x';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
-const FEATURES = ['workspaces', 'sources', 'runs', 'review', 'ontology', 'graph'];
+const FEATURES = ['workspaces', 'sources', 'runs', 'review', 'ontology', 'graph', 'landing'];
 
 const BARREL_ONLY =
   'Import a feature through its barrel: @/features/<name>. Its internals are private.';

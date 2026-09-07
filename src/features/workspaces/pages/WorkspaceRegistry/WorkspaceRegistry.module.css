@@ -1,12 +1,19 @@
 .page {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--bg-app);
   overflow: hidden;
+  /* Same wash as the landing page: the registry is still an entry surface, not
+     a screen you work inside. */
+  background:
+    radial-gradient(680px 340px at 82% 4%, var(--accent-glow-soft), transparent 66%),
+    linear-gradient(180deg, var(--bg-entry) 0%, var(--bg-entry-deep) 100%);
 }
 
+/* ---- top bar ---- */
 .topbar {
+  position: relative;
   height: var(--topbar-h);
   flex: none;
   background: var(--bg-panel);
@@ -17,21 +24,12 @@
   padding: 0 24px;
 }
 
-.mark {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.wordmark {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.012em;
+.topbar::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--gradient-rail);
 }
 
 .version {
@@ -49,7 +47,7 @@
   width: 27px;
   height: 27px;
   border-radius: 50%;
-  background: #e9e9ee;
+  background: var(--bg-muted);
   color: var(--text-2);
   font-size: var(--fs-tiny);
   font-weight: 600;
@@ -63,7 +61,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 30px 0 40px;
+  padding: 44px 0 56px;
 }
 
 .container {
@@ -75,11 +73,18 @@
   gap: 22px;
 }
 
+/* ---- intro ---- */
+.intro {
+  animation: enter-up var(--t-entry) both;
+}
+
 .title {
-  font-size: var(--fs-display);
-  font-weight: 600;
-  letter-spacing: var(--ls-display);
-  margin-bottom: 5px;
+  font-family: var(--font-serif);
+  font-size: var(--fs-page-display);
+  font-weight: 500;
+  line-height: var(--lh-display);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
 }
 
 .subtitle {
@@ -91,13 +96,26 @@
 
 /* ---- featured ---- */
 .featured {
-  /* The featured panel is a card by class but not clickable, unlike the grid
-     cards below it, so it opts out of the card cursor. */
-  cursor: default;
-  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  padding: 20px 20px 18px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  animation: enter-up var(--t-entry) 70ms both;
+}
+
+/* The brand ramp marks the one panel that is not one of a set. */
+.featured::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--gradient-rail);
 }
 
 .featuredTop {
@@ -111,67 +129,41 @@
   min-width: 0;
 }
 
-.eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-bottom: 4px;
-}
-
-.eyebrowLabel {
-  font-size: var(--fs-micro);
-  font-weight: 600;
-  letter-spacing: var(--ls-label);
-  color: var(--text-5);
-}
-
 .featuredName {
-  font-size: var(--fs-title);
+  font-size: var(--fs-display);
   font-weight: 600;
-  letter-spacing: var(--ls-title);
-}
-
-.featuredMeta {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 3px;
-  min-width: 0;
+  letter-spacing: var(--ls-display);
+  margin-top: 8px;
 }
 
 .featuredDomain {
   font-size: var(--fs-caption);
   color: var(--text-3);
-  flex: none;
+  margin-top: 4px;
 }
 
-.featuredIri {
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  color: var(--text-4);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.featuredActions {
+/* ---- section head ---- */
+.sectionHead {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 10px;
+  animation: enter-up var(--t-entry) 120ms both;
 }
 
-.versionPicker {
-  height: var(--control-h);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-subtle);
-  font-size: var(--fs-body);
-  color: var(--text-2);
+.sectionTitle {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sectionMeta {
+  margin-left: auto;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 /* ---- filters ---- */
@@ -179,6 +171,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  animation: enter-up var(--t-entry) 140ms both;
 }
 
 .count {
@@ -200,18 +193,14 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 15px 16px 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
   box-shadow: var(--shadow-card);
+  animation: enter-up var(--t-entry) both;
   transition:
     border-color var(--t-base),
     box-shadow var(--t-base),
@@ -219,14 +208,33 @@
 }
 
 .card:hover {
-  border-color: #c9c7e8;
+  border-color: var(--accent-violet);
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .cardSelected {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.cardSelected:hover {
+  box-shadow:
+    0 0 0 3px var(--accent-ring),
+    var(--shadow-card-hover);
+}
+
+/* The body selects; the footer opens. Both are real buttons, so the card itself
+   carries no interaction of its own. */
+.cardSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
 }
 
 .cardTop {
@@ -253,35 +261,44 @@
 }
 
 .cardName {
+  display: block;
   font-size: var(--fs-md);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 .cardDomain {
+  display: block;
   font-size: var(--fs-tiny);
   color: var(--text-4);
   margin-top: 2px;
 }
 
 .cardBlurb {
+  display: block;
   font-size: var(--fs-small);
   line-height: var(--lh-body);
   color: var(--text-3);
   height: 36px;
   overflow: hidden;
   text-wrap: pretty;
+  transition: color var(--t-base);
+}
+
+.cardSelected .cardBlurb {
+  color: var(--accent);
 }
 
 .cardFoot {
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bg-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-caption);
   color: var(--text-4);
-  border-top: 1px solid var(--bg-muted);
-  padding-top: 10px;
 }
 
 .cardFootStrong {
@@ -289,8 +306,40 @@
   font-weight: 500;
 }
 
+/* Dot separator between the two card footer figures. */
+.cardFootDot {
+  color: var(--border-strong);
+}
+
 .cardFootSpacer {
   flex: 1;
+}
+
+/* Held back until the card is the one being read — hover, keyboard focus, or
+   selection. */
+.cardOpen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--t-base),
+    transform var(--t-base);
+}
+
+.card:hover .cardOpen,
+.card:focus-within .cardOpen,
+.cardSelected .cardOpen {
+  opacity: 1;
+  transform: none;
 }
 
 .newCard {
@@ -306,6 +355,7 @@
   color: var(--text-4);
   cursor: pointer;
   font: inherit;
+  animation: enter-up var(--t-entry) 300ms both;
 }
 
 .newCard:hover:not(:disabled) {
@@ -335,9 +385,4 @@
 
 .newCardHint {
   font-size: var(--fs-caption);
-}
-
-/* Dot separator between the two card footer figures. */
-.cardFootDot {
-  color: var(--border-strong);
 }

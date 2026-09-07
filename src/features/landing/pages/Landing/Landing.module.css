@@ -1,0 +1,86 @@
+.page {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* A glow behind the diagram, over a wash that deepens toward the fold. The
+     app's flat --bg-app would read as a screen you work in; this reads as an
+     arrival. */
+  background:
+    radial-gradient(760px 420px at 74% 18%, var(--accent-glow-soft), transparent 68%),
+    linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-entry) 46%, var(--bg-entry-deep) 100%);
+}
+
+/* The one place the brand ramp appears at full strength. */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--gradient-rail);
+}
+
+.header {
+  flex: none;
+  padding: 22px 48px;
+}
+
+.hero {
+  flex: 1;
+  width: 1096px;
+  max-width: calc(100% - 96px);
+  margin: 0 auto;
+  padding: 0 0 88px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 56px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 34px;
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-size: var(--fs-hero);
+  font-weight: 500;
+  line-height: var(--lh-display);
+  letter-spacing: -0.018em;
+  animation: enter-up var(--t-entry) both;
+}
+
+.headlineAccent {
+  /* Its own line, always: the claim reads as two beats, not as prose that
+     happens to wrap. */
+  display: block;
+  color: var(--accent);
+  font-style: italic;
+}
+
+.actions {
+  animation: enter-up var(--t-entry) 90ms both;
+}
+
+.diagram {
+  animation: enter-up var(--t-entry) 180ms both;
+}
+
+/* Below this the two columns stop being a conversation and start being a
+   squeeze; the diagram goes under the claim instead. */
+@media (max-width: 940px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 44px;
+    padding: 24px 0 56px;
+    max-width: calc(100% - 56px);
+  }
+
+  .header {
+    padding: 20px 28px;
+  }
+}
