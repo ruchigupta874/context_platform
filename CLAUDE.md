@@ -74,7 +74,20 @@ to-do list.
   and `utils/format.js` — all pure and heavily branched.
 - **No TypeScript.** `prop-types` covers the immediate gap.
 - **The data layer is unwired.** `lib/api.js` and `lib/endpoints.js` are built
-  but unused; pages read their feature's `mocks.js` directly. When the API
+  but unused; most pages read their feature's `mocks.js` directly. When the API
   lands, add `features/<name>/api/` fetchers and a `useX()` hook returning
   `{ data, isLoading, error }`, and drop the direct mock imports. Do not add new
   direct mock imports to a page in the meantime.
+- **`WorkspaceRegistry` and `Sources` are already on that shape.** Both read a
+  page-scoped `useXData()` hook that holds the fixtures behind a
+  `MOCK_LATENCY_MS` timeout, so the loading state is real rather than
+  theoretical. Swapping the timeout for a fetch is the whole change; delete the
+  constant when you do. Loading states are built from `components/ui/Skeleton`
+  composed into the layout being waited for — never a spinner, never a bare grey
+  box, and never a figure guessed at (a tab shows no count rather than `0`).
+- **Two things on Data sources are parked, not missing.** The Catalog tables tab
+  is `disabled: true` in `SOURCE_TABS` until catalog sync exists, and the
+  document drop target is commented out in `DocumentList` until an upload
+  endpoint does — a drop target that silently drops nothing is worse than none.
+  Documents arrive through `ImportAssetsDialog` in the meantime. Both come back
+  by reverting a few lines, and both say so at the site.

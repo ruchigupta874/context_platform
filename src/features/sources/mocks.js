@@ -169,3 +169,181 @@ export const DEFAULT_TABLE_SELECTION = [
 export const DEFAULT_DOCUMENT_SELECTION = ['d1', 'd2'];
 
 export const LAST_SYNCED = '14 min ago';
+
+/**
+ * The asset library each workspace keeps, keyed by workspace id.
+ *
+ * Assets are files a workspace already holds; importing one copies it into
+ * this workspace's documents, where it becomes an ordinary source. A workspace
+ * with no library simply has no entry here.
+ */
+export const WORKSPACE_ASSETS = {
+  cms: [
+    {
+      id: 'cms-a1',
+      name: 'Formulary Tier Definitions 2026.pdf',
+      kind: 'PDF',
+      pages: 31,
+      updated: '02 Sep',
+    },
+    {
+      id: 'cms-a2',
+      name: 'Prior Authorization Criteria.docx',
+      kind: 'DOCX',
+      pages: 18,
+      updated: '28 Aug',
+    },
+    {
+      id: 'cms-a3',
+      name: 'Drug Utilization Review Policy.pdf',
+      kind: 'PDF',
+      pages: 54,
+      updated: '21 Aug',
+    },
+    { id: 'cms-a4', name: 'Member Eligibility Notes.md', kind: 'MD', pages: 7, updated: '19 Aug' },
+    {
+      id: 'cms-a5',
+      name: 'Step Therapy Protocols 2026.pdf',
+      kind: 'PDF',
+      pages: 42,
+      updated: '18 Aug',
+    },
+    {
+      id: 'cms-a6',
+      name: 'Medicaid Rebate Agreement Summary.docx',
+      kind: 'DOCX',
+      pages: 26,
+      updated: '15 Aug',
+    },
+    {
+      id: 'cms-a7',
+      name: 'Specialty Pharmacy Network List.xlsx',
+      kind: 'XLSX',
+      pages: 9,
+      updated: '14 Aug',
+    },
+    {
+      id: 'cms-a8',
+      name: 'Appeals and Grievances Handbook.pdf',
+      kind: 'PDF',
+      pages: 88,
+      updated: '12 Aug',
+    },
+    { id: 'cms-a9', name: 'Quantity Limit Schedule.csv', kind: 'CSV', pages: 4, updated: '11 Aug' },
+    {
+      id: 'cms-a10',
+      name: 'Coverage Determination Letters.docx',
+      kind: 'DOCX',
+      pages: 33,
+      updated: '08 Aug',
+    },
+    {
+      id: 'cms-a11',
+      name: 'Encounter Data Dictionary.md',
+      kind: 'MD',
+      pages: 21,
+      updated: '06 Aug',
+    },
+    {
+      id: 'cms-a12',
+      name: 'Dual Eligible Enrollment Rules.pdf',
+      kind: 'PDF',
+      pages: 47,
+      updated: '04 Aug',
+    },
+    {
+      id: 'cms-a13',
+      name: 'Pharmacy Benefit Manager Contract.pdf',
+      kind: 'PDF',
+      pages: 112,
+      updated: '01 Aug',
+    },
+    {
+      id: 'cms-a14',
+      name: 'Claims Adjudication Edits.xlsx',
+      kind: 'XLSX',
+      pages: 15,
+      updated: '29 Jul',
+    },
+    {
+      id: 'cms-a15',
+      name: 'Provider Directory Standards.docx',
+      kind: 'DOCX',
+      pages: 24,
+      updated: '26 Jul',
+    },
+    {
+      id: 'cms-a16',
+      name: 'Care Management Referral Flow.md',
+      kind: 'MD',
+      pages: 11,
+      updated: '22 Jul',
+    },
+  ],
+  emr: [
+    {
+      id: 'emr-a1',
+      name: 'Active Ingredient Registry.xlsx',
+      kind: 'XLSX',
+      pages: 12,
+      updated: '01 Sep',
+    },
+    {
+      id: 'emr-a2',
+      name: 'Mechanism of Action Glossary.pdf',
+      kind: 'PDF',
+      pages: 44,
+      updated: '26 Aug',
+    },
+    {
+      id: 'emr-a3',
+      name: 'Therapeutic Class Hierarchy.csv',
+      kind: 'CSV',
+      pages: 3,
+      updated: '24 Aug',
+    },
+    {
+      id: 'emr-a4',
+      name: 'Excipient Reference Tables.xlsx',
+      kind: 'XLSX',
+      pages: 18,
+      updated: '20 Aug',
+    },
+    {
+      id: 'emr-a5',
+      name: 'Clinical Trial Phase Definitions.pdf',
+      kind: 'PDF',
+      pages: 29,
+      updated: '17 Aug',
+    },
+    {
+      id: 'emr-a6',
+      name: 'Adverse Event Coding Guide.docx',
+      kind: 'DOCX',
+      pages: 36,
+      updated: '13 Aug',
+    },
+    {
+      id: 'emr-a7',
+      name: 'Route of Administration Codes.csv',
+      kind: 'CSV',
+      pages: 2,
+      updated: '09 Aug',
+    },
+    {
+      id: 'emr-a8',
+      name: 'Biosimilar Naming Conventions.pdf',
+      kind: 'PDF',
+      pages: 22,
+      updated: '05 Aug',
+    },
+    {
+      id: 'emr-a9',
+      name: 'Manufacturing Site Registry.xlsx',
+      kind: 'XLSX',
+      pages: 7,
+      updated: '31 Jul',
+    },
+    { id: 'emr-a10', name: 'Pharmacovigilance SOP.pdf', kind: 'PDF', pages: 64, updated: '27 Jul' },
+  ],
+};

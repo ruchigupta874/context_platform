@@ -1,0 +1,235 @@
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- toolbar ---- */
+.toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.shown {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+/* ---- the split ----
+   A minimum height so the dialog does not resize itself every time a filter
+   narrows the list. */
+.split {
+  flex: 1;
+  min-height: 380px;
+  display: flex;
+}
+
+.tableArea {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The table is the dialog's whole left half, so the dialog supplies the chrome
+   the table would otherwise draw for itself. */
+.tableArea .table {
+  border: 0;
+  border-radius: 0;
+}
+
+.noMatch {
+  padding: 28px 16px;
+  font-size: var(--fs-small);
+  color: var(--text-4);
+  text-align: center;
+}
+
+/* ---- asset rows ---- */
+/* Already here, so it is shown but out of the running. */
+.rowImported {
+  background: var(--bg-subtle);
+}
+
+.assetName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.assetIcon {
+  color: var(--text-4);
+}
+
+.assetText {
+  font-size: var(--fs-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 12px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+}
+
+.stateCell {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---- selection rail ---- */
+.rail {
+  width: 252px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border-soft);
+  background: var(--bg-subtle);
+}
+
+.railHead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px 0 14px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.railTitle {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-5);
+}
+
+.railCount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-tint);
+  border-radius: var(--radius-pill);
+  padding: 1px 7px;
+}
+
+.railClear {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  transition: color var(--t-fast);
+}
+
+.railClear:hover {
+  color: var(--danger);
+}
+
+.railGroups {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.railGroupName {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 14px 6px;
+}
+
+.railGroupText {
+  font-size: var(--fs-tiny);
+  font-weight: 600;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.railGroupCount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--text-5);
+}
+
+.railList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.railItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 14px;
+}
+
+.railItem:hover {
+  background: var(--bg-hover);
+}
+
+.railItemName {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Muted rather than hidden-until-hover: a control you cannot see is a control
+   that is not there, and this is the only way back out of a pick. */
+.railRemove {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-5);
+  transition:
+    color var(--t-fast),
+    background var(--t-fast);
+}
+
+.railRemove:hover {
+  color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.railEmpty {
+  padding: 16px 14px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body);
+  color: var(--text-4);
+  text-wrap: pretty;
+}

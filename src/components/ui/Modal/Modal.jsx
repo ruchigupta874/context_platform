@@ -87,7 +87,7 @@ ModalContent.propTypes = {
   children: PropTypes.node,
   title: PropTypes.node.isRequired,
   description: PropTypes.node,
-  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']),
   onCloseAutoFocus: PropTypes.func,
 };
 

@@ -3,20 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
 import SearchInput from '@/components/ui/SearchInput';
+import Skeleton from '@/components/ui/Skeleton';
 import Brand from '@/components/layout/Brand';
 import { REGISTRY_COPY } from '@/features/workspaces/constants';
-import { WORKSPACES, WORKSPACE_STATS } from '@/features/workspaces/mocks';
 import WorkspaceDialog from '@/features/workspaces/components/WorkspaceDialog';
 import { buildPath } from '@/routes/paths';
 import { pluralize } from '@/utils/format';
 import FeaturedWorkspace from './FeaturedWorkspace';
 import WorkspaceCard from './WorkspaceCard';
+import { CardSkeleton, FeaturedSkeleton } from './RegistrySkeleton';
+import { useRegistryData } from './useRegistryData';
 import styles from './WorkspaceRegistry.module.css';
+
+/** How many cards hold space while the list is in flight. */
+const SKELETON_IDS = ['s1', 's2'];
 
 export default function WorkspaceRegistry() {
   const navigate = useNavigate();
+  const { workspaces, stats, isLoading } = useRegistryData();
   const [query, setQuery] = useState('');
-  const [selectedId, setSelectedId] = useState(WORKSPACES[0].id);
+  // Nothing is selected until the list arrives. The featured panel falls back
+  // to the first workspace, so it is never empty once it can render at all.
+  const [selectedId, setSelectedId] = useState(null);
   // null = closed, { workspace: null } = creating, { workspace } = editing.
   const [dialog, setDialog] = useState(null);
   // Until the API lands there is nowhere to persist any of this, so new
@@ -27,8 +35,8 @@ export default function WorkspaceRegistry() {
   // One list, one override pass — so an edit reaches a fixture workspace and
   // one someone just made by exactly the same route.
   const allWorkspaces = useMemo(
-    () => [...created, ...WORKSPACES].map((workspace) => edits[workspace.id] ?? workspace),
-    [created, edits],
+    () => [...created, ...workspaces].map((workspace) => edits[workspace.id] ?? workspace),
+    [created, workspaces, edits],
   );
 
   // Derived, not stored: filtering is a pure function of the query.
@@ -84,16 +92,28 @@ export default function WorkspaceRegistry() {
             <p className={styles.subtitle}>{REGISTRY_COPY.subtitle}</p>
           </div>
 
-          <FeaturedWorkspace
-            workspace={selected}
-            stats={WORKSPACE_STATS}
-            onOpen={() => open(selected.id)}
-            onEdit={() => setDialog({ workspace: selected })}
-          />
+          {isLoading ? (
+            <FeaturedSkeleton />
+          ) : (
+            selected && (
+              <FeaturedWorkspace
+                workspace={selected}
+                stats={stats}
+                onOpen={() => open(selected.id)}
+                onEdit={() => setDialog({ workspace: selected })}
+              />
+            )
+          )}
 
           <div className={styles.sectionHead}>
             <h2 className={styles.sectionTitle}>{REGISTRY_COPY.sectionTitle}</h2>
-            <span className={styles.sectionMeta}>{pluralize(activeRuns, 'run')} active</span>
+            <span className={styles.sectionMeta}>
+              {isLoading ? (
+                <Skeleton width={74} height={9} />
+              ) : (
+                <>{pluralize(activeRuns, 'run')} active</>
+              )}
+            </span>
           </div>
 
           <div className={styles.filters}>
@@ -105,21 +125,36 @@ export default function WorkspaceRegistry() {
               aria-label="Search workspaces"
             />
             <div className={styles.spacer} />
-            <span className={styles.count}>{pluralize(visible.length, 'workspace')}</span>
+            <span className={styles.count}>
+              {isLoading ? (
+                <Skeleton width={70} height={9} />
+              ) : (
+                pluralize(visible.length, 'workspace')
+              )}
+            </span>
           </div>
 
-          <div className={styles.grid}>
-            {visible.map((workspace, index) => (
-              <WorkspaceCard
-                key={workspace.id}
-                workspace={workspace}
-                index={index}
-                isSelected={workspace.id === selectedId}
-                onSelect={() => setSelectedId(workspace.id)}
-                onOpen={() => open(workspace.id)}
-                onEdit={() => setDialog({ workspace })}
-              />
-            ))}
+          <div className={styles.grid} aria-busy={isLoading}>
+            {isLoading && (
+              <span role="status" className={styles.srOnly}>
+                Loading workspaces
+              </span>
+            )}
+
+            {isLoading && SKELETON_IDS.map((id) => <CardSkeleton key={id} />)}
+
+            {!isLoading &&
+              visible.map((workspace, index) => (
+                <WorkspaceCard
+                  key={workspace.id}
+                  workspace={workspace}
+                  index={index}
+                  isSelected={workspace.id === selectedId}
+                  onSelect={() => setSelectedId(workspace.id)}
+                  onOpen={() => open(workspace.id)}
+                  onEdit={() => setDialog({ workspace })}
+                />
+              ))}
 
             <button
               type="button"

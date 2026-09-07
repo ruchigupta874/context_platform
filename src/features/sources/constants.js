@@ -6,7 +6,9 @@ import { TONE } from '@/config/constants/common';
  * rather than from a branch at every call site.
  */
 export const SOURCE_TABS = [
-  { id: 'tables', label: 'Catalog tables', icon: 'database', unit: 'table' },
+  // Catalog sync is not wired yet, so the tab announces itself as unavailable
+  // rather than opening a screen that cannot do anything.
+  { id: 'tables', label: 'Catalog tables', icon: 'database', unit: 'table', disabled: true },
   { id: 'documents', label: 'Documents', icon: 'doc', unit: 'document' },
 ];
 
@@ -56,4 +58,31 @@ export const SOURCE_KIND = {
 export const SOURCE_TAB = {
   tables: 'tables',
   documents: 'documents',
+};
+
+/** Columns of one workspace's asset table inside the import dialog. */
+export const ASSET_COLUMNS = [
+  { id: 'select', label: '', width: '32px' },
+  { id: 'name', label: 'Asset', width: 'minmax(0, 1fr)' },
+  { id: 'kind', label: 'Type', width: '62px' },
+  { id: 'pages', label: 'Pages', width: '56px' },
+  { id: 'updated', label: 'Updated', width: '84px' },
+  { id: 'state', label: '', width: '78px' },
+];
+
+export const IMPORT_COPY = {
+  action: 'Import assets',
+  title: 'Import assets',
+  blurb: 'Pick assets from any workspace. They arrive here as documents, ready to extract.',
+  empty: 'No workspace has an asset library yet.',
+  done: 'Import',
+  cancel: 'Cancel',
+  imported: 'Imported',
+  search: 'Filter assets',
+  selected: 'Selected',
+  clear: 'Clear',
+  railEmpty:
+    'Nothing picked yet. Your selection follows you between workspaces, so you can gather assets from several and import them in one go.',
+  noMatch: 'No assets match that filter.',
+  hint: 'Bring documents in from another workspace.',
 };

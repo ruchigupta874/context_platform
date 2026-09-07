@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import Skeleton from '@/components/ui/Skeleton';
 import { TONE } from '@/config/constants/common';
 import styles from './Sources.module.css';
 
@@ -13,7 +14,12 @@ const RAIL_CLASS = {
   [TONE.warn]: styles.railWarn,
 };
 
-export default function SourceStats({ stats }) {
+/**
+ * The labels are known before the numbers are, so a loading tile keeps its
+ * label and shimmers only the figure. There is nothing honest to guess about
+ * the count, and nothing to hide about what is being counted.
+ */
+export default function SourceStats({ stats, isLoading = false }) {
   return (
     <div className={styles.stats}>
       {stats.map((stat) => (
@@ -26,7 +32,7 @@ export default function SourceStats({ stats }) {
               .filter(Boolean)
               .join(' ')}
           >
-            {stat.value}
+            {isLoading ? <Skeleton width={26} height={20} /> : stat.value}
           </div>
           <div className={styles.statLabel}>{stat.label}</div>
         </div>
@@ -36,6 +42,7 @@ export default function SourceStats({ stats }) {
 }
 
 SourceStats.propTypes = {
+  isLoading: PropTypes.bool,
   stats: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

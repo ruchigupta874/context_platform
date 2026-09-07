@@ -38,6 +38,12 @@
   max-width: 880px;
 }
 
+/* Browsing dialogs — a list to scan on one side, what you have picked on the
+   other. Anything narrower makes one of the two useless. */
+.xl {
+  max-width: 1040px;
+}
+
 /* ---- header ---- */
 .header {
   flex: none;

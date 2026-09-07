@@ -26,6 +26,7 @@ export default function SegmentedControl({ options, value, onChange, size = 'md'
             key={option.id}
             type="button"
             aria-pressed={active}
+            disabled={option.disabled}
             className={[styles.segment, size === 'lg' ? styles.lg : '', active ? styles.active : '']
               .filter(Boolean)
               .join(' ')}
@@ -48,6 +49,7 @@ SegmentedControl.propTypes = {
       label: PropTypes.node.isRequired,
       icon: PropTypes.oneOf(ICON_NAMES),
       count: PropTypes.number,
+      disabled: PropTypes.bool,
     }),
   ).isRequired,
   value: PropTypes.string.isRequired,

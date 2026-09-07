@@ -432,3 +432,40 @@
 .newCardHint {
   font-size: var(--fs-caption);
 }
+
+/* ---- loading ----
+   The skeletons borrow the real card and panel classes for their boxes, so the
+   only thing left to do here is switch off what makes no sense without content
+   and reproduce the internal spacing of the lines being waited for. */
+.ghost {
+  pointer-events: none;
+}
+
+.ghostName {
+  margin-top: 8px;
+}
+
+.ghostLine {
+  margin-top: 4px;
+}
+
+.ghostBlurb {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 36px;
+  padding-top: 3px;
+}
+
+/* Announced, never drawn: the skeletons themselves are aria-hidden, so this is
+   the only thing that tells a screen reader the list is on its way. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

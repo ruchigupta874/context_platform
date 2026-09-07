@@ -46,3 +46,14 @@
   color: var(--text-5);
   font-weight: 500;
 }
+
+/* A segment that cannot be chosen yet. It stays in place rather than being
+   hidden, because the set of options is the shape of the thing — a tab that
+   vanishes reads as a feature that never existed. */
+.segment:disabled {
+  opacity: 0.45;
+}
+
+.segment:disabled:hover {
+  background: transparent;
+}

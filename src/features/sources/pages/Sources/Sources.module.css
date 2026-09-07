@@ -271,3 +271,31 @@
 .docIcon {
   color: var(--text-4);
 }
+
+/* ---- documents toolbar ----
+   Where the drop target used to be. Importing is the only way documents arrive
+   right now, so the action leads and the sentence explains it. */
+.docToolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbarHint {
+  font-size: var(--fs-small);
+  color: var(--text-4);
+}
+
+/* Announced, never drawn: the skeleton rows carry no text, so this is the only
+   thing that tells a screen reader the list is on its way. Second copy of this
+   utility — if a third screen needs it, it belongs in base.css. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
