@@ -1,0 +1,79 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.optional {
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-5);
+}
+
+.control {
+  width: 100%;
+  min-height: var(--control-h-lg);
+  padding: 7px 10px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--text);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius);
+  transition:
+    border-color var(--t-fast),
+    box-shadow var(--t-fast);
+}
+
+.control::placeholder {
+  color: var(--text-5);
+}
+
+.control:hover {
+  border-color: var(--border-strong);
+}
+
+.control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 0;
+}
+
+.controlError {
+  border-color: var(--danger);
+}
+
+.controlError:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-tint);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body);
+  color: var(--text-4);
+}
+
+.hintError {
+  color: var(--danger);
+}

@@ -342,6 +342,52 @@
   transform: none;
 }
 
+/* Rides in with Open on hover, so a resting card stays quiet. */
+.cardEdit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  margin-right: 12px;
+  border: 0;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-3);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--t-base),
+    transform var(--t-base),
+    color var(--t-fast);
+}
+
+.cardEdit:hover {
+  color: var(--text);
+}
+
+.card:hover .cardEdit,
+.card:focus-within .cardEdit,
+.cardSelected .cardEdit {
+  opacity: 1;
+  transform: none;
+}
+
+/* A workspace someone just made may have neither yet. */
+.cardEmpty {
+  color: var(--text-5);
+  font-style: italic;
+}
+
+.featuredActions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+}
+
 .newCard {
   background: transparent;
   border: 1px dashed var(--border-strong);

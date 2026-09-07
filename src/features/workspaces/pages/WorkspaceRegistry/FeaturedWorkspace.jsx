@@ -13,18 +13,23 @@ import styles from './WorkspaceRegistry.module.css';
  * The KPI row is still fixture data; only the identity above it follows the
  * selection, which is why the numbers are passed in rather than derived here.
  */
-export default function FeaturedWorkspace({ workspace, stats, onOpen }) {
+export default function FeaturedWorkspace({ workspace, stats, onOpen, onEdit }) {
   return (
     <section className={styles.featured}>
       <div className={styles.featuredTop}>
         <div className={styles.featuredBody}>
           <Chip tone={TONE.warn}>{pluralize(workspace.activeRuns, 'run')} active</Chip>
           <h2 className={styles.featuredName}>{workspace.name}</h2>
-          <p className={styles.featuredDomain}>{workspace.businessDomain}</p>
+          <p className={styles.featuredDomain}>{workspace.businessDomain || 'No domain set'}</p>
         </div>
-        <Button variant="primary" iconRight="arrowRight" onClick={onOpen}>
-          Open
-        </Button>
+        <div className={styles.featuredActions}>
+          <Button variant="secondary" iconLeft="edit" onClick={onEdit}>
+            Edit
+          </Button>
+          <Button variant="primary" iconRight="arrowRight" onClick={onOpen}>
+            Open
+          </Button>
+        </div>
       </div>
       <StatGrid stats={stats} columns={6} />
     </section>
@@ -34,9 +39,10 @@ export default function FeaturedWorkspace({ workspace, stats, onOpen }) {
 FeaturedWorkspace.propTypes = {
   workspace: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    businessDomain: PropTypes.string.isRequired,
+    businessDomain: PropTypes.string,
     activeRuns: PropTypes.number.isRequired,
   }).isRequired,
   stats: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string.isRequired })).isRequired,
   onOpen: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };

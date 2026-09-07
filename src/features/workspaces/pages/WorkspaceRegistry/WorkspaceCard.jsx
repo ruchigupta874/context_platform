@@ -15,7 +15,7 @@ const BASE_DELAY_MS = 160;
  * body selects the workspace (which is what the panel above reads), and the
  * footer link opens it. Neither is a div pretending to be a button.
  */
-export default function WorkspaceCard({ workspace, index, isSelected, onSelect, onOpen }) {
+export default function WorkspaceCard({ workspace, index, isSelected, onSelect, onOpen, onEdit }) {
   return (
     <article
       className={[styles.card, isSelected ? styles.cardSelected : ''].filter(Boolean).join(' ')}
@@ -33,11 +33,23 @@ export default function WorkspaceCard({ workspace, index, isSelected, onSelect, 
           </span>
           <span className={styles.cardBody}>
             <span className={styles.cardName}>{workspace.name}</span>
-            <span className={styles.cardDomain}>{workspace.businessDomain}</span>
+            <span
+              className={[styles.cardDomain, workspace.businessDomain ? '' : styles.cardEmpty]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {workspace.businessDomain || 'No domain set'}
+            </span>
           </span>
           <Chip tone={WORKSPACE_STATUS_TONES[workspace.status]}>{workspace.status}</Chip>
         </span>
-        <span className={styles.cardBlurb}>{workspace.blurb}</span>
+        <span
+          className={[styles.cardBlurb, workspace.blurb ? '' : styles.cardEmpty]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          {workspace.blurb || 'No description yet.'}
+        </span>
       </button>
 
       <div className={styles.cardFoot}>
@@ -45,6 +57,10 @@ export default function WorkspaceCard({ workspace, index, isSelected, onSelect, 
         <span className={styles.cardFootDot}>·</span>
         <span className={styles.cardFootStrong}>{workspace.relations}</span> relations
         <span className={styles.cardFootSpacer} />
+        <button type="button" className={styles.cardEdit} onClick={onEdit}>
+          <Icon name="edit" size={12} />
+          Edit
+        </button>
         <button type="button" className={styles.cardOpen} onClick={onOpen}>
           Open
           <Icon name="arrowRight" size={12} />
@@ -57,9 +73,9 @@ export default function WorkspaceCard({ workspace, index, isSelected, onSelect, 
 WorkspaceCard.propTypes = {
   workspace: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    businessDomain: PropTypes.string.isRequired,
+    businessDomain: PropTypes.string,
     status: PropTypes.oneOf(Object.values(WORKSPACE_STATUS)).isRequired,
-    blurb: PropTypes.string.isRequired,
+    blurb: PropTypes.string,
     concepts: PropTypes.number.isRequired,
     relations: PropTypes.number.isRequired,
   }).isRequired,
@@ -67,4 +83,5 @@ WorkspaceCard.propTypes = {
   isSelected: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };

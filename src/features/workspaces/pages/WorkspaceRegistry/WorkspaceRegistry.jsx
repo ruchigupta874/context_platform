@@ -6,6 +6,7 @@ import SearchInput from '@/components/ui/SearchInput';
 import Brand from '@/components/layout/Brand';
 import { REGISTRY_COPY } from '@/features/workspaces/constants';
 import { WORKSPACES, WORKSPACE_STATS } from '@/features/workspaces/mocks';
+import WorkspaceDialog from '@/features/workspaces/components/WorkspaceDialog';
 import { buildPath } from '@/routes/paths';
 import { pluralize } from '@/utils/format';
 import FeaturedWorkspace from './FeaturedWorkspace';
@@ -16,11 +17,24 @@ export default function WorkspaceRegistry() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(WORKSPACES[0].id);
+  // null = closed, { workspace: null } = creating, { workspace } = editing.
+  const [dialog, setDialog] = useState(null);
+  // Until the API lands there is nowhere to persist any of this, so new
+  // workspaces and edits to existing ones both live here for the session.
+  const [created, setCreated] = useState([]);
+  const [edits, setEdits] = useState({});
+
+  // One list, one override pass — so an edit reaches a fixture workspace and
+  // one someone just made by exactly the same route.
+  const allWorkspaces = useMemo(
+    () => [...created, ...WORKSPACES].map((workspace) => edits[workspace.id] ?? workspace),
+    [created, edits],
+  );
 
   // Derived, not stored: filtering is a pure function of the query.
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return WORKSPACES.filter((workspace) => {
+    return allWorkspaces.filter((workspace) => {
       const matchesQuery =
         !needle ||
         workspace.name.toLowerCase().includes(needle) ||
@@ -28,17 +42,28 @@ export default function WorkspaceRegistry() {
         workspace.blurb.toLowerCase().includes(needle);
       return matchesQuery;
     });
-  }, [query]);
+  }, [query, allWorkspaces]);
 
   // Counted across every workspace, not just the visible ones — a run does not
   // stop because you typed in the search box.
-  const activeRuns = WORKSPACES.reduce((total, workspace) => total + workspace.activeRuns, 0);
+  const activeRuns = allWorkspaces.reduce((total, workspace) => total + workspace.activeRuns, 0);
 
   // The featured panel is a view of whichever card is selected, so its identity
   // stays in step with the grid even though the KPI numbers are still static.
-  const selected = WORKSPACES.find((workspace) => workspace.id === selectedId) ?? WORKSPACES[0];
+  const selected =
+    allWorkspaces.find((workspace) => workspace.id === selectedId) ?? allWorkspaces[0];
 
   const open = (workspaceId) => navigate(buildPath.overview(workspaceId));
+
+  // A new workspace goes to the front of the grid and takes the featured slot,
+  // so the thing you just made is the thing you are looking at. An edit keeps
+  // its id, so it stays exactly where it already was.
+  const handleSubmit = (workspace) => {
+    if (dialog?.workspace) setEdits((prev) => ({ ...prev, [workspace.id]: workspace }));
+    else setCreated((prev) => [workspace, ...prev]);
+    setSelectedId(workspace.id);
+    setQuery('');
+  };
 
   return (
     <div className={styles.page}>
@@ -46,7 +71,7 @@ export default function WorkspaceRegistry() {
         <Brand />
         <span className={styles.version}>v0.4.0</span>
         <div className={styles.spacer} />
-        <Button variant="primary" iconLeft="plus" disabled>
+        <Button variant="primary" iconLeft="plus" onClick={() => setDialog({ workspace: null })}>
           New workspace
         </Button>
         <span className={styles.avatar}>AS</span>
@@ -63,6 +88,7 @@ export default function WorkspaceRegistry() {
             workspace={selected}
             stats={WORKSPACE_STATS}
             onOpen={() => open(selected.id)}
+            onEdit={() => setDialog({ workspace: selected })}
           />
 
           <div className={styles.sectionHead}>
@@ -91,10 +117,15 @@ export default function WorkspaceRegistry() {
                 isSelected={workspace.id === selectedId}
                 onSelect={() => setSelectedId(workspace.id)}
                 onOpen={() => open(workspace.id)}
+                onEdit={() => setDialog({ workspace })}
               />
             ))}
 
-            <button type="button" className={styles.newCard} disabled>
+            <button
+              type="button"
+              className={styles.newCard}
+              onClick={() => setDialog({ workspace: null })}
+            >
               <span className={styles.newCardIcon}>
                 <Icon name="plus" size={16} />
               </span>
@@ -104,6 +135,16 @@ export default function WorkspaceRegistry() {
           </div>
         </div>
       </div>
+
+      {/* Keyed per target so the form seeds once and needs no reset path. */}
+      {dialog && (
+        <WorkspaceDialog
+          key={dialog.workspace?.id ?? 'new'}
+          workspace={dialog.workspace}
+          onOpenChange={(next) => !next && setDialog(null)}
+          onSubmit={handleSubmit}
+        />
+      )}
     </div>
   );
 }

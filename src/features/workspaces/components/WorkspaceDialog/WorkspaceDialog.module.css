@@ -1,0 +1,342 @@
+.spacer {
+  flex: 1;
+}
+
+/* ---- stepper ----
+   Follows the pipeline stepper's language — disc, connector, label — so the
+   wizard reads as the same product, just on an entry surface. */
+.stepper {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.connector {
+  flex: 1;
+  height: 2px;
+  min-width: 20px;
+  margin: 0 12px;
+  border-radius: 1px;
+  background: var(--border);
+  transition: background var(--t-base);
+}
+
+.connector[data-filled='true'] {
+  background: var(--accent);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 6px 12px 6px 7px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  text-align: left;
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
+}
+
+.step:enabled {
+  cursor: pointer;
+}
+
+.step:enabled:hover {
+  background: var(--bg-hover);
+  border-color: var(--border);
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.step[data-state='current'] {
+  background: var(--accent-tint-2);
+  border-color: var(--accent-tint);
+}
+
+.disc {
+  width: 23px;
+  height: 23px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.6px solid var(--border-strong);
+  background: var(--bg-panel);
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  font-weight: 600;
+  color: var(--text-disabled);
+  transition:
+    background var(--t-base),
+    border-color var(--t-base),
+    box-shadow var(--t-base),
+    color var(--t-base);
+}
+
+.step[data-state='current'] .disc {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow:
+    0 0 0 4px var(--accent-ring),
+    var(--shadow-raise);
+}
+
+.step[data-state='done'] .disc {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+
+.stepText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.stepLabel {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.step[data-state='current'] .stepLabel {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.step[data-state='done'] .stepLabel {
+  color: var(--text-2);
+}
+
+.stepCaption {
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-5);
+  white-space: nowrap;
+}
+
+/* ---- step 1 ----
+   A tinted ground so the field cards on top of it actually read as raised. */
+.detailsBody {
+  background: var(--bg-entry);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- intro callout ---- */
+.intro {
+  display: flex;
+  gap: 11px;
+  padding: 13px 15px;
+  border: 1px solid var(--accent-tint);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-card);
+}
+
+.introIcon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.introText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.introTitle {
+  margin: 0;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: var(--ls-title);
+  color: var(--text);
+}
+
+.introBody {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+  color: var(--text-3);
+}
+
+.introNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 2px 0 0;
+  padding: 7px 9px;
+  border-radius: var(--radius);
+  background: var(--ok-bg);
+  border: 1px solid var(--ok-border);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body);
+  color: var(--ok);
+  font-weight: 500;
+}
+
+.introNoteIcon {
+  flex: none;
+  margin-top: 1px;
+}
+
+/* ---- field groups ---- */
+.group {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.groupHead {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-subtle);
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.groupNote {
+  margin: 3px 0 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body);
+  color: var(--text-4);
+}
+
+.groupFields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+/* ---- step 2 ---- */
+.importBody {
+  min-height: 0;
+}
+
+.tableControls {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-subtle);
+}
+
+.selectedCount {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.resultCount {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+}
+
+/* Meets the modal edges rather than floating in a padded body. */
+.table {
+  min-height: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 0;
+}
+
+.row {
+  position: relative;
+  cursor: pointer;
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.rowHit {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* The real cells sit above the pointer overlay, so the checkbox stays clickable. */
+.row > *:not(.rowHit) {
+  position: relative;
+  z-index: 1;
+}
+
+.rowName {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowDesc {
+  font-size: var(--fs-body);
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: var(--fs-body);
+  color: var(--text-4);
+}
+
+/* ---- footer ---- */
+.footerSummary {
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  margin-right: 4px;
+}
