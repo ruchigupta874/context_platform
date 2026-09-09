@@ -16,5 +16,6 @@ export const assetToDocument = (asset) => ({
   uploaded: asset.updated,
   indexed: true,
   lastRun: null,
+  lastRunId: null,
   drift: null,
 });

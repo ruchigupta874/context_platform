@@ -40,6 +40,13 @@ export default function Sources() {
     setTriggered((prev) => new Set(prev).add(source.id));
   };
 
+  /**
+   * A source's last extraction is a run, and the run is where the provenance
+   * lives — what it read, what a reviewer approved, what it built. So the row
+   * links to that run rather than trying to restate it here.
+   */
+  const openRun = (runId) => navigate(buildPath.runDetail(workspaceId, runId));
+
   const activeTab = SOURCE_TABS.find((sourceTab) => sourceTab.id === tab);
   const documents = useMemo(() => [...imported, ...fetched], [imported, fetched]);
   const sources = tab === SOURCE_TAB.tables ? tables : documents;
@@ -107,12 +114,18 @@ export default function Sources() {
           </header>
 
           {tab === SOURCE_TAB.tables ? (
-            <TableList tables={tables} triggered={triggered} onTrigger={trigger} />
+            <TableList
+              tables={tables}
+              triggered={triggered}
+              onTrigger={trigger}
+              onOpenRun={openRun}
+            />
           ) : (
             <DocumentList
               documents={documents}
               triggered={triggered}
               onTrigger={trigger}
+              onOpenRun={openRun}
               onImport={() => setImporting(true)}
               isLoading={isLoading}
             />

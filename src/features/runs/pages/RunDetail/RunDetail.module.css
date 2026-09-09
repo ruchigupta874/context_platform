@@ -1,17 +1,13 @@
+/* One column, and the page's scroll surface: the thread, then whatever the
+   stage it stopped at has to report. */
 .body {
   flex: 1;
   min-height: 0;
   display: flex;
-  gap: 18px;
-  padding: 18px 24px;
-}
-
-.main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
   flex-direction: column;
   gap: 14px;
+  padding: 18px 24px;
+  overflow-y: auto;
 }
 
 .stagePanel {
@@ -48,6 +44,11 @@
   color: var(--warn);
 }
 
+.iconInfo {
+  background: var(--info-tint);
+  color: var(--info);
+}
+
 .iconPending {
   background: var(--bg-muted);
   color: var(--text-disabled);
@@ -68,143 +69,24 @@
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--text-3);
-  max-width: 620px;
+  max-width: 720px;
   text-wrap: pretty;
   margin-top: 3px;
 }
 
-.borderWarn {
-  border-color: #ebd2a4;
-}
-
-.logPanel {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.logBody {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 4px 0;
-}
-
-.logLine {
-  display: grid;
-  grid-template-columns: 76px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  height: 34px;
-  padding: 0 16px;
-}
-
-.logLead {
+/* How long the stage took, next to the one action it offers. Both stay
+   secondary: the thread above carries the run's actual ask. */
+.stageDuration {
   font-family: var(--font-mono);
   font-size: var(--fs-caption);
-  color: var(--text-disabled);
+  color: var(--text-5);
+  flex: none;
+  padding-top: 8px;
 }
 
-.logMessage {
+/* Said plainly rather than drawn as an empty stat row, which would read as
+   four figures that happen to be missing. */
+.noFigures {
   font-size: var(--fs-body);
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ---- right rail ---- */
-.rail {
-  width: 296px;
-  flex: 0 0 296px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.railPanel {
-  padding: 15px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-}
-
-.activityPanel {
-  flex: 1;
-  min-height: 0;
-  padding: 15px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow: hidden;
-}
-
-.activityList {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.activityItem {
-  display: flex;
-  gap: 11px;
-  align-items: flex-start;
-}
-
-.activityRail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 10px;
-  flex: none;
-}
-
-.activityDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1.5px solid var(--ok);
-  background: var(--ok-tint);
-  margin-top: 4px;
-  flex: none;
-}
-
-.dotGate {
-  border-color: var(--warn-strong);
-  background: var(--warn-tint);
-}
-
-.dotNote {
-  border-color: var(--border-input);
-  background: var(--bg-panel);
-}
-
-.activityLine {
-  width: 1px;
-  flex: 1;
-  min-height: 14px;
-  background: #ebebef;
-}
-
-.activityBody {
-  padding-bottom: 13px;
-  min-width: 0;
-}
-
-.activityText {
-  font-size: var(--fs-small);
-  color: var(--text);
-  line-height: var(--lh-tight);
-  text-wrap: pretty;
-}
-
-.activityTime {
-  font-family: var(--font-mono);
-  font-size: var(--fs-tiny);
-  color: var(--text-disabled);
-  margin-top: 2px;
+  color: var(--text-5);
 }

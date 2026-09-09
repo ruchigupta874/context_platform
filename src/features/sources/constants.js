@@ -32,7 +32,9 @@ export const TABLE_COLUMNS = [
   { id: 'description', label: 'Description', width: 'minmax(0, 1fr)' },
   { id: 'lastRun', label: 'Last extraction', width: '146px' },
   { id: 'state', label: 'Status', width: '158px' },
-  { id: 'action', width: '136px' },
+  // Wide enough for both row actions: a source that has been through a run
+  // offers the run alongside the next extraction.
+  { id: 'action', width: '248px' },
 ];
 
 export const DOCUMENT_COLUMNS = [
@@ -42,7 +44,9 @@ export const DOCUMENT_COLUMNS = [
   { id: 'uploaded', label: 'Uploaded', width: '116px' },
   { id: 'lastRun', label: 'Last extraction', width: '146px' },
   { id: 'state', label: 'Status', width: '158px' },
-  { id: 'action', width: '136px' },
+  // Wide enough for both row actions: a source that has been through a run
+  // offers the run alongside the next extraction.
+  { id: 'action', width: '248px' },
 ];
 
 export const UPLOAD_HINT =

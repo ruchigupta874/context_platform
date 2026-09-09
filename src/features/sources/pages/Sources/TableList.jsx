@@ -17,7 +17,7 @@ import { ActionCell, StatusCell } from './SourceCells';
 import styles from './Sources.module.css';
 
 /** Catalog tables: the sources the workspace is connected to rather than given. */
-export default function TableList({ tables, triggered, onTrigger }) {
+export default function TableList({ tables, triggered, onTrigger, onOpenRun }) {
   const [query, setQuery] = useState('');
 
   // Derived, not stored: the filter is a pure function of the query.
@@ -79,7 +79,12 @@ export default function TableList({ tables, triggered, onTrigger }) {
                 {table.lastRun ?? 'never'}
               </div>
               <StatusCell source={table} triggered={triggered} />
-              <ActionCell source={table} triggered={triggered} onTrigger={onTrigger} />
+              <ActionCell
+                source={table}
+                triggered={triggered}
+                onTrigger={onTrigger}
+                onOpenRun={onOpenRun}
+              />
             </DataTableRow>
           ))}
         </DataTableBody>
@@ -107,9 +112,11 @@ TableList.propTypes = {
       rows: PropTypes.string.isRequired,
       description: PropTypes.string,
       lastRun: PropTypes.string,
+      lastRunId: PropTypes.string,
       drift: PropTypes.string,
     }),
   ).isRequired,
   triggered: PropTypes.instanceOf(Set).isRequired,
   onTrigger: PropTypes.func.isRequired,
+  onOpenRun: PropTypes.func.isRequired,
 };

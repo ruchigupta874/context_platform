@@ -1,10 +1,11 @@
-import { Navigate, useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
-import Chip from '@/components/ui/Chip';
-import { Panel, PanelHeader, SectionLabel, StatGrid, StatPairs } from '@/components/ui/Surfaces';
-import { PIPELINE_STAGES, STAGE_STATE } from '@/features/runs/pipeline';
-import { BLOCKED_LINE, LOG_TAG_TONES, RUN_DETAIL } from '@/features/runs/mocks';
+import { Panel, StatGrid } from '@/components/ui/Surfaces';
+import ProvenanceThread from '@/features/runs/components/ProvenanceThread';
+import { PIPELINE_STAGES, STAGE_STATE, stageRoute } from '@/features/runs/pipeline';
+import { findStagePanel } from '@/features/runs/mocks';
 import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
 import styles from './RunDetail.module.css';
@@ -12,15 +13,37 @@ import styles from './RunDetail.module.css';
 const ICON_TONE_CLASS = {
   ok: styles.iconOk,
   warn: styles.iconWarn,
+  info: styles.iconInfo,
   pending: styles.iconPending,
 };
 
+/** A stage with no tone of its own is coloured by where the run got to. */
+const TONE_BY_STATE = {
+  [STAGE_STATE.done]: 'ok',
+  [STAGE_STATE.running]: 'info',
+  [STAGE_STATE.gate]: 'warn',
+  [STAGE_STATE.failed]: 'danger',
+  [STAGE_STATE.pending]: 'pending',
+};
+
+/** What opening a stage's own screen is called, by the route it leads to. */
+const STAGE_ACTION = {
+  reviewConcepts: 'Open review',
+  reviewQuestions: 'Open review',
+  runGraph: 'Open graph',
+};
+
 /**
- * Where a run opens.
+ * A run's own page.
  *
- * A finished run goes straight to its graph — that is the thing you came for.
- * A run still moving has no graph to show, so it stays here and reports the
- * stage it is actually at instead of landing on an empty viewer.
+ * It opens with the provenance thread — the whole run as one line, ending in
+ * the single thing it is waiting for — and then describes one stage of it in
+ * full. Which stage that is follows the thread: by default wherever the run
+ * stopped, and whichever disc you click after that.
+ *
+ * The thread's callout carries the run's one call to action, so this panel
+ * reports rather than asks; its own button is secondary and only opens the
+ * screen the selected stage owns.
  */
 export default function RunDetail() {
   const navigate = useNavigate();
@@ -28,100 +51,59 @@ export default function RunDetail() {
   const { runId } = useParams();
   const { run, stages, selectedStageId } = useOutletContext();
 
-  if (run.output) return <Navigate to="graph" replace />;
+  // The selection is stamped with the run it was made on, so moving to another
+  // run falls back to wherever that run stopped instead of carrying a stage
+  // picked on the last one. No effect needed — it resolves as we render.
+  const [picked, setPicked] = useState({ runId, stageId: null });
+  const stageId = (picked.runId === runId && picked.stageId) || selectedStageId;
+  const stage = PIPELINE_STAGES.find((s) => s.id === stageId) ?? PIPELINE_STAGES[0];
+  const state = stages.find((s) => s.id === stageId)?.state;
+  const panel = findStagePanel(runId, stageId) ?? {};
+  const tone = panel.tone ?? TONE_BY_STATE[state] ?? 'pending';
 
-  const stage = PIPELINE_STAGES.find((s) => s.id === selectedStageId) ?? PIPELINE_STAGES[0];
-  const stageState = stages.find((s) => s.id === selectedStageId)?.state;
-  const panel = RUN_DETAIL.stages[selectedStageId] ?? {};
-  const blocked = stageState === STAGE_STATE.pending;
+  // The callout already speaks for the stage the run is sitting on, so the
+  // panel only offers a way in when you have browsed away from it.
+  const route = stageId === selectedStageId ? null : stageRoute(stage, run);
+
+  const open = (target) => navigate(buildPath[target](workspaceId, runId));
 
   return (
     <div className={styles.body}>
-      <div className={styles.main}>
-        <Panel
-          className={[styles.stagePanel, panel.tone === 'warn' ? styles.borderWarn : '']
-            .filter(Boolean)
-            .join(' ')}
-        >
-          <div className={styles.stageHead}>
-            <span
-              className={[styles.stageIcon, ICON_TONE_CLASS[panel.tone ?? 'pending']]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              <Icon name={stage.icon} size={17} />
-            </span>
-            <div className={styles.stageBody}>
-              <div className={styles.stageTitle}>{panel.title ?? stage.label}</div>
-              <p className={styles.stageBlurb}>{panel.blurb ?? stage.blurb}</p>
-            </div>
-            {panel.cta && (
-              <Button
-                variant="primary"
-                size="lg"
-                iconRight="arrowRight"
-                onClick={() => navigate(buildPath.reviewConcepts(workspaceId, runId))}
-              >
-                {panel.cta}
-              </Button>
-            )}
-          </div>
-          {panel.metrics && <StatGrid stats={panel.metrics} columns={4} soft small />}
-        </Panel>
+      <ProvenanceThread
+        run={run}
+        stages={stages}
+        selectedId={stageId}
+        onSelectStage={(id) => setPicked({ runId, stageId: id })}
+        onNavigate={open}
+      />
 
-        <Panel className={styles.logPanel}>
-          <PanelHeader
-            title={blocked ? 'Blocked' : panel.listTitle}
-            meta={blocked ? 'starts after the review gate' : panel.listMeta}
-          />
-          <div className={styles.logBody}>
-            {(blocked ? [BLOCKED_LINE] : (panel.lines ?? [])).map((line) => (
-              <div key={line.id} className={styles.logLine}>
-                <span className={styles.logLead}>{line.lead}</span>
-                <span className={styles.logMessage}>{line.message}</span>
-                <Chip tone={LOG_TAG_TONES[line.tag] ?? 'neutral'} mono>
-                  {line.tag}
-                </Chip>
-              </div>
-            ))}
+      <Panel className={styles.stagePanel}>
+        <div className={styles.stageHead}>
+          <span className={[styles.stageIcon, ICON_TONE_CLASS[tone]].filter(Boolean).join(' ')}>
+            <Icon name={stage.icon} size={17} />
+          </span>
+          <div className={styles.stageBody}>
+            <div className={styles.stageTitle}>{panel.title ?? stage.label}</div>
+            <p className={styles.stageBlurb}>{panel.blurb ?? stage.blurb}</p>
           </div>
-        </Panel>
-      </div>
+          {panel.duration && <span className={styles.stageDuration}>{panel.duration}</span>}
+          {route && (
+            <Button size="sm" iconRight="arrowRight" onClick={() => open(route)}>
+              {STAGE_ACTION[route]}
+            </Button>
+          )}
+        </div>
 
-      <aside className={styles.rail}>
-        <Panel className={styles.railPanel}>
-          <SectionLabel>Configuration</SectionLabel>
-          <StatPairs pairs={RUN_DETAIL.config} />
-        </Panel>
-
-        <Panel className={styles.activityPanel}>
-          <SectionLabel>Activity</SectionLabel>
-          <div className={styles.activityList}>
-            {RUN_DETAIL.activity.map((entry, index) => (
-              <div key={entry.id} className={styles.activityItem}>
-                <div className={styles.activityRail}>
-                  <span
-                    className={[
-                      styles.activityDot,
-                      entry.kind === 'gate' ? styles.dotGate : '',
-                      entry.kind === 'note' ? styles.dotNote : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                  />
-                  {index < RUN_DETAIL.activity.length - 1 && (
-                    <span className={styles.activityLine} />
-                  )}
-                </div>
-                <div className={styles.activityBody}>
-                  <div className={styles.activityText}>{entry.message}</div>
-                  <div className={styles.activityTime}>{entry.at}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Panel>
-      </aside>
+        {panel.metrics ? (
+          <StatGrid stats={panel.metrics} columns={Math.min(panel.metrics.length, 4)} soft small />
+        ) : (
+          <p className={styles.noFigures}>
+            {state === STAGE_STATE.pending
+              ? 'This stage has not run yet.'
+              : 'This stage recorded no figures of its own.'}
+          </p>
+        )}
+      </Panel>
     </div>
   );
 }

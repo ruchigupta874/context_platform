@@ -9,7 +9,7 @@ export const RUNS = [
     strategy: 'Blended',
     stage: 'concepts',
     status: RUN_STATUS.needsReview,
-    stageNote: 'Waiting at Concepts & relationships',
+    stageNote: 'Waiting at Review Concept',
   },
   {
     id: 'R-2417',
@@ -17,9 +17,9 @@ export const RUNS = [
     startedBy: 'a.sikarwar',
     sources: '3 tables',
     strategy: 'Schema-first',
-    stage: 'extract',
+    stage: 'ingestion',
     status: RUN_STATUS.running,
-    stageNote: 'Extracting from meter_reading (62%)',
+    stageNote: 'Ingesting meter_reading (62%)',
   },
   {
     id: 'R-2416',
@@ -29,7 +29,7 @@ export const RUNS = [
     strategy: 'Document-first',
     stage: 'questions',
     status: RUN_STATUS.needsReview,
-    stageNote: 'Waiting at Competency questions',
+    stageNote: 'Waiting at Competency Question',
   },
   {
     id: 'R-2413',
@@ -51,165 +51,185 @@ export const RUNS = [
  */
 export const findRun = (runId) => RUNS.find((run) => run.id === runId);
 
-/** Detail for the run currently sitting at gate 1. */
-export const RUN_DETAIL = {
-  id: 'R-2418',
-  status: RUN_STATUS.needsReview,
-  stage: 'concepts',
-  summary: 'Started 12 min ago by a.sikarwar · blended strategy · 8 tables, 2 documents',
-  config: [
-    { key: 'Strategy', value: 'Blended' },
-    { key: 'Sources', value: '8 tables, 2 docs' },
-    { key: 'Seeded from', value: 'ContactCentre v7' },
-    { key: 'Review gates', value: '2 of 2 on' },
-    { key: 'Started', value: '09:40, 26 Aug' },
-    { key: 'Elapsed', value: '20m 04s' },
-  ],
-  activity: [
-    {
-      id: 'a1',
-      message: 'Run paused at the Concepts & relationships gate',
-      at: '12 min ago',
-      kind: 'gate',
-    },
-    { id: 'a2', message: 'Extract finished, 89 columns profiled', at: '16 min ago', kind: 'done' },
-    {
-      id: 'a3',
-      message: 'meter_reading sampled rather than scanned in full',
-      at: '17 min ago',
-      kind: 'note',
-    },
-    { id: 'a4', message: 'Seeded from ContactCentre v7', at: '20 min ago', kind: 'done' },
-    { id: 'a5', message: 'Run started by a.sikarwar', at: '20 min ago', kind: 'done' },
-  ],
-  /** Per-stage panel content. Keyed by stage id from PIPELINE_STAGES. */
-  stages: {
-    extract: {
-      title: 'Extract complete',
+/**
+ * What each stage has to say for itself, keyed by run and then by stage id.
+ *
+ * Every stage a run has been through carries its own panel, because the thread
+ * lets you select any of them and read what it produced. A stage the run has
+ * not reached carries nothing — there is no honest figure to show for work that
+ * has not happened.
+ *
+ * The figures across a run are meant to reconcile: the candidates come out of
+ * the chunks, the mappings out of the candidates, and the canonical concepts
+ * out of the mappings. A reader who adds them up should not find a gap.
+ */
+export const RUN_STAGE_PANELS = {
+  'R-2418': {
+    ingestion: {
+      title: 'Ingestion complete',
       blurb:
-        'Read 8 catalog tables and 2 documents. Column profiles, key candidates and glossary terms are cached for the rest of the run.',
-      tone: 'ok',
+        'Read 8 catalog tables and 2 documents. Column profiles, key candidates and document chunks are cached for the rest of the run.',
       duration: '4m 12s',
       metrics: [
+        { id: 'chunks', label: 'Chunks', value: '468' },
         { id: 'tables', label: 'Tables read', value: '8' },
         { id: 'columns', label: 'Columns profiled', value: '89' },
-        { id: 'chunks', label: 'Doc chunks', value: '412' },
         { id: 'keys', label: 'Key candidates', value: '23' },
       ],
-      listTitle: 'Extraction log',
-      listMeta: 'R-2418 · stage 1 of 4',
-      lines: [
-        { id: 'l1', lead: '09:41:02', message: 'Connected to prod_uc.cust360', tag: 'ok' },
-        {
-          id: 'l2',
-          lead: '09:41:09',
-          message: 'Profiled customer (14 cols, 482k rows)',
-          tag: 'ok',
-        },
-        {
-          id: 'l3',
-          lead: '09:41:38',
-          message: 'Profiled contract (10 cols, 611k rows)',
-          tag: 'ok',
-        },
-        { id: 'l4', lead: '09:42:15', message: 'Profiled invoice, payment, claim', tag: 'ok' },
-        {
-          id: 'l5',
-          lead: '09:43:01',
-          message: 'meter_reading sampled at 1% (84m rows)',
-          tag: 'sampled',
-        },
-        {
-          id: 'l6',
-          lead: '09:43:44',
-          message: 'Chunked Customer Data Dictionary 2026.pdf',
-          tag: 'ok',
-        },
-        { id: 'l7', lead: '09:44:20', message: 'Chunked Billing Domain Glossary.docx', tag: 'ok' },
-        {
-          id: 'l8',
-          lead: '09:44:51',
-          message: 'Inferred 23 key candidates from naming and cardinality',
-          tag: 'ok',
-        },
-        { id: 'l9', lead: '09:45:14', message: 'Stage complete in 4m 12s', tag: 'done' },
+    },
+    candidates: {
+      title: 'Candidate filter complete',
+      blurb:
+        'Scored every term the ingestion turned up and kept the ones with enough evidence behind them. What it drops here never reaches a reviewer, which is the point.',
+      duration: '2m 38s',
+      metrics: [
+        { id: 'candidates', label: 'Candidate concepts', value: '1,432' },
+        { id: 'scanned', label: 'Terms scanned', value: '5,118' },
+        { id: 'dropped', label: 'Below threshold', value: '3,686' },
+      ],
+    },
+    normalizer: {
+      title: 'Concept normalizer complete',
+      blurb:
+        '1,016 of the 1,432 candidates mapped onto a concept; the rest had no home. Synonyms and duplicates were folded together, leaving 250 canonical concepts to review.',
+      duration: '1m 51s',
+      metrics: [
+        { id: 'mappings', label: 'Candidate mappings', value: '1,016' },
+        { id: 'canonical', label: 'Canonical concepts', value: '250', tone: 'ok' },
+        { id: 'folded', label: 'Folded as duplicates', value: '766' },
       ],
     },
     concepts: {
       title: 'Waiting for your review',
       blurb:
-        '14 concepts and 11 relationships are proposed. Nothing downstream is built until you decide. Approving partially is fine, the run continues with what you keep.',
+        '250 canonical concepts came out of the normalizer. 14 of them need a decision from you — the rest already match an approved concept in ContactCentre v7. Nothing downstream is built until you decide, and approving partially is fine.',
       tone: 'warn',
-      cta: 'Open review',
       metrics: [
-        { id: 'concepts', label: 'Concepts', value: '14' },
-        { id: 'relations', label: 'Relationships', value: '11' },
+        { id: 'queue', label: 'Awaiting decision', value: '14', tone: 'warn' },
         { id: 'high', label: 'High confidence', value: '12', tone: 'ok' },
-        { id: 'look', label: 'Needs a look', value: '13', tone: 'warn' },
+        { id: 'matched', label: 'Matched to v7', value: '236' },
+        { id: 'canonical', label: 'Canonical concepts', value: '250' },
       ],
-      listTitle: 'Proposed, awaiting decision',
-      listMeta: '25 items',
-      lines: [
-        { id: 'p1', lead: '0.96', message: 'Customer — class from uc.customer', tag: 'concept' },
-        { id: 'p2', lead: '0.95', message: 'Customer holds Contract (1:N)', tag: 'relation' },
-        { id: 'p3', lead: '0.93', message: 'Contract generates Invoice (1:N)', tag: 'relation' },
-        { id: 'p4', lead: '0.88', message: 'Claim — class from uc.claim', tag: 'concept' },
-        { id: 'p5', lead: '0.82', message: 'Call subClassOf Interaction', tag: 'relation' },
-        {
-          id: 'p6',
-          lead: '0.74',
-          message: 'BillingAccount — inferred, no table of its own',
-          tag: 'low',
-        },
-        {
-          id: 'p7',
-          lead: '0.71',
-          message: 'ClaimAssessment — from policy doc, 2 of 6 fields exist',
-          tag: 'low',
-        },
-        {
-          id: 'p8',
-          lead: '0.62',
-          message: 'Tariff — glossary term, no matching table',
-          tag: 'low',
-        },
-        {
-          id: 'p9',
-          lead: '0.54',
-          message: 'Household — inferred from address clustering',
-          tag: 'low',
-        },
-        { id: 'p10', lead: '0.44', message: 'Household contains Customer (1:N)', tag: 'low' },
+    },
+  },
+
+  'R-2417': {
+    ingestion: {
+      title: 'Ingestion is reading your tables',
+      blurb:
+        'Two of three tables are profiled. meter_reading is large enough to sample rather than scan, so it takes the bulk of the stage. The candidate filter starts when this finishes.',
+      tone: 'info',
+      metrics: [
+        { id: 'tables', label: 'Tables read', value: '2 of 3' },
+        { id: 'columns', label: 'Columns profiled', value: '18' },
+        { id: 'chunks', label: 'Doc chunks', value: '—' },
+        { id: 'keys', label: 'Key candidates', value: '6' },
+      ],
+    },
+  },
+
+  'R-2416': {
+    ingestion: { duration: '6m 20s' },
+    candidates: { duration: '3m 04s' },
+    normalizer: { duration: '2m 12s' },
+    concepts: { duration: '9m 41s' },
+    relationships: { duration: '5m 08s' },
+    questions: {
+      title: 'Waiting for your review',
+      blurb:
+        '18 competency questions are drafted from the approved model. Four of them cannot be answered by it yet — keeping those is how the gaps get filled in the next run.',
+      tone: 'warn',
+      metrics: [
+        { id: 'questions', label: 'Questions', value: '18' },
+        { id: 'answerable', label: 'Answerable', value: '14', tone: 'ok' },
+        { id: 'gaps', label: 'Gaps', value: '4', tone: 'warn' },
+        { id: 'concepts', label: 'From concepts', value: '11' },
+      ],
+    },
+  },
+
+  'R-2413': {
+    ingestion: {
+      title: 'Ingestion complete',
+      blurb:
+        'Read 10 catalog tables and 2 documents — the widest source set this workspace has run.',
+      duration: '7m 46s',
+      metrics: [
+        { id: 'chunks', label: 'Chunks', value: '612' },
+        { id: 'tables', label: 'Tables read', value: '10' },
+        { id: 'columns', label: 'Columns profiled', value: '104' },
+        { id: 'keys', label: 'Key candidates', value: '31' },
+      ],
+    },
+    candidates: {
+      title: 'Candidate filter complete',
+      blurb: 'Kept the terms with enough evidence behind them and dropped the rest.',
+      duration: '3m 22s',
+      metrics: [
+        { id: 'candidates', label: 'Candidate concepts', value: '1,884' },
+        { id: 'scanned', label: 'Terms scanned', value: '6,402' },
+        { id: 'dropped', label: 'Below threshold', value: '4,518' },
+      ],
+    },
+    normalizer: {
+      title: 'Concept normalizer complete',
+      blurb:
+        '1,247 candidates mapped onto a concept and folded down to 312 canonical ones before review.',
+      duration: '2m 40s',
+      metrics: [
+        { id: 'mappings', label: 'Candidate mappings', value: '1,247' },
+        { id: 'canonical', label: 'Canonical concepts', value: '312', tone: 'ok' },
+        { id: 'folded', label: 'Folded as duplicates', value: '935' },
+      ],
+    },
+    concepts: {
+      title: 'Concepts approved',
+      blurb: 'a.sikarwar kept 47 of the 59 concepts that needed a decision. The rest matched v6.',
+      duration: '6m 12s',
+      metrics: [
+        { id: 'approved', label: 'Approved', value: '47', tone: 'ok' },
+        { id: 'rejected', label: 'Rejected', value: '12' },
+        { id: 'matched', label: 'Matched to v6', value: '253' },
+        { id: 'canonical', label: 'Canonical concepts', value: '312' },
+      ],
+    },
+    relationships: {
+      title: 'Relationships approved',
+      blurb: '62 of the 71 proposed links were kept, and those are what the graph was built from.',
+      duration: '3m 16s',
+      metrics: [
+        { id: 'approved', label: 'Approved', value: '62', tone: 'ok' },
+        { id: 'rejected', label: 'Rejected', value: '9' },
+        { id: 'proposed', label: 'Proposed', value: '71' },
       ],
     },
     questions: {
-      title: 'Competency questions',
+      title: 'Competency questions approved',
       blurb:
-        'Once concepts are approved, the run drafts the questions your ontology must be able to answer, then stops again for your sign-off.',
-      tone: 'pending',
+        'Three questions the model still cannot answer were kept on purpose — that gap is the honest measure of this version.',
+      duration: '4m 40s',
+      metrics: [
+        { id: 'questions', label: 'Questions', value: '24' },
+        { id: 'answerable', label: 'Answerable', value: '18', tone: 'ok' },
+        { id: 'partial', label: 'Partial', value: '3' },
+        { id: 'unanswered', label: 'Unanswered', value: '3', tone: 'warn' },
+      ],
     },
     graph: {
-      title: 'Knowledge graph',
+      title: 'Knowledge graph published',
       blurb:
-        'Approved concepts and questions are compiled into OWL classes, properties and R2RML mappings, then executed against the live tables. Expect roughly 12k nodes at this source volume.',
-      tone: 'pending',
+        'All three gates were approved, so the model compiled to 47 OWL classes and 62 R2RML mappings and ran against the live tables. v5 is what every source on this workspace was last extracted into.',
+      tone: 'ok',
+      duration: '18m 02s',
+      metrics: [
+        { id: 'nodes', label: 'Nodes', value: '12,438' },
+        { id: 'edges', label: 'Edges', value: '31,204' },
+        { id: 'classes', label: 'OWL classes', value: '47' },
+        { id: 'mappings', label: 'Mappings', value: '62' },
+      ],
     },
   },
 };
 
-export const BLOCKED_LINE = {
-  id: 'blocked',
-  lead: '—',
-  message: 'Waiting for Concepts & relationships to be approved',
-  tag: 'blocked',
-};
-
-export const LOG_TAG_TONES = {
-  ok: 'neutral',
-  done: 'neutral',
-  concept: 'neutral',
-  relation: 'neutral',
-  low: 'warn',
-  sampled: 'info',
-  blocked: 'neutral',
-};
+/** Null means the stage has nothing recorded for this run, not that it failed. */
+export const findStagePanel = (runId, stageId) => RUN_STAGE_PANELS[runId]?.[stageId] ?? null;

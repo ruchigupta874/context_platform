@@ -19,7 +19,14 @@ import styles from './Sources.module.css';
 const SKELETON_IDS = ['s1', 's2', 's3', 's4', 's5'];
 
 /** Uploaded documents: the sources that arrive by hand rather than from a catalog. */
-export default function DocumentList({ documents, triggered, onTrigger, onImport, isLoading }) {
+export default function DocumentList({
+  documents,
+  triggered,
+  onTrigger,
+  onOpenRun,
+  onImport,
+  isLoading,
+}) {
   return (
     <>
       <div className={styles.panelBody}>
@@ -78,7 +85,12 @@ export default function DocumentList({ documents, triggered, onTrigger, onImport
                     {doc.lastRun ?? 'never'}
                   </div>
                   <StatusCell source={doc} triggered={triggered} />
-                  <ActionCell source={doc} triggered={triggered} onTrigger={onTrigger} />
+                  <ActionCell
+                    source={doc}
+                    triggered={triggered}
+                    onTrigger={onTrigger}
+                    onOpenRun={onOpenRun}
+                  />
                 </DataTableRow>
               ))}
         </DataTableBody>
@@ -108,9 +120,11 @@ DocumentList.propTypes = {
       pages: PropTypes.number.isRequired,
       uploaded: PropTypes.string.isRequired,
       lastRun: PropTypes.string,
+      lastRunId: PropTypes.string,
       drift: PropTypes.string,
     }),
   ).isRequired,
   triggered: PropTypes.instanceOf(Set).isRequired,
   onTrigger: PropTypes.func.isRequired,
+  onOpenRun: PropTypes.func.isRequired,
 };

@@ -6,6 +6,9 @@ export const LAST_BUILD_RUN = 'R-2413';
  * `lastRun` null means this source has never been through an extraction.
  * `drift` non-null means it has changed since `lastRun` — that pair is what
  * makes the difference between "extract" and "re-extract" visible on screen.
+ *
+ * `lastRunId` is the same run as the one `lastRun` names, kept apart so the row
+ * can link to it without parsing the string it displays.
  */
 export const TABLES = [
   {
@@ -14,7 +17,8 @@ export const TABLES = [
     cols: 14,
     rows: '482k',
     description: 'Master customer record, one row per billing account holder',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: '+2 columns',
   },
   {
@@ -23,7 +27,8 @@ export const TABLES = [
     cols: 10,
     rows: '611k',
     description: 'Signed service agreements with start and end dates',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -32,7 +37,8 @@ export const TABLES = [
     cols: 11,
     rows: '7.2m',
     description: 'Monthly billing documents issued against a contract',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -41,7 +47,8 @@ export const TABLES = [
     cols: 8,
     rows: '6.9m',
     description: 'Settlement events posted against invoices',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -50,7 +57,8 @@ export const TABLES = [
     cols: 11,
     rows: '94k',
     description: '',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -59,7 +67,8 @@ export const TABLES = [
     cols: 10,
     rows: '3.1m',
     description: 'Any customer touchpoint across channels',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -68,7 +77,8 @@ export const TABLES = [
     cols: 9,
     rows: '1.8m',
     description: 'Voice interactions handled by the contact centre',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -77,7 +87,8 @@ export const TABLES = [
     cols: 7,
     rows: '2.4k',
     description: '',
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: '+1 column',
   },
   {
@@ -109,7 +120,8 @@ export const DOCUMENTS = [
     pages: 48,
     uploaded: '12 Aug',
     indexed: true,
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -119,7 +131,8 @@ export const DOCUMENTS = [
     pages: 22,
     uploaded: '12 Aug',
     indexed: true,
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: null,
   },
   {
@@ -149,7 +162,8 @@ export const DOCUMENTS = [
     pages: 4,
     uploaded: '26 Aug',
     indexed: false,
-    lastRun: 'R-2413 · 24 Aug',
+    lastRun: `${LAST_BUILD_RUN} · 24 Aug`,
+    lastRunId: LAST_BUILD_RUN,
     drift: 're-uploaded',
   },
 ];

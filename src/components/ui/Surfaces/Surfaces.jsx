@@ -106,13 +106,14 @@ export function CodeBlock({ children, className = '', style }) {
 }
 
 const BANNER_TONE_CLASS = {
+  accent: styles.bannerAccent,
   warn: styles.bannerWarn,
   ok: styles.bannerOk,
   danger: styles.bannerDanger,
   info: styles.bannerInfo,
 };
 
-const BANNER_ICON = { warn: 'alert', ok: 'check', danger: 'alert', info: 'info' };
+const BANNER_ICON = { warn: 'alert', ok: 'check', danger: 'alert', info: 'info', accent: 'info' };
 
 export function Banner({ tone = 'warn', title, note, icon, actions, className = '' }) {
   return (
@@ -186,7 +187,7 @@ CodeBlock.propTypes = {
 };
 
 Banner.propTypes = {
-  tone: PropTypes.oneOf(['warn', 'ok', 'danger', 'info']),
+  tone: PropTypes.oneOf(['warn', 'ok', 'danger', 'info', 'accent']),
   title: PropTypes.node,
   note: PropTypes.node,
   icon: PropTypes.oneOf(ICON_NAMES),

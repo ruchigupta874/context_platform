@@ -8,7 +8,7 @@ import { EmptyState, Panel } from '@/components/ui/Surfaces';
 import StageStepper from '@/features/runs/components/StageStepper';
 import { RUN_VIEW, STAGE_STATE, describeStages, stageRoute } from '@/features/runs/pipeline';
 import { RUN_STATUS, RUN_STATUS_META } from '@/features/runs/constants';
-import { RUN_DETAIL, findRun } from '@/features/runs/mocks';
+import { findRun, findStagePanel } from '@/features/runs/mocks';
 import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
 import { joinMeta } from '@/utils/format';
@@ -37,6 +37,10 @@ function viewOf(pathname) {
  * between the ontology and the graph reads as staying inside the run instead of
  * launching a fresh screen. The stepper navigates too — back to either gate, or
  * forward to the graph — so the run can be walked in both directions.
+ *
+ * The overview is the exception: it renders the same pipeline at full size as
+ * its provenance thread, so the shell stands down there rather than printing
+ * the run's position twice on one screen.
  */
 export default function RunShell() {
   const navigate = useNavigate();
@@ -52,13 +56,13 @@ export default function RunShell() {
     () =>
       stages.reduce((acc, item) => {
         if (item.state === STAGE_STATE.done)
-          acc[item.id] = RUN_DETAIL.stages[item.id]?.duration ?? 'done';
+          acc[item.id] = findStagePanel(runId, item.id)?.duration ?? 'done';
         else if (item.state === STAGE_STATE.gate) acc[item.id] = 'waiting on you';
         else if (item.state === STAGE_STATE.running) acc[item.id] = 'running';
         else acc[item.id] = 'blocked';
         return acc;
       }, {}),
-    [stages],
+    [stages, runId],
   );
 
   if (!run) {
@@ -94,6 +98,7 @@ export default function RunShell() {
   }
 
   const view = viewOf(location.pathname);
+  const overview = view === RUN_VIEW.index;
   const statusMeta = RUN_STATUS_META[run.status];
   const inFlight = run.status === RUN_STATUS.running || run.status === RUN_STATUS.needsReview;
 
@@ -115,9 +120,9 @@ export default function RunShell() {
           {
             label: runId,
             mono: true,
-            to: view === RUN_VIEW.index ? undefined : buildPath.runDetail(workspaceId, runId),
+            to: overview ? undefined : buildPath.runDetail(workspaceId, runId),
           },
-          ...(view === RUN_VIEW.index ? [] : [{ label: VIEW_LABEL[view] }]),
+          ...(overview ? [] : [{ label: VIEW_LABEL[view] }]),
         ]}
         note={topBarNote(view, run)}
         actions={topBarActions(view, run, () => navigate(buildPath.newRun(workspaceId)))}
@@ -131,7 +136,8 @@ export default function RunShell() {
               {statusMeta.label.toUpperCase()}
             </Chip>
           </div>
-          <div className={styles.runSummary}>{summary}</div>
+          {/* The overview's thread opens with this same line, in full. */}
+          {!overview && <div className={styles.runSummary}>{summary}</div>}
         </div>
         <div className={styles.spacer} />
         {inFlight && (
@@ -146,22 +152,28 @@ export default function RunShell() {
         )}
       </div>
 
-      <StageStepper
-        stages={stages}
-        variant="compact"
-        showMeta
-        meta={stepperMeta}
-        isSelectable={(stage) => stage.id !== view && Boolean(stageRoute(stage, run))}
-        onSelect={(stageId) => {
-          const target = stageRoute(
-            stages.find((s) => s.id === stageId),
-            run,
-          );
-          if (target) navigate(buildPath[target](workspaceId, runId));
-        }}
-      />
+      {!overview && (
+        <StageStepper
+          stages={stages}
+          variant="compact"
+          showMeta
+          meta={stepperMeta}
+          isSelectable={(stage) => stage.id !== view && Boolean(stageRoute(stage, run))}
+          onSelect={(stageId) => {
+            const target = stageRoute(
+              stages.find((s) => s.id === stageId),
+              run,
+            );
+            if (target) navigate(buildPath[target](workspaceId, runId));
+          }}
+        />
+      )}
 
-      <nav className={styles.tabs} aria-label="Run output">
+      <nav className={styles.tabs} aria-label="Run views">
+        {/* `end` so the overview does not stay lit on the tabs nested under it. */}
+        <NavLink to={buildPath.runDetail(workspaceId, runId)} end className={tabClass}>
+          Overview
+        </NavLink>
         <NavLink to={buildPath.runGraph(workspaceId, runId)} className={tabClass}>
           Knowledge graph
         </NavLink>
@@ -184,7 +196,9 @@ export default function RunShell() {
 function topBarActions(view, run, onNewRun) {
   if (view === RUN_VIEW.concepts || view === RUN_VIEW.questions) return null;
 
-  if (!run.output) {
+  // Export and publish belong to the artefact you are looking at. The overview
+  // is looking at the run, so it offers the only thing a run affords: another.
+  if (view === RUN_VIEW.index || !run.output) {
     return (
       <Button variant="primary" iconLeft="plus" onClick={onNewRun}>
         New extraction
@@ -219,7 +233,7 @@ function topBarActions(view, run, onNewRun) {
 function topBarNote(view, run) {
   if (view === RUN_VIEW.concepts || view === RUN_VIEW.questions)
     return '2 more runs waiting in the queue';
-  if (!run.output) return null;
+  if (view === RUN_VIEW.index || !run.output) return null;
   if (view === RUN_VIEW.ontology) {
     return joinMeta(
       run.output.version,

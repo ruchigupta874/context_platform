@@ -17,6 +17,15 @@ export function sourceStatus(source, triggeredIds) {
 }
 
 /**
+ * The run a source's row links to: the one reading it right now if there is
+ * one, otherwise the one that last extracted it.
+ *
+ * Null means there is nothing to open — a source nobody has run yet has no
+ * provenance, and a link to it would only lead to an apology.
+ */
+export const sourceRunId = (source) => source.activeRun ?? source.lastRunId ?? null;
+
+/**
  * A source can only be extracted once at a time, and a document still being
  * indexed has nothing to read yet.
  */

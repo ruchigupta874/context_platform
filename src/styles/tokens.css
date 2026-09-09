@@ -31,6 +31,8 @@
   --accent-tint: #eeedfb;
   --accent-tint-2: #f2f1fc;
   --accent-ring: rgba(75, 69, 198, 0.1);
+  --accent-border: #dbd9f4;
+  --accent-bg: #f8f8fd;
 
   /* ---- semantic ---- */
   --ok: #1b7a4c;

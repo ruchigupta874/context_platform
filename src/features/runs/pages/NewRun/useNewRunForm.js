@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { DEFAULT_STRATEGY, STRATEGIES, estimateMinutes } from '@/features/runs/constants';
-import { PIPELINE_STAGES } from '@/features/runs/pipeline';
+import { OPTIONAL_GATE, PIPELINE_STAGES } from '@/features/runs/pipeline';
 import {
   DEFAULT_DOCUMENT_SELECTION,
   DEFAULT_TABLE_SELECTION,
@@ -47,7 +47,7 @@ export function useNewRunForm() {
   // Gates are derived from the pipeline definition plus the one toggle the user controls.
   const stages = PIPELINE_STAGES.map((stage) => ({
     ...stage,
-    active: stage.gate && (stage.id !== 'questions' || questionGate),
+    active: stage.gate && (stage.id !== OPTIONAL_GATE || questionGate),
   }));
   const gateCount = stages.filter((s) => s.active).length;
 

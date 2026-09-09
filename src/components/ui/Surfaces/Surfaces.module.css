@@ -243,6 +243,22 @@
   color: var(--info);
 }
 
+/* The gate tone. A held run is not a warning — it is the product waiting on a
+   person, so it reads in the brand accent rather than in amber. */
+.bannerAccent {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.bannerAccent .bannerIcon {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.bannerAccent .bannerTitle {
+  color: var(--accent);
+}
+
 /* ---- empty state ---- */
 .empty {
   display: flex;

@@ -8,6 +8,7 @@ import Chip from '@/components/ui/Chip';
 import Toggle from '@/components/ui/Toggle';
 import { Panel } from '@/components/ui/Surfaces';
 import { STRATEGIES } from '@/features/runs/constants';
+import { GATE_STAGES, OPTIONAL_GATE } from '@/features/runs/pipeline';
 import { SOURCE_KIND } from '@/features/sources';
 import { useWorkspace } from '@/features/workspaces';
 import { buildPath } from '@/routes/paths';
@@ -165,35 +166,33 @@ export default function NewRun() {
                 The run pauses at each gate you keep on and waits for a decision. Nothing downstream
                 is built until you approve.
               </p>
+              {/* Derived from the pipeline, so adding or moving a gate never
+                  leaves this list saying something the run will not do. */}
               <div className={styles.gates}>
-                <div className={styles.gate}>
-                  <div className={styles.gateBody}>
-                    <div className={styles.gateName}>
-                      Concepts &amp; relationships
-                      <Chip tone="neutral">REQUIRED</Chip>
+                {GATE_STAGES.map((gate) => {
+                  const optional = gate.id === OPTIONAL_GATE;
+                  const on = optional ? questionGate : true;
+
+                  return (
+                    <div key={gate.id} className={styles.gate}>
+                      <div className={styles.gateBody}>
+                        <div className={styles.gateName}>
+                          {gate.label}
+                          <Chip tone={optional && on ? 'ok' : 'neutral'}>
+                            {optional ? (on ? 'ON' : 'OFF') : 'REQUIRED'}
+                          </Chip>
+                        </div>
+                        <div className={styles.gateDesc}>{gate.gateNote}</div>
+                      </div>
+                      <Toggle
+                        checked={on}
+                        disabled={!optional}
+                        onChange={optional ? setQuestionGate : undefined}
+                        size="lg"
+                      />
                     </div>
-                    <div className={styles.gateDesc}>
-                      Approve the classes and the links between them before anything is built on
-                      top.
-                    </div>
-                  </div>
-                  <Toggle checked disabled size="lg" />
-                </div>
-                <div className={styles.gate}>
-                  <div className={styles.gateBody}>
-                    <div className={styles.gateName}>
-                      Competency questions
-                      <Chip tone={questionGate ? 'ok' : 'neutral'}>
-                        {questionGate ? 'ON' : 'OFF'}
-                      </Chip>
-                    </div>
-                    <div className={styles.gateDesc}>
-                      Approve the questions the ontology must be able to answer. Turn off to accept
-                      all generated questions.
-                    </div>
-                  </div>
-                  <Toggle checked={questionGate} onChange={setQuestionGate} size="lg" />
-                </div>
+                  );
+                })}
               </div>
             </Panel>
           </div>

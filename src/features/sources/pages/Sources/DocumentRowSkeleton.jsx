@@ -21,6 +21,7 @@ export default function DocumentRowSkeleton() {
       <Skeleton width={88} height={10} />
       <Skeleton width={64} height={19} />
       <div className={styles.actionCell}>
+        <Skeleton width={126} height={29} radius="var(--radius)" />
         <Skeleton width={98} height={29} radius="var(--radius)" />
       </div>
     </DataTableRow>
