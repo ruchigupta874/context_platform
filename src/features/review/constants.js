@@ -35,3 +35,22 @@ export const GATE_COPY = {
   approveRest: 'Approve everything undecided',
   continue: (n) => `Continue with ${n}`,
 };
+
+/**
+ * The concept gate's table. Widths are grid tracks: the two prose columns flex
+ * and everything with a fixed shape — the checkbox, the chips, the icon row —
+ * holds its width so the columns stay aligned as the window changes.
+ */
+export const CONCEPT_COLUMNS = [
+  { id: 'select', label: '', width: '36px' },
+  { id: 'concept', label: 'Concept', width: 'minmax(170px, 1fr)' },
+  { id: 'type', label: 'Class / type', width: 'minmax(140px, 0.8fr)' },
+  { id: 'definition', label: 'Definition', width: 'minmax(200px, 1.9fr)' },
+  { id: 'confidence', label: 'Confidence', width: '96px' },
+  { id: 'status', label: 'Status', width: '118px' },
+  { id: 'actions', label: 'Actions', width: '108px' },
+];
+
+/** Page sizes offered under the table. */
+export const CONCEPT_PAGE_SIZES = [10, 25, 50, 100];
+export const DEFAULT_CONCEPT_PAGE_SIZE = 25;

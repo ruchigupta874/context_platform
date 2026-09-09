@@ -1,4 +1,4 @@
-import { DECISION } from '@/config/constants/common';
+import { CONFIDENCE_BANDS, DECISION, TONE } from '@/config/constants/common';
 
 /**
  * The concept review gate, as the API describes it.
@@ -8,6 +8,10 @@ import { DECISION } from '@/config/constants/common';
  * typed strings. This module is the only place that knows that shape: it turns
  * a response item into the object the screen renders, so when the fetcher lands
  * nothing above it has to change.
+ *
+ * Everything the table filters and sorts by lives here too, as pure functions
+ * over normalised concepts. The page holds the current filter; it does not know
+ * what a filter means.
  */
 
 /** The statuses the API reports. An item is in exactly one of them. */
@@ -27,34 +31,100 @@ export const REVIEW_ITEM_TYPE = {
  * API status to the decision the gate holds.
  *
  * PENDING deliberately maps to nothing: undecided is not a third decision, it
- * is the absence of one, and the footer has to be able to count it as such.
+ * is the absence of one, and the gate has to be able to count it as such.
  */
 export const DECISION_BY_STATUS = {
   [REVIEW_STATUS.approved]: DECISION.approved,
   [REVIEW_STATUS.rejected]: DECISION.rejected,
 };
 
-/** Which slice of the gate the list is showing. */
+/** Which slice of the gate the table is showing. */
 export const CONCEPT_FILTER = {
   all: 'all',
-  pending: 'pending',
+  undecided: 'undecided',
   approved: DECISION.approved,
   rejected: DECISION.rejected,
 };
 
 export const CONCEPT_FILTERS = [
-  { id: CONCEPT_FILTER.all, label: 'All' },
-  { id: CONCEPT_FILTER.pending, label: 'Pending' },
+  { id: CONCEPT_FILTER.all, label: 'All statuses' },
+  { id: CONCEPT_FILTER.undecided, label: 'Undecided' },
   { id: CONCEPT_FILTER.approved, label: 'Approved' },
   { id: CONCEPT_FILTER.rejected, label: 'Rejected' },
 ];
 
+/**
+ * How the Status column reads, keyed by the decision held — with undecided as
+ * the absent one. Neutral rather than amber: on arrival every row is undecided,
+ * and a table of fifty amber chips says "all of this is wrong" instead of
+ * "none of this has been looked at".
+ */
+export const CONCEPT_STATUS_META = {
+  [CONCEPT_FILTER.undecided]: { label: 'Undecided', tone: TONE.neutral, icon: 'clock' },
+  [DECISION.approved]: { label: 'Approved', tone: TONE.ok, icon: 'check' },
+  [DECISION.rejected]: { label: 'Rejected', tone: TONE.danger, icon: 'close' },
+};
+
+export const statusMetaFor = (decision) =>
+  CONCEPT_STATUS_META[decision ?? CONCEPT_FILTER.undecided];
+
 /** `decision` is undefined for an item nobody has ruled on yet. */
 export function matchesFilter(filter, decision) {
   if (filter === CONCEPT_FILTER.all) return true;
-  if (filter === CONCEPT_FILTER.pending) return !decision;
+  if (filter === CONCEPT_FILTER.undecided) return !decision;
   return decision === filter;
 }
+
+/** The confidence band a score falls in — the same bands that colour the chip. */
+const bandOf = (value) =>
+  CONFIDENCE_BANDS.find((band) => value >= band.min) ??
+  CONFIDENCE_BANDS[CONFIDENCE_BANDS.length - 1];
+
+export const CONFIDENCE_FILTER = { all: 'all' };
+
+/**
+ * Built from the bands rather than listed again, so a band added to the scale
+ * appears in this menu without anyone remembering to add it.
+ */
+export const CONFIDENCE_FILTERS = [
+  { id: CONFIDENCE_FILTER.all, label: 'All confidence' },
+  ...CONFIDENCE_BANDS.map((band) => ({
+    id: band.label,
+    label: `${band.label[0].toUpperCase()}${band.label.slice(1)} confidence`,
+  })),
+];
+
+export const matchesConfidence = (filter, value) =>
+  filter === CONFIDENCE_FILTER.all || bandOf(value).label === filter;
+
+export const CONCEPT_SORT = {
+  nameAsc: 'name-asc',
+  nameDesc: 'name-desc',
+  confidenceDesc: 'confidence-desc',
+  confidenceAsc: 'confidence-asc',
+  type: 'type',
+};
+
+export const CONCEPT_SORTS = [
+  { id: CONCEPT_SORT.nameAsc, label: 'Concept (A–Z)' },
+  { id: CONCEPT_SORT.nameDesc, label: 'Concept (Z–A)' },
+  { id: CONCEPT_SORT.confidenceDesc, label: 'Confidence (high first)' },
+  { id: CONCEPT_SORT.confidenceAsc, label: 'Confidence (low first)' },
+  { id: CONCEPT_SORT.type, label: 'Class / type' },
+];
+
+/** Ties break on name, so a sort by type or confidence is still stable to read. */
+const BY_SORT = {
+  [CONCEPT_SORT.nameAsc]: (a, b) => a.name.localeCompare(b.name),
+  [CONCEPT_SORT.nameDesc]: (a, b) => b.name.localeCompare(a.name),
+  [CONCEPT_SORT.confidenceDesc]: (a, b) =>
+    b.confidence - a.confidence || a.name.localeCompare(b.name),
+  [CONCEPT_SORT.confidenceAsc]: (a, b) =>
+    a.confidence - b.confidence || a.name.localeCompare(b.name),
+  [CONCEPT_SORT.type]: (a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name),
+};
+
+export const sortConcepts = (concepts, sort) => [...concepts].sort(BY_SORT[sort]);
 
 /**
  * Aliases arrive as a JSON-encoded array inside a string field, not as an
@@ -76,7 +146,7 @@ export function parseAliases(raw) {
  * One response item, flattened into what the screen actually reads.
  *
  * Confidence is taken from the item rather than the payload copy of it: the
- * payload's is a string, and a score the list sorts and colours by should be a
+ * payload's is a string, and a score the table sorts and colours by should be a
  * number everywhere above this line.
  */
 export function normalizeConcept(item) {
@@ -113,7 +183,7 @@ export function seedDecisions(items) {
   }, {});
 }
 
-/** How many items sit behind each filter, given the decisions held right now. */
+/** How many items sit behind each status filter, given the decisions held now. */
 export function countByFilter(items, decisionFor) {
   return CONCEPT_FILTERS.reduce((acc, filter) => {
     acc[filter.id] = items.filter((item) => matchesFilter(filter.id, decisionFor(item.id))).length;

@@ -1,57 +1,84 @@
 import { useMemo, useState } from 'react';
 import {
   CONCEPT_FILTER,
+  CONCEPT_SORT,
+  CONFIDENCE_FILTER,
   conceptMatches,
   countByFilter,
+  matchesConfidence,
   matchesFilter,
+  sortConcepts,
 } from '@/features/review/conceptReview';
+import { DEFAULT_CONCEPT_PAGE_SIZE } from '@/features/review/constants';
 import { useReviewContext } from '@/features/review/useReviewContext';
 
 /**
- * What the concept gate is currently showing: the status filter, the search
- * box, and which concept the detail pane is open on.
+ * What the concept table is currently showing: the three filters, the sort, and
+ * the page of rows they resolve to.
  *
- * The counts on the filter pills come from the decisions held right now rather
+ * The counts on the status menu come from the decisions held right now rather
  * than from the envelope's `pending` / `approved` / `rejected` figures. Those
  * are what the server knew when it answered; approving six concepts has to move
- * them immediately, or the pills contradict the list underneath them.
+ * them immediately, or the menu contradicts the table underneath it.
  *
- * The selection is an id, not an index, so filtering the list never silently
- * swaps which concept the reviewer is looking at. Falling back to the first
- * visible row is what keeps the pane populated when the current one filters out.
+ * The page is clamped rather than corrected by an effect. Approving the last
+ * two rows of page ten while filtered to Undecided empties that page, and a
+ * clamp lands the reviewer on the new last page as they render — an effect
+ * would paint the empty page first.
  */
 export function useConceptQueue(items) {
   const decisions = useReviewContext();
-  const [filter, setFilter] = useState(CONCEPT_FILTER.all);
+  const [status, setStatus] = useState(CONCEPT_FILTER.all);
+  const [confidence, setConfidence] = useState(CONFIDENCE_FILTER.all);
+  const [sort, setSort] = useState(CONCEPT_SORT.nameAsc);
   const [query, setQuery] = useState('');
-  const [pickedId, setPickedId] = useState(null);
+  const [pageSize, setPageSize] = useState(DEFAULT_CONCEPT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
 
   const { decisionFor } = decisions;
 
-  const visible = useMemo(() => {
+  const matched = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return items.filter(
+    const filtered = items.filter(
       (concept) =>
-        matchesFilter(filter, decisionFor(concept.id)) &&
+        matchesFilter(status, decisionFor(concept.id)) &&
+        matchesConfidence(confidence, concept.confidence) &&
         (!needle || conceptMatches(concept, needle)),
     );
-  }, [items, filter, query, decisionFor]);
+    return sortConcepts(filtered, sort);
+  }, [items, status, confidence, query, sort, decisionFor]);
 
   const counts = useMemo(() => countByFilter(items, decisionFor), [items, decisionFor]);
 
-  // Resolved against what is on screen, not against every concept in the run:
-  // a detail pane showing an item the filter just removed would leave the list
-  // with nothing highlighted and no way to see what it was describing.
-  const selected = visible.find((concept) => concept.id === pickedId) ?? visible[0] ?? null;
+  const pageCount = Math.max(1, Math.ceil(matched.length / pageSize));
+  const current = Math.min(page, pageCount);
+  const start = (current - 1) * pageSize;
+  const rows = matched.slice(start, start + pageSize);
+
+  /** Every control that changes what is in the list sends you back to page one. */
+  const reset = (apply) => (value) => {
+    apply(value);
+    setPage(1);
+  };
 
   return {
-    filter,
-    setFilter,
+    status,
+    setStatus: reset(setStatus),
+    confidence,
+    setConfidence: reset(setConfidence),
+    sort,
+    setSort: reset(setSort),
     query,
-    setQuery,
-    visible,
+    setQuery: reset(setQuery),
     counts,
-    selected,
-    select: setPickedId,
+    rows,
+    total: matched.length,
+    page: current,
+    pageCount,
+    pageSize,
+    setPageSize: reset(setPageSize),
+    setPage,
+    // 1-based and inclusive, the way the count under the table reads it.
+    range: { from: matched.length === 0 ? 0 : start + 1, to: start + rows.length },
   };
 }

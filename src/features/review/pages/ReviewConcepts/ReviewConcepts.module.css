@@ -1,7 +1,383 @@
-/* What the concept gate adds to the shared gate shell: the alias row, the
-   provenance block, and the two loading states. */
+/* The concept gate as one table: four figures and a progress read, then the
+   toolbar and the table share a single card. */
 
-/* ---- aliases ---- */
+/* ---- the figures ---- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(210px, 1.35fr);
+  gap: 14px;
+  margin-bottom: 14px;
+  flex: none;
+}
+
+.tile,
+.progressTile {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 13px 15px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tileIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.tileAccent {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.tileOk {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+.tileDanger {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.tileNeutral {
+  background: var(--bg-muted);
+  color: var(--text-4);
+}
+
+.tileLabel {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--text-5);
+  text-transform: uppercase;
+}
+
+.tileValue {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: var(--ls-display);
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.progressTile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9px;
+}
+
+.progressHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.progressCount {
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+.progressPercent {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-4);
+  margin-left: auto;
+}
+
+/* What leaving items undecided costs, said once above the table rather than in
+   a footer that would compete with the pagination. */
+.undecidedNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+  color: var(--warn);
+  margin-bottom: 12px;
+  flex: none;
+}
+
+.undecidedDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warn-strong);
+  flex: none;
+}
+
+/* ---- toolbar and table share one card ---- */
+.panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  min-height: 54px;
+}
+
+/* A selection is a mode, so the bar it lives in says so. */
+.toolbarSelected {
+  background: var(--accent-bg);
+  gap: 10px;
+}
+
+.selectedCount {
+  font-size: var(--fs-body);
+  color: var(--text-2);
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-strong);
+}
+
+.clearSelection {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  color: var(--text-3);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.clearSelection:hover {
+  color: var(--text);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ---- filter menus ---- */
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.filterLabel {
+  font-size: var(--fs-small);
+  color: var(--text-4);
+  white-space: nowrap;
+}
+
+.filterTrigger {
+  height: var(--control-h);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 9px 0 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  font-size: var(--fs-body);
+  color: var(--text);
+  white-space: nowrap;
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
+}
+
+.filterTrigger:hover,
+.filterTrigger[data-state='open'] {
+  background: var(--bg-hover);
+  border-color: var(--border-input);
+}
+
+.filterValue {
+  flex: 1;
+  text-align: left;
+}
+
+.filterCaret {
+  color: var(--text-5);
+  flex: none;
+}
+
+/* Sits after the item label, so the menu doubles as a read of the split. */
+.filterCount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  color: var(--text-5);
+  margin-left: 8px;
+}
+
+/* ---- table ---- */
+/* The card is the chrome here; the table supplies its own everywhere else.
+   Two classes deep so it wins whichever order the CSS modules land in. */
+.panel .table {
+  border: 0;
+  border-radius: 0;
+  flex: 1;
+}
+
+.tableEmpty {
+  padding: 48px 20px;
+}
+
+.cellName {
+  min-width: 0;
+  padding-right: 12px;
+}
+
+/* The name is the way into the row's detail, so it looks like a link rather
+   than relying on the icon at the far end of the row being found. */
+.nameButton {
+  display: block;
+  max-width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nameButton:hover {
+  color: var(--accent);
+}
+
+.nameStruck {
+  color: var(--text-disabled);
+  text-decoration: line-through;
+}
+
+.aliasCount {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  color: var(--text-5);
+  margin-top: 2px;
+}
+
+.cellType {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 14px;
+}
+
+.cellDefinition {
+  font-size: var(--fs-body);
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 16px;
+}
+
+.cellActions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: flex-end;
+}
+
+/* The row is 52px; the shared icon size would leave 10px of air above and
+   below, so these come down to sit inside it. */
+.cellActions button {
+  width: 28px;
+  height: 28px;
+}
+
+/* ---- pagination ---- */
+.pageCount {
+  font-size: var(--fs-small);
+  color: var(--text-4);
+}
+
+.pageSizeLabel {
+  font-size: var(--fs-small);
+  color: var(--text-4);
+}
+
+.pageSizeTrigger {
+  height: 29px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px 0 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.pageSizeTrigger:hover,
+.pageSizeTrigger[data-state='open'] {
+  background: var(--bg-hover);
+}
+
+.pagePosition {
+  font-size: var(--fs-small);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* ---- loading ---- */
+/* The table's own grid track, so nothing shifts when the concepts land. */
+.skeletonRow {
+  display: grid;
+  align-items: center;
+  height: 52px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border-soft);
+  gap: 0;
+}
+
+/* ---- detail dialog ---- */
+.dialogBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dialogDefinition {
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed);
+  color: var(--text);
+  margin-top: 8px;
+  text-wrap: pretty;
+}
+
 .aliases {
   display: flex;
   flex-wrap: wrap;
@@ -29,7 +405,6 @@
   line-height: var(--lh-body);
   color: var(--text-5);
   margin-top: 8px;
-  max-width: 620px;
   text-wrap: pretty;
 }
 
@@ -40,63 +415,23 @@
   border-left: 2px solid var(--border-strong);
   padding-left: 12px;
   margin-top: 8px;
-  max-width: 620px;
   text-wrap: pretty;
 }
 
 .provenance {
   margin-top: 8px;
-  max-width: 620px;
 }
 
-/* ---- empty states ---- */
-.listEmpty {
-  padding: 40px 20px;
-}
-
-.detailEmpty {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-/* ---- loading ---- */
-/* The row's own geometry, so nothing moves when the concepts land. */
-.skeletonRow {
-  display: grid;
-  align-items: center;
-  min-height: 56px;
-  padding: 0 16px 0 14px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.skeletonBody {
+/* The dialog's own rhythm. Modal ships the padding and the scroll; the spacing
+   between sections belongs to whatever is put inside it. */
+.dialogBody {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-right: 10px;
+  gap: 20px;
 }
 
-.skeletonHead {
-  flex: none;
-  padding: 18px 24px 14px;
-  border-bottom: 1px solid var(--border-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-}
-
-.skeletonBadges {
-  display: flex;
-  gap: 8px;
-}
-
-.skeletonLines {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
+/* The only right-aligned column, so its header follows the icons rather than
+   sitting over the gap to their left. */
+.table [role='columnheader']:last-child {
+  text-align: right;
 }

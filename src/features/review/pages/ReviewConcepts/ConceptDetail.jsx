@@ -1,123 +1,111 @@
 import PropTypes from 'prop-types';
 import Chip from '@/components/ui/Chip';
-import { EmptyState, SectionLabel, StatPairs } from '@/components/ui/Surfaces';
+import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/Modal';
+import { SectionLabel, StatPairs } from '@/components/ui/Surfaces';
 import DecisionActions from '@/features/review/components/DecisionActions';
-import {
-  Definition,
-  GateDetail,
-  GateDetailBody,
-  GateDetailHeader,
-} from '@/features/review/components/ReviewGate';
 import { DECISION } from '@/config/constants/common';
 import { conceptIri, confidenceTone, formatConfidence, formatDateTime } from '@/utils/format';
-import ConceptDetailSkeleton from './ConceptDetailSkeleton';
 import styles from './ReviewConcepts.module.css';
 
 /**
- * The right-hand half of the gate: everything the run recorded about the
- * selected concept, and the decision it is asking for.
+ * Everything the run recorded about one concept, over the table.
  *
- * Aliases lead the body because they are the reason most of these decisions are
- * hard: the concept is only correct if everything folded into it really is the
- * same thing. Provenance sits at the bottom for the reviewer who needs to trace
- * a concept back to the run that proposed it, which is a rarer job than reading
- * the definition.
+ * The table can hold a definition's first line and nothing else, and the alias
+ * list is the reason most of these decisions are hard — a concept is only right
+ * if everything folded into it really is the same thing. So the row opens into
+ * this rather than the page keeping a detail pane permanently open for the one
+ * row in twenty that needs reading.
+ *
+ * The decision buttons are repeated here on purpose: having read the aliases,
+ * the reviewer should not have to close the dialog to act on what they read.
  */
 export default function ConceptDetail({
   concept,
-  isLoading,
+  workspaceId,
   decision,
   onApprove,
   onReject,
-  workspaceId,
+  onClose,
 }) {
-  if (isLoading) return <ConceptDetailSkeleton />;
-
-  if (!concept) {
-    return (
-      <GateDetail>
-        <div className={styles.detailEmpty}>
-          <EmptyState
-            icon="node"
-            title="No concept selected"
-            hint="Pick one from the list to read its definition and rule on it."
-          />
-        </div>
-      </GateDetail>
-    );
-  }
+  if (!concept) return null;
 
   return (
-    <GateDetail>
-      <GateDetailHeader
+    <Modal open onOpenChange={(next) => !next && onClose()}>
+      <ModalContent
+        size="lg"
         title={concept.name}
-        badges={
-          <>
+        description={conceptIri(workspaceId, concept.name)}
+      >
+        <ModalBody className={styles.dialogBody}>
+          <div className={styles.dialogBadges}>
             <Chip tone="accent">{concept.role.toUpperCase()}</Chip>
             <Chip>{concept.type}</Chip>
             <Chip tone={confidenceTone(concept.confidence)} mono>
               {formatConfidence(concept.confidence)} confidence
             </Chip>
-          </>
-        }
-        uri={conceptIri(workspaceId, concept.name)}
-        actions={<DecisionActions decision={decision} onApprove={onApprove} onReject={onReject} />}
-      />
+          </div>
 
-      <GateDetailBody>
-        <div>
-          <SectionLabel>Definition</SectionLabel>
-          <Definition>{concept.definition}</Definition>
-        </div>
-
-        <div>
-          <SectionLabel
-            note={
-              concept.aliases.length > 0 ? 'folded into this concept by the normaliser' : undefined
-            }
-          >
-            Aliases
-          </SectionLabel>
-          {concept.aliases.length > 0 ? (
-            <div className={styles.aliases}>
-              {concept.aliases.map((alias) => (
-                <span key={alias} className={styles.alias}>
-                  {alias}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.none}>
-              Nothing was folded into this concept — it was proposed under one name only.
-            </p>
-          )}
-        </div>
-
-        {concept.comment && (
           <div>
-            <SectionLabel>Review note</SectionLabel>
-            <p className={styles.comment}>{concept.comment}</p>
+            <SectionLabel>Definition</SectionLabel>
+            <p className={styles.dialogDefinition}>{concept.definition}</p>
           </div>
-        )}
 
-        <div>
-          <SectionLabel>Provenance</SectionLabel>
-          <div className={styles.provenance}>
-            <StatPairs
-              keyWidth={132}
-              pairs={[
-                { key: 'Concept id', value: concept.conceptId },
-                { key: 'Execution run', value: concept.runId },
-                { key: 'Proposed', value: formatDateTime(concept.createdAt) },
-                ...(concept.reviewedAt
-                  ? [{ key: 'Reviewed', value: formatDateTime(concept.reviewedAt) }]
-                  : []),
-              ]}
-            />
+          <div>
+            <SectionLabel
+              note={
+                concept.aliases.length > 0
+                  ? 'folded into this concept by the normaliser'
+                  : undefined
+              }
+            >
+              Aliases
+            </SectionLabel>
+            {concept.aliases.length > 0 ? (
+              <div className={styles.aliases}>
+                {concept.aliases.map((alias) => (
+                  <span key={alias} className={styles.alias}>
+                    {alias}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.none}>
+                Nothing was folded into this concept — it was proposed under one name only.
+              </p>
+            )}
           </div>
-        </div>
-      </GateDetailBody>
-    </GateDetail>
+
+          {concept.comment && (
+            <div>
+              <SectionLabel>Review note</SectionLabel>
+              <p className={styles.comment}>{concept.comment}</p>
+            </div>
+          )}
+
+          <div>
+            <SectionLabel>Provenance</SectionLabel>
+            <div className={styles.provenance}>
+              <StatPairs
+                keyWidth={132}
+                pairs={[
+                  { key: 'Concept id', value: concept.conceptId },
+                  { key: 'Execution run', value: concept.runId },
+                  { key: 'Proposed', value: formatDateTime(concept.createdAt) },
+                  ...(concept.reviewedAt
+                    ? [{ key: 'Reviewed', value: formatDateTime(concept.reviewedAt) }]
+                    : []),
+                ]}
+              />
+            </div>
+          </div>
+        </ModalBody>
+
+        <ModalFooter>
+          <div className={styles.spacer} />
+          <DecisionActions decision={decision} onApprove={onApprove} onReject={onReject} />
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 
@@ -135,9 +123,9 @@ ConceptDetail.propTypes = {
     createdAt: PropTypes.string,
     reviewedAt: PropTypes.string,
   }),
-  isLoading: PropTypes.bool,
+  workspaceId: PropTypes.string.isRequired,
   decision: PropTypes.oneOf(Object.values(DECISION)),
   onApprove: PropTypes.func.isRequired,
   onReject: PropTypes.func.isRequired,
-  workspaceId: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

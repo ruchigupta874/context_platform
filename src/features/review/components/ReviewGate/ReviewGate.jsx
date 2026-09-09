@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
 import ProgressBar from '@/components/ui/ProgressBar';
-import Skeleton from '@/components/ui/Skeleton';
 import { ICON_NAMES } from '@/components/ui/Icon/paths';
 import styles from './ReviewGate.module.css';
 
@@ -124,14 +123,9 @@ export function LinkChips({ items, onSelect }) {
 /**
  * The gate footer. Its job is to make the cost of leaving items undecided
  * visible before the reviewer commits — hence the explicit undecided warning.
- *
- * While the gate is loading the tally is withheld rather than printed as zeros:
- * "0 of 0 decided" is a claim about a gate we have not read yet, and it is the
- * one line on this screen a reviewer would take at face value.
  */
 export function GateFooter({
   tally,
-  isLoading = false,
   undecidedWarning,
   onApproveRest,
   primaryLabel,
@@ -141,33 +135,22 @@ export function GateFooter({
   return (
     <footer className={styles.footer}>
       <div className={styles.progress}>
-        {isLoading ? (
-          <>
-            <div className={styles.progressLabel}>
-              <Skeleton width={112} height={12} />
-            </div>
-            <Skeleton width="100%" height={6} radius="var(--radius-pill)" />
-          </>
-        ) : (
-          <>
-            <div className={styles.progressLabel}>
-              <span className={styles.progressCount}>
-                {tally.decided} of {tally.total} decided
-              </span>
-              <span className={styles.progressBreak}>
-                {tally.approved} approved · {tally.rejected} rejected
-              </span>
-            </div>
-            <ProgressBar
-              total={tally.total}
-              label={`${tally.decided} of ${tally.total} decided`}
-              segments={[
-                { id: 'approved', value: tally.approved, tone: 'ok' },
-                { id: 'rejected', value: tally.rejected, tone: 'danger' },
-              ]}
-            />
-          </>
-        )}
+        <div className={styles.progressLabel}>
+          <span className={styles.progressCount}>
+            {tally.decided} of {tally.total} decided
+          </span>
+          <span className={styles.progressBreak}>
+            {tally.approved} approved · {tally.rejected} rejected
+          </span>
+        </div>
+        <ProgressBar
+          total={tally.total}
+          label={`${tally.decided} of ${tally.total} decided`}
+          segments={[
+            { id: 'approved', value: tally.approved, tone: 'ok' },
+            { id: 'rejected', value: tally.rejected, tone: 'danger' },
+          ]}
+        />
       </div>
 
       {tally.undecided > 0 && undecidedWarning && (
@@ -251,7 +234,6 @@ GateFooter.propTypes = {
     undecided: PropTypes.number.isRequired,
     total: PropTypes.number.isRequired,
   }).isRequired,
-  isLoading: PropTypes.bool,
   undecidedWarning: PropTypes.node,
   onApproveRest: PropTypes.func,
   primaryLabel: PropTypes.node,
