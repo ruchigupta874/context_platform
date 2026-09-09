@@ -29,6 +29,7 @@ const TONE_BY_STATE = {
 /** What opening a stage's own screen is called, by the route it leads to. */
 const STAGE_ACTION = {
   reviewConcepts: 'Open review',
+  reviewRelations: 'Open review',
   reviewQuestions: 'Open review',
   runGraph: 'Open graph',
 };

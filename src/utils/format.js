@@ -17,6 +17,22 @@ export const confidenceTone = (value) =>
 export const signalTone = (weight) =>
   SIGNAL_BANDS.find((band) => weight >= band.min)?.tone ?? TONE.danger;
 
+/**
+ * An absolute timestamp from the API, in the reader's own locale.
+ *
+ * Absolute rather than relative on purpose: these appear next to ids in a
+ * provenance block, where the reader is reconciling a record against something
+ * else. "3 days ago" cannot be matched against a log line.
+ */
+export const formatDateTime = (iso) => {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '—';
+  return date.toLocaleString(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+};
+
 export const conceptIri = (workspaceId, name) => `${ORG_NAMESPACE}/ontology/${workspaceId}#${name}`;
 
 export const entityIri = (workspaceId, type, label) =>

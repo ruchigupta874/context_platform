@@ -5,62 +5,42 @@
  * stepper, a progress track or a run summary shows is derived from this list,
  * so adding a stage is a one-line change.
  *
- * Ids are deliberately shorter than labels: `concepts` and `questions` double
- * as view ids in RUN_VIEW and as gate keys elsewhere, so renaming what a stage
- * is called on screen never moves a route.
+ * Four stages, three of them gates: the machine work that used to be split
+ * across ingestion, candidate filtering and normalisation is not something a
+ * reviewer can act on, so it no longer takes a step of its own. What is left is
+ * the three things a person signs off — concepts, then the relationships
+ * between them, then the questions the model must answer — and the graph those
+ * decisions compile into.
+ *
+ * Ids are deliberately shorter than labels: they double as view ids in RUN_VIEW
+ * and as gate keys elsewhere, so renaming what a stage is called on screen never
+ * moves a route.
  */
 export const PIPELINE_STAGES = [
   {
-    id: 'ingestion',
-    label: 'Ingestion',
-    icon: 'scan',
-    caption: 'Schema and documents',
-    gate: false,
-    blurb: 'Reads table structure, column profiles and document text. Nothing is interpreted yet.',
-  },
-  {
-    id: 'candidates',
-    label: 'Candidate Filter',
-    icon: 'search',
-    caption: 'Shortlist by signal',
-    gate: false,
-    blurb:
-      'Scores every term the ingestion found and drops the ones with too little evidence behind them, so review sees candidates rather than vocabulary.',
-  },
-  {
-    id: 'normalizer',
-    label: 'Concept Normalizer',
-    icon: 'node',
-    caption: 'Names and duplicates',
-    gate: false,
-    blurb:
-      'Collapses synonyms, settles on one name per concept and folds duplicates together before a human is asked to judge any of them.',
-  },
-  {
     id: 'concepts',
-    label: 'Review Concept',
-    icon: 'inbox',
+    label: 'Concepts',
+    icon: 'node',
     caption: 'Concept sign-off',
     gate: true,
     route: 'reviewConcepts',
-    blurb: 'Proposes the classes the domain is made of, then stops for your approval.',
+    blurb:
+      'Reads the sources, folds synonyms and duplicates into one canonical concept each, then stops for your approval.',
     gateNote: 'Approve the classes before anything is built on top of them.',
   },
   {
     id: 'relationships',
-    label: 'Review Relationships',
+    label: 'Relationships',
     icon: 'link',
     caption: 'Relationship sign-off',
     gate: true,
-    // Shares the concepts screen, which holds both tabs, until relationships
-    // earn a gate of their own.
-    route: 'reviewConcepts',
-    blurb: 'Proposes the links between approved classes, then stops again.',
-    gateNote: 'Approve how the approved classes relate to one another.',
+    route: 'reviewRelations',
+    blurb: 'Proposes the links between approved concepts, then stops again.',
+    gateNote: 'Approve how the approved concepts relate to one another.',
   },
   {
     id: 'questions',
-    label: 'Competency Question',
+    label: 'Competency questions',
     icon: 'help',
     caption: 'Question review',
     gate: true,
@@ -72,7 +52,7 @@ export const PIPELINE_STAGES = [
   },
   {
     id: 'graph',
-    label: 'Knowledge Graph',
+    label: 'Knowledge graph',
     icon: 'graph',
     caption: 'Build and publish',
     gate: false,
@@ -85,7 +65,7 @@ export const PIPELINE_STAGES = [
 export const GATE_STAGES = PIPELINE_STAGES.filter((stage) => stage.gate);
 
 /**
- * The one gate a run may switch off. Everything upstream of the graph has to be
+ * The one gate a run may switch off. Concepts and relationships have to be
  * approved by someone; accepting the generated questions wholesale is the only
  * shortcut that still leaves a reviewed model behind.
  */
@@ -124,9 +104,8 @@ export function describeStages(currentStageId, status) {
  * The screen a stage owns, as a `buildPath` key, or null when it has none.
  *
  * This is what makes the stepper navigable from anywhere in a run: the gates
- * carry their own route, the graph exists only once the run produced it, and
- * the machine stages have no view of their own — so they stay inert rather
- * than looking clickable and going nowhere.
+ * carry their own route and the graph exists only once the run produced it, so
+ * an unbuilt graph stays inert rather than looking clickable and going nowhere.
  */
 export function stageRoute(stage, run) {
   if (stage.route) return stage.route;
@@ -143,5 +122,6 @@ export const RUN_VIEW = {
   graph: 'graph',
   ontology: 'ontology',
   concepts: 'concepts',
+  relationships: 'relationships',
   questions: 'questions',
 };

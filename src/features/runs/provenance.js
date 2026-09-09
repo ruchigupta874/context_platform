@@ -12,13 +12,13 @@ import { PIPELINE_STAGES } from './pipeline';
 const GATE_COPY = {
   concepts: {
     title: 'Concept review is ready',
-    action: 'Review Concepts',
+    action: 'Review concepts',
     route: 'reviewConcepts',
   },
   relationships: {
     title: 'Relationship review is ready',
     action: 'Review relationships',
-    route: 'reviewConcepts',
+    route: 'reviewRelations',
   },
   questions: {
     title: 'Competency question review is ready',

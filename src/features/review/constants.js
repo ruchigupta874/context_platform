@@ -1,10 +1,5 @@
 import { TONE } from '@/config/constants/common';
 
-export const REVIEW_TABS = [
-  { id: 'concepts', label: 'Concepts', icon: 'node' },
-  { id: 'relations', label: 'Relationships', icon: 'link' },
-];
-
 /**
  * Evidence roles. The tone tells a reviewer at a glance whether a piece of
  * evidence is load-bearing (a real foreign key) or a caveat (a gap, a guess).

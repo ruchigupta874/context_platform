@@ -1,8 +1,10 @@
 import { CONFIDENCE_BANDS } from '@/config/constants/common';
 import { COVERAGE } from '@/features/review/questions';
-import { CONCEPTS, PROPOSAL_RUN, RELATIONS } from '@/features/review/mocks';
+import { CONCEPT_REVIEW } from '@/features/review/conceptMocks';
+import { normalizeConcept } from '@/features/review/conceptReview';
+import { PROPOSAL_RUN, RELATIONS } from '@/features/review/mocks';
 import { QUESTION_RUN, QUESTIONS } from '@/features/review/questionMocks';
-import { relationLabel } from '@/utils/format';
+import { joinMeta, relationLabel } from '@/utils/format';
 
 /** Above this band an item is safe to wave through from a one-line summary. */
 const HIGH_CONFIDENCE = CONFIDENCE_BANDS[0].min;
@@ -23,13 +25,13 @@ export const QUEUE_KINDS = [
  * here, it is sent to the gate that can show you why it is uncertain.
  */
 export const QUEUE_ITEMS = [
-  ...CONCEPTS.map((concept) => ({
+  ...CONCEPT_REVIEW.items.map(normalizeConcept).map((concept) => ({
     id: concept.id,
     runId: PROPOSAL_RUN,
     gate: 'concepts',
     kind: 'concept',
     name: concept.name,
-    sub: concept.source,
+    sub: joinMeta(concept.type, concept.role.toLowerCase()),
     score: concept.confidence,
     scoreLabel: concept.confidence.toFixed(2),
     decidable: concept.confidence >= HIGH_CONFIDENCE,
@@ -37,7 +39,7 @@ export const QUEUE_ITEMS = [
   ...RELATIONS.map((relation) => ({
     id: relation.id,
     runId: PROPOSAL_RUN,
-    gate: 'concepts',
+    gate: 'relationships',
     kind: 'relation',
     name: relationLabel(relation),
     sub: `${relation.kind} · ${relation.cardinality}`,
@@ -66,9 +68,16 @@ export const QUEUE_GROUPS = [
   {
     id: 'concepts',
     runId: PROPOSAL_RUN,
-    label: 'Concepts & relationships',
+    label: 'Concepts',
     route: 'reviewConcepts',
     items: QUEUE_ITEMS.filter((item) => item.gate === 'concepts'),
+  },
+  {
+    id: 'relationships',
+    runId: PROPOSAL_RUN,
+    label: 'Relationships',
+    route: 'reviewRelations',
+    items: QUEUE_ITEMS.filter((item) => item.gate === 'relationships'),
   },
   {
     id: 'questions',

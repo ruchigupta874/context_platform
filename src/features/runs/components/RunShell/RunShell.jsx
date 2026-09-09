@@ -17,13 +17,20 @@ import styles from './RunShell.module.css';
 const VIEW_LABEL = {
   [RUN_VIEW.graph]: 'Knowledge graph',
   [RUN_VIEW.ontology]: 'Ontology',
-  [RUN_VIEW.concepts]: 'Concepts & relationships',
+  [RUN_VIEW.concepts]: 'Concepts',
+  [RUN_VIEW.relationships]: 'Relationships',
   [RUN_VIEW.questions]: 'Competency questions',
 };
+
+/** The three review screens. A gate asks for a decision, so it owns its own bar. */
+const GATE_VIEWS = [RUN_VIEW.concepts, RUN_VIEW.relationships, RUN_VIEW.questions];
+
+const isGate = (view) => GATE_VIEWS.includes(view);
 
 /** Which of the run's screens the path is on. Stage ids double as view ids. */
 function viewOf(pathname) {
   if (pathname.endsWith('/review/concepts')) return RUN_VIEW.concepts;
+  if (pathname.endsWith('/review/relationships')) return RUN_VIEW.relationships;
   if (pathname.endsWith('/review/questions')) return RUN_VIEW.questions;
   if (pathname.endsWith('/ontology')) return RUN_VIEW.ontology;
   if (pathname.endsWith('/graph')) return RUN_VIEW.graph;
@@ -194,7 +201,7 @@ export default function RunShell() {
  * has produced nothing has nothing to export or publish.
  */
 function topBarActions(view, run, onNewRun) {
-  if (view === RUN_VIEW.concepts || view === RUN_VIEW.questions) return null;
+  if (isGate(view)) return null;
 
   // Export and publish belong to the artefact you are looking at. The overview
   // is looking at the run, so it offers the only thing a run affords: another.
@@ -231,8 +238,7 @@ function topBarActions(view, run, onNewRun) {
 }
 
 function topBarNote(view, run) {
-  if (view === RUN_VIEW.concepts || view === RUN_VIEW.questions)
-    return '2 more runs waiting in the queue';
+  if (isGate(view)) return '2 more runs waiting in the queue';
   if (view === RUN_VIEW.index || !run.output) return null;
   if (view === RUN_VIEW.ontology) {
     return joinMeta(

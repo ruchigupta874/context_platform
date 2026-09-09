@@ -9,7 +9,7 @@ export const RUNS = [
     strategy: 'Blended',
     stage: 'concepts',
     status: RUN_STATUS.needsReview,
-    stageNote: 'Waiting at Review Concept',
+    stageNote: 'Waiting at Concepts',
   },
   {
     id: 'R-2417',
@@ -17,9 +17,9 @@ export const RUNS = [
     startedBy: 'a.sikarwar',
     sources: '3 tables',
     strategy: 'Schema-first',
-    stage: 'ingestion',
+    stage: 'concepts',
     status: RUN_STATUS.running,
-    stageNote: 'Ingesting meter_reading (62%)',
+    stageNote: 'Normalising candidates from meter_reading (62%)',
   },
   {
     id: 'R-2416',
@@ -29,7 +29,7 @@ export const RUNS = [
     strategy: 'Document-first',
     stage: 'questions',
     status: RUN_STATUS.needsReview,
-    stageNote: 'Waiting at Competency Question',
+    stageNote: 'Waiting at Competency questions',
   },
   {
     id: 'R-2413',
@@ -59,79 +59,43 @@ export const findRun = (runId) => RUNS.find((run) => run.id === runId);
  * not reached carries nothing — there is no honest figure to show for work that
  * has not happened.
  *
- * The figures across a run are meant to reconcile: the candidates come out of
- * the chunks, the mappings out of the candidates, and the canonical concepts
- * out of the mappings. A reader who adds them up should not find a gap.
+ * The figures across a run are meant to reconcile: the concepts a gate offers
+ * are what survived the candidate filter and the normaliser inside that stage,
+ * and the graph is built from what the gates approved. A reader who adds them
+ * up should not find a gap.
  */
 export const RUN_STAGE_PANELS = {
   'R-2418': {
-    ingestion: {
-      title: 'Ingestion complete',
-      blurb:
-        'Read 8 catalog tables and 2 documents. Column profiles, key candidates and document chunks are cached for the rest of the run.',
-      duration: '4m 12s',
-      metrics: [
-        { id: 'chunks', label: 'Chunks', value: '468' },
-        { id: 'tables', label: 'Tables read', value: '8' },
-        { id: 'columns', label: 'Columns profiled', value: '89' },
-        { id: 'keys', label: 'Key candidates', value: '23' },
-      ],
-    },
-    candidates: {
-      title: 'Candidate filter complete',
-      blurb:
-        'Scored every term the ingestion turned up and kept the ones with enough evidence behind them. What it drops here never reaches a reviewer, which is the point.',
-      duration: '2m 38s',
-      metrics: [
-        { id: 'candidates', label: 'Candidate concepts', value: '1,432' },
-        { id: 'scanned', label: 'Terms scanned', value: '5,118' },
-        { id: 'dropped', label: 'Below threshold', value: '3,686' },
-      ],
-    },
-    normalizer: {
-      title: 'Concept normalizer complete',
-      blurb:
-        '1,016 of the 1,432 candidates mapped onto a concept; the rest had no home. Synonyms and duplicates were folded together, leaving 250 canonical concepts to review.',
-      duration: '1m 51s',
-      metrics: [
-        { id: 'mappings', label: 'Candidate mappings', value: '1,016' },
-        { id: 'canonical', label: 'Canonical concepts', value: '250', tone: 'ok' },
-        { id: 'folded', label: 'Folded as duplicates', value: '766' },
-      ],
-    },
     concepts: {
       title: 'Waiting for your review',
       blurb:
-        '250 canonical concepts came out of the normalizer. 14 of them need a decision from you — the rest already match an approved concept in ContactCentre v7. Nothing downstream is built until you decide, and approving partially is fine.',
+        '1,432 candidate terms were scored, 1,016 of them mapped onto a concept, and synonyms and duplicates folded down to 250 canonical concepts. 50 of those need a decision from you — the rest already match an approved concept in ContactCentre v7. Nothing downstream is built until you decide, and approving partially is fine.',
       tone: 'warn',
       metrics: [
-        { id: 'queue', label: 'Awaiting decision', value: '14', tone: 'warn' },
-        { id: 'high', label: 'High confidence', value: '12', tone: 'ok' },
-        { id: 'matched', label: 'Matched to v7', value: '236' },
+        { id: 'queue', label: 'Awaiting decision', value: '50', tone: 'warn' },
+        { id: 'high', label: 'High confidence', value: '31', tone: 'ok' },
+        { id: 'matched', label: 'Matched to v7', value: '200' },
         { id: 'canonical', label: 'Canonical concepts', value: '250' },
       ],
     },
   },
 
   'R-2417': {
-    ingestion: {
-      title: 'Ingestion is reading your tables',
+    concepts: {
+      title: 'Concepts are still being normalised',
       blurb:
-        'Two of three tables are profiled. meter_reading is large enough to sample rather than scan, so it takes the bulk of the stage. The candidate filter starts when this finishes.',
+        'Two of three tables are profiled and scored. meter_reading is large enough to sample rather than scan, so it takes the bulk of the stage. The gate opens as soon as the duplicates are folded together.',
       tone: 'info',
       metrics: [
         { id: 'tables', label: 'Tables read', value: '2 of 3' },
         { id: 'columns', label: 'Columns profiled', value: '18' },
-        { id: 'chunks', label: 'Doc chunks', value: '—' },
-        { id: 'keys', label: 'Key candidates', value: '6' },
+        { id: 'candidates', label: 'Candidate concepts', value: '312' },
+        { id: 'canonical', label: 'Canonical concepts', value: '—' },
       ],
     },
   },
 
   'R-2416': {
-    ingestion: { duration: '6m 20s' },
-    candidates: { duration: '3m 04s' },
-    normalizer: { duration: '2m 12s' },
     concepts: { duration: '9m 41s' },
     relationships: { duration: '5m 08s' },
     questions: {
@@ -149,43 +113,11 @@ export const RUN_STAGE_PANELS = {
   },
 
   'R-2413': {
-    ingestion: {
-      title: 'Ingestion complete',
-      blurb:
-        'Read 10 catalog tables and 2 documents — the widest source set this workspace has run.',
-      duration: '7m 46s',
-      metrics: [
-        { id: 'chunks', label: 'Chunks', value: '612' },
-        { id: 'tables', label: 'Tables read', value: '10' },
-        { id: 'columns', label: 'Columns profiled', value: '104' },
-        { id: 'keys', label: 'Key candidates', value: '31' },
-      ],
-    },
-    candidates: {
-      title: 'Candidate filter complete',
-      blurb: 'Kept the terms with enough evidence behind them and dropped the rest.',
-      duration: '3m 22s',
-      metrics: [
-        { id: 'candidates', label: 'Candidate concepts', value: '1,884' },
-        { id: 'scanned', label: 'Terms scanned', value: '6,402' },
-        { id: 'dropped', label: 'Below threshold', value: '4,518' },
-      ],
-    },
-    normalizer: {
-      title: 'Concept normalizer complete',
-      blurb:
-        '1,247 candidates mapped onto a concept and folded down to 312 canonical ones before review.',
-      duration: '2m 40s',
-      metrics: [
-        { id: 'mappings', label: 'Candidate mappings', value: '1,247' },
-        { id: 'canonical', label: 'Canonical concepts', value: '312', tone: 'ok' },
-        { id: 'folded', label: 'Folded as duplicates', value: '935' },
-      ],
-    },
     concepts: {
       title: 'Concepts approved',
-      blurb: 'a.sikarwar kept 47 of the 59 concepts that needed a decision. The rest matched v6.',
-      duration: '6m 12s',
+      blurb:
+        '1,884 candidate terms folded down to 312 canonical concepts. a.sikarwar kept 47 of the 59 that needed a decision; the rest matched v6.',
+      duration: '12m 34s',
       metrics: [
         { id: 'approved', label: 'Approved', value: '47', tone: 'ok' },
         { id: 'rejected', label: 'Rejected', value: '12' },

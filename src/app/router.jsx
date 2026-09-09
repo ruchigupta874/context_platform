@@ -25,6 +25,7 @@ const NewRun = lazy(() => import('@/features/runs/pages/NewRun'));
 const RunDetail = lazy(() => import('@/features/runs/pages/RunDetail'));
 const ReviewQueue = lazy(() => import('@/features/review/pages/ReviewQueue'));
 const ReviewConcepts = lazy(() => import('@/features/review/pages/ReviewConcepts'));
+const ReviewRelations = lazy(() => import('@/features/review/pages/ReviewRelations'));
 const ReviewQuestions = lazy(() => import('@/features/review/pages/ReviewQuestions'));
 const Ontology = lazy(() => import('@/features/ontology/pages/Ontology'));
 const KnowledgeGraph = lazy(() => import('@/features/graph/pages/KnowledgeGraph'));
@@ -55,8 +56,8 @@ Screen.propTypes = { children: PropTypes.node };
  * sidebar and the workspace context. The registry sits outside it because it is
  * the screen you use before a workspace is chosen.
  *
- * Note the two gates are nested under their run rather than living at workspace
- * level: a review always belongs to one run, and the URL should say so.
+ * Note the three gates are nested under their run rather than living at
+ * workspace level: a review always belongs to one run, and the URL should say so.
  */
 export default function AppRoutes() {
   return (
@@ -152,6 +153,14 @@ export default function AppRoutes() {
             element={
               <Screen>
                 <ReviewConcepts />
+              </Screen>
+            }
+          />
+          <Route
+            path="review/relationships"
+            element={
+              <Screen>
+                <ReviewRelations />
               </Screen>
             }
           />

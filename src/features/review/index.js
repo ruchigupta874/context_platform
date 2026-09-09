@@ -3,4 +3,5 @@ export { default as ReviewProvider } from './ReviewProvider';
 export { useReviewContext } from './useReviewContext';
 export { useDecisionState } from './useDecisionState';
 export * from './constants';
+export * from './conceptReview';
 export * from './questions';
