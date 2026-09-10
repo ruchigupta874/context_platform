@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import Icon from '@/components/ui/Icon';
-import { CONCEPT_PAGE_SIZES } from '@/features/review/constants';
-import styles from './ReviewConcepts.module.css';
+import { GATE_PAGE_SIZES } from '@/features/review/constants';
+import styles from './GateTable.module.css';
 
 /**
  * The bar under the table: where you are in the list, and how to move.
@@ -49,7 +49,7 @@ export default function TablePagination({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" width={110}>
-          {CONCEPT_PAGE_SIZES.map((size) => (
+          {GATE_PAGE_SIZES.map((size) => (
             <DropdownMenuItem
               key={size}
               selected={size === pageSize}

@@ -1,38 +1,39 @@
 import { useMemo, useState } from 'react';
 import {
-  CONCEPT_FILTER,
-  CONCEPT_SORT,
   CONFIDENCE_FILTER,
-  conceptMatches,
+  GATE_FILTER,
   countByFilter,
   matchesConfidence,
   matchesFilter,
-  sortConcepts,
-} from '@/features/review/conceptReview';
-import { DEFAULT_CONCEPT_PAGE_SIZE } from '@/features/review/constants';
+} from '@/features/review/gateItems';
+import { DEFAULT_GATE_PAGE_SIZE } from '@/features/review/constants';
 import { useReviewContext } from '@/features/review/useReviewContext';
 
 /**
- * What the concept table is currently showing: the three filters, the sort, and
+ * What a gate's table is currently showing: the three filters, the sort, and
  * the page of rows they resolve to.
+ *
+ * Both gates filter on the same two axes and paginate the same way; only what
+ * counts as a text match and what the sort options mean differ, so those come
+ * in as `matches` and `comparators`.
  *
  * The counts on the status menu come from the decisions held right now rather
  * than from the envelope's `pending` / `approved` / `rejected` figures. Those
- * are what the server knew when it answered; approving six concepts has to move
+ * are what the server knew when it answered; approving six rows has to move
  * them immediately, or the menu contradicts the table underneath it.
  *
  * The page is clamped rather than corrected by an effect. Approving the last
- * two rows of page ten while filtered to Undecided empties that page, and a
+ * two rows of page three while filtered to Undecided empties that page, and a
  * clamp lands the reviewer on the new last page as they render — an effect
  * would paint the empty page first.
  */
-export function useConceptQueue(items) {
+export function useGateQueue(items, { matches, comparators, defaultSort }) {
   const decisions = useReviewContext();
-  const [status, setStatus] = useState(CONCEPT_FILTER.all);
+  const [status, setStatus] = useState(GATE_FILTER.all);
   const [confidence, setConfidence] = useState(CONFIDENCE_FILTER.all);
-  const [sort, setSort] = useState(CONCEPT_SORT.nameAsc);
+  const [sort, setSort] = useState(defaultSort);
   const [query, setQuery] = useState('');
-  const [pageSize, setPageSize] = useState(DEFAULT_CONCEPT_PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(DEFAULT_GATE_PAGE_SIZE);
   const [page, setPage] = useState(1);
 
   const { decisionFor } = decisions;
@@ -40,13 +41,13 @@ export function useConceptQueue(items) {
   const matched = useMemo(() => {
     const needle = query.trim().toLowerCase();
     const filtered = items.filter(
-      (concept) =>
-        matchesFilter(status, decisionFor(concept.id)) &&
-        matchesConfidence(confidence, concept.confidence) &&
-        (!needle || conceptMatches(concept, needle)),
+      (item) =>
+        matchesFilter(status, decisionFor(item.id)) &&
+        matchesConfidence(confidence, item.confidence) &&
+        (!needle || matches(item, needle)),
     );
-    return sortConcepts(filtered, sort);
-  }, [items, status, confidence, query, sort, decisionFor]);
+    return [...filtered].sort(comparators[sort]);
+  }, [items, status, confidence, query, sort, decisionFor, matches, comparators]);
 
   const counts = useMemo(() => countByFilter(items, decisionFor), [items, decisionFor]);
 

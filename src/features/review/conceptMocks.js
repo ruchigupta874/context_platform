@@ -1,4 +1,9 @@
-import { REVIEW_ITEM_TYPE, REVIEW_STATUS, seedDecisions } from '@/features/review/conceptReview';
+import {
+  REVIEW_ITEM_TYPE,
+  REVIEW_STATUS,
+  seedDecisions,
+  toEnvelope,
+} from '@/features/review/gateItems';
 
 /**
  * The concept gate of run R-2418, in the shape the review endpoint returns.
@@ -528,17 +533,8 @@ function toItem(seed, index) {
 
 const ITEMS = SEED.map(toItem);
 
-const countStatus = (status) => ITEMS.filter((item) => item.status === status).length;
-
 /** The response body of the concept review endpoint, verbatim in shape. */
-export const CONCEPT_REVIEW = {
-  item_type: REVIEW_ITEM_TYPE.concept,
-  total: ITEMS.length,
-  pending: countStatus(REVIEW_STATUS.pending),
-  approved: countStatus(REVIEW_STATUS.approved),
-  rejected: countStatus(REVIEW_STATUS.rejected),
-  items: ITEMS,
-};
+export const CONCEPT_REVIEW = toEnvelope(REVIEW_ITEM_TYPE.concept, ITEMS);
 
 /** What the reviewer had already decided before they arrived. */
 export const INITIAL_CONCEPT_DECISIONS = seedDecisions(ITEMS);

@@ -2,24 +2,24 @@ import PropTypes from 'prop-types';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import SearchInput from '@/components/ui/SearchInput';
-import {
-  CONCEPT_FILTERS,
-  CONCEPT_SORTS,
-  CONFIDENCE_FILTERS,
-} from '@/features/review/conceptReview';
+import { CONFIDENCE_FILTERS, GATE_FILTERS } from '@/features/review/gateItems';
 import FilterMenu from './FilterMenu';
-import styles from './ReviewConcepts.module.css';
+import styles from './GateTable.module.css';
 
 /**
- * Search and the three menus that narrow the table, and — when rows are ticked
- * — what can be done to them.
+ * Search and the three menus that narrow a gate's table, and — when rows are
+ * ticked — what can be done to them.
  *
  * The bulk bar replaces the filters rather than stacking under them. A
  * selection is a mode: while it is live the question is what to do with those
  * rows, and leaving both rows of controls on screen would offer to change the
  * list out from under the selection that is about to be acted on.
+ *
+ * Status and confidence are the same everywhere; only the sort options and the
+ * search placeholder belong to the gate.
  */
-export default function ConceptToolbar({
+export default function GateToolbar({
+  searchPlaceholder,
   query,
   onQueryChange,
   status,
@@ -28,6 +28,7 @@ export default function ConceptToolbar({
   confidence,
   onConfidenceChange,
   sort,
+  sortOptions,
   onSortChange,
   selectedCount,
   onApproveSelected,
@@ -61,12 +62,12 @@ export default function ConceptToolbar({
       <SearchInput
         value={query}
         onChange={onQueryChange}
-        placeholder="Search concepts, aliases or types"
+        placeholder={searchPlaceholder}
         width={280}
       />
       <FilterMenu
         label="Status"
-        options={CONCEPT_FILTERS}
+        options={GATE_FILTERS}
         value={status}
         onChange={onStatusChange}
         counts={statusCounts}
@@ -79,16 +80,17 @@ export default function ConceptToolbar({
       />
       <FilterMenu
         label="Sort by"
-        options={CONCEPT_SORTS}
+        options={sortOptions}
         value={sort}
         onChange={onSortChange}
-        width={210}
+        width={220}
       />
     </div>
   );
 }
 
-ConceptToolbar.propTypes = {
+GateToolbar.propTypes = {
+  searchPlaceholder: PropTypes.string.isRequired,
   query: PropTypes.string.isRequired,
   onQueryChange: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired,
@@ -97,6 +99,9 @@ ConceptToolbar.propTypes = {
   confidence: PropTypes.string.isRequired,
   onConfidenceChange: PropTypes.func.isRequired,
   sort: PropTypes.string.isRequired,
+  sortOptions: PropTypes.arrayOf(
+    PropTypes.shape({ id: PropTypes.string.isRequired, label: PropTypes.node.isRequired }),
+  ).isRequired,
   onSortChange: PropTypes.func.isRequired,
   selectedCount: PropTypes.number.isRequired,
   onApproveSelected: PropTypes.func.isRequired,

@@ -5,7 +5,7 @@ import { SectionLabel, StatPairs } from '@/components/ui/Surfaces';
 import DecisionActions from '@/features/review/components/DecisionActions';
 import { DECISION } from '@/config/constants/common';
 import { conceptIri, confidenceTone, formatConfidence, formatDateTime } from '@/utils/format';
-import styles from './ReviewConcepts.module.css';
+import styles from '@/features/review/components/GateTable/GateTable.module.css';
 
 /**
  * Everything the run recorded about one concept, over the table.

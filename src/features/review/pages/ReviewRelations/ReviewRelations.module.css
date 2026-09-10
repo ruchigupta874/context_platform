@@ -1,0 +1,26 @@
+/* What the relationship table adds to the shared gate chrome: the two columns
+   that carry the middle and the far end of the triple. */
+
+/* The predicate is the only part of a row that is an ontology term rather than
+   a name, so it is the only part in mono and in the accent. */
+.predicate {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 14px;
+}
+
+/* Target reads as a name like the source, but it is not the link into the
+   dialog, so it stays plain text rather than borrowing the button's weight. */
+.target {
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 14px;
+}

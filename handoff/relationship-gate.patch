@@ -1,0 +1,2239 @@
+diff --git a/src/features/review/pages/ReviewConcepts/FilterMenu.jsx b/src/features/review/components/GateTable/FilterMenu.jsx
+similarity index 97%
+rename from src/features/review/pages/ReviewConcepts/FilterMenu.jsx
+rename to src/features/review/components/GateTable/FilterMenu.jsx
+index dbdc8ed..7191e71 100644
+--- a/src/features/review/pages/ReviewConcepts/FilterMenu.jsx
++++ b/src/features/review/components/GateTable/FilterMenu.jsx
+@@ -6,7 +6,7 @@ import {
+   DropdownMenuItem,
+   DropdownMenuTrigger,
+ } from '@/components/ui/DropdownMenu';
+-import styles from './ReviewConcepts.module.css';
++import styles from './GateTable.module.css';
+ 
+ /**
+  * A labelled menu that reads as a select.
+diff --git a/src/features/review/components/GateTable/GateScreen.jsx b/src/features/review/components/GateTable/GateScreen.jsx
+new file mode 100644
+index 0000000..282389f
+--- /dev/null
++++ b/src/features/review/components/GateTable/GateScreen.jsx
+@@ -0,0 +1,191 @@
++import { useMemo, useState } from 'react';
++import PropTypes from 'prop-types';
++import { useNavigate } from 'react-router-dom';
++import { PageBody } from '@/components/layout/AppShell';
++import PageHeader from '@/components/layout/PageHeader';
++import Button from '@/components/ui/Button';
++import { ICON_NAMES } from '@/components/ui/Icon/paths';
++import { DECISION } from '@/config/constants/common';
++import { GATE_COPY } from '@/features/review/constants';
++import { useGateQueue } from '@/features/review/useGateQueue';
++import { useReviewContext } from '@/features/review/useReviewContext';
++import { useSelection } from '@/hooks/useSelection';
++import GateStats from './GateStats';
++import GateTable from './GateTable';
++import GateToolbar from './GateToolbar';
++import styles from './GateTable.module.css';
++
++/**
++ * A review gate, whole: the figures, the filters, the table and the dialog.
++ *
++ * All three gates ask a reviewer to do the same job on a different kind of
++ * item — read a list, decide in bulk where it is obvious, open the one row in
++ * twenty that needs reading, then hand off. So the wiring lives here once, and
++ * a gate supplies what genuinely differs: its copy, how its items are searched
++ * and sorted, the columns and the row that draws them, and the dialog.
++ *
++ * Two scales of decision sit on the same surface deliberately. The checkboxes
++ * clear a run of near-identical high-confidence rows in one pass, and the
++ * dialog is there for the ones that have to be read before they are ruled on.
++ * Neither is the primary path — which one is needed depends on the row.
++ */
++export default function GateScreen({
++  title,
++  subtitle,
++  totalLabel,
++  totalIcon,
++  searchPlaceholder,
++  emptyHint,
++  selectAllLabel,
++  items,
++  isLoading,
++  sortOptions,
++  queueOptions,
++  columns,
++  skeletonCells,
++  Row,
++  renderDetail,
++  nextPath,
++}) {
++  const navigate = useNavigate();
++  const decisions = useReviewContext();
++  const checks = useSelection();
++  const [openId, setOpenId] = useState(null);
++
++  const queue = useGateQueue(items, queueOptions);
++
++  const allIds = useMemo(() => items.map((item) => item.id), [items]);
++  const tally = decisions.tally(allIds);
++  const pageIds = queue.rows.map((item) => item.id);
++
++  /** Bulk and single decisions run through the same state; only the arity differs. */
++  const decideChecked = (decision) => {
++    decisions.decideMany(checks.selectedIds, decision);
++    checks.clear();
++  };
++
++  return (
++    <PageBody>
++      <PageHeader
++        title={title}
++        subtitle={subtitle}
++        actions={
++          <>
++            <Button
++              variant="secondary"
++              iconLeft="check"
++              disabled={isLoading || tally.undecided === 0}
++              onClick={() =>
++                decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)
++              }
++            >
++              {GATE_COPY.approveRest}
++            </Button>
++            <Button
++              variant="primary"
++              iconRight="arrowRight"
++              disabled={tally.approved === 0}
++              onClick={() => navigate(nextPath)}
++            >
++              {GATE_COPY.continue(tally.approved)}
++            </Button>
++          </>
++        }
++      />
++
++      <GateStats
++        tally={tally}
++        totalLabel={totalLabel}
++        totalIcon={totalIcon}
++        isLoading={isLoading}
++      />
++
++      {tally.undecided > 0 && !isLoading && (
++        <p className={styles.undecidedNote}>
++          <span className={styles.undecidedDot} />
++          {GATE_COPY.undecidedWarning(tally.undecided)}
++        </p>
++      )}
++
++      <section className={styles.panel} aria-busy={isLoading}>
++        <GateToolbar
++          searchPlaceholder={searchPlaceholder}
++          query={queue.query}
++          onQueryChange={queue.setQuery}
++          status={queue.status}
++          onStatusChange={queue.setStatus}
++          statusCounts={isLoading ? undefined : queue.counts}
++          confidence={queue.confidence}
++          onConfidenceChange={queue.setConfidence}
++          sort={queue.sort}
++          sortOptions={sortOptions}
++          onSortChange={queue.setSort}
++          selectedCount={checks.count}
++          onApproveSelected={() => decideChecked(DECISION.approved)}
++          onRejectSelected={() => decideChecked(DECISION.rejected)}
++          onClearSelection={checks.clear}
++        />
++
++        <GateTable
++          columns={columns}
++          skeletonCells={skeletonCells}
++          items={queue.rows}
++          Row={Row}
++          isLoading={isLoading}
++          emptyHint={emptyHint}
++          selectAllLabel={selectAllLabel}
++          decisionFor={decisions.decisionFor}
++          isChecked={checks.isSelected}
++          allChecked={checks.allSelected(pageIds)}
++          onCheck={checks.toggle}
++          onCheckPage={(next) => checks.toggleMany(pageIds, next)}
++          onApprove={decisions.approve}
++          onReject={decisions.reject}
++          onOpen={setOpenId}
++          pagination={{
++            range: queue.range,
++            total: queue.total,
++            page: queue.page,
++            pageCount: queue.pageCount,
++            pageSize: queue.pageSize,
++            onPageChange: queue.setPage,
++            onPageSizeChange: queue.setPageSize,
++          }}
++        />
++      </section>
++
++      {renderDetail({
++        item: items.find((item) => item.id === openId),
++        decision: decisions.decisionFor(openId),
++        onApprove: () => decisions.approve(openId),
++        onReject: () => decisions.reject(openId),
++        onClose: () => setOpenId(null),
++      })}
++    </PageBody>
++  );
++}
++
++GateScreen.propTypes = {
++  title: PropTypes.string.isRequired,
++  subtitle: PropTypes.node.isRequired,
++  totalLabel: PropTypes.string.isRequired,
++  totalIcon: PropTypes.oneOf(ICON_NAMES).isRequired,
++  searchPlaceholder: PropTypes.string.isRequired,
++  emptyHint: PropTypes.node.isRequired,
++  selectAllLabel: PropTypes.string.isRequired,
++  items: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string.isRequired })).isRequired,
++  isLoading: PropTypes.bool,
++  sortOptions: PropTypes.arrayOf(
++    PropTypes.shape({ id: PropTypes.string.isRequired, label: PropTypes.node.isRequired }),
++  ).isRequired,
++  queueOptions: PropTypes.shape({
++    matches: PropTypes.func.isRequired,
++    comparators: PropTypes.object.isRequired,
++    defaultSort: PropTypes.string.isRequired,
++  }).isRequired,
++  columns: PropTypes.array.isRequired,
++  skeletonCells: PropTypes.array.isRequired,
++  Row: PropTypes.elementType.isRequired,
++  renderDetail: PropTypes.func.isRequired,
++  nextPath: PropTypes.string.isRequired,
++};
+diff --git a/src/features/review/pages/ReviewConcepts/ConceptStats.jsx b/src/features/review/components/GateTable/GateStats.jsx
+similarity index 65%
+rename from src/features/review/pages/ReviewConcepts/ConceptStats.jsx
+rename to src/features/review/components/GateTable/GateStats.jsx
+index 21bf53b..db720f7 100644
+--- a/src/features/review/pages/ReviewConcepts/ConceptStats.jsx
++++ b/src/features/review/components/GateTable/GateStats.jsx
+@@ -2,28 +2,32 @@ import PropTypes from 'prop-types';
+ import Icon from '@/components/ui/Icon';
+ import ProgressBar from '@/components/ui/ProgressBar';
+ import Skeleton from '@/components/ui/Skeleton';
++import { ICON_NAMES } from '@/components/ui/Icon/paths';
+ import { formatPercent } from '@/utils/format';
+-import styles from './ReviewConcepts.module.css';
++import styles from './GateTable.module.css';
+ 
+ /**
+  * The four figures, and how far through the gate the reviewer is.
+  *
++ * Only the first tile changes between gates — "Total concepts", "Total
++ * relationships" — so `totalLabel` and `totalIcon` are the whole difference.
++ * The other three count decisions, which mean the same thing everywhere.
++ *
+  * The labels are known before the numbers are, so a loading tile keeps its
+- * label and shimmers only the figure — the same bargain the sources page makes.
+- * There is nothing honest to guess about a count, and nothing to hide about
+- * what is being counted.
++ * label and shimmers only the figure. There is nothing honest to guess about a
++ * count, and nothing to hide about what is being counted.
+  */
+-const TILES = [
+-  { id: 'total', label: 'Total concepts', icon: 'node', className: styles.tileAccent },
+-  { id: 'approved', label: 'Approved', icon: 'check', className: styles.tileOk },
+-  { id: 'rejected', label: 'Rejected', icon: 'close', className: styles.tileDanger },
+-  { id: 'undecided', label: 'Undecided', icon: 'clock', className: styles.tileNeutral },
+-];
++export default function GateStats({ tally, totalLabel, totalIcon, isLoading = false }) {
++  const tiles = [
++    { id: 'total', label: totalLabel, icon: totalIcon, className: styles.tileAccent },
++    { id: 'approved', label: 'Approved', icon: 'check', className: styles.tileOk },
++    { id: 'rejected', label: 'Rejected', icon: 'close', className: styles.tileDanger },
++    { id: 'undecided', label: 'Undecided', icon: 'clock', className: styles.tileNeutral },
++  ];
+ 
+-export default function ConceptStats({ tally, isLoading = false }) {
+   return (
+     <div className={styles.stats}>
+-      {TILES.map((tile) => (
++      {tiles.map((tile) => (
+         <div key={tile.id} className={styles.tile}>
+           <span className={[styles.tileIcon, tile.className].join(' ')}>
+             <Icon name={tile.icon} size={15} />
+@@ -65,7 +69,7 @@ export default function ConceptStats({ tally, isLoading = false }) {
+   );
+ }
+ 
+-ConceptStats.propTypes = {
++GateStats.propTypes = {
+   tally: PropTypes.shape({
+     total: PropTypes.number.isRequired,
+     approved: PropTypes.number.isRequired,
+@@ -73,5 +77,7 @@ ConceptStats.propTypes = {
+     undecided: PropTypes.number.isRequired,
+     decided: PropTypes.number.isRequired,
+   }).isRequired,
++  totalLabel: PropTypes.string.isRequired,
++  totalIcon: PropTypes.oneOf(ICON_NAMES).isRequired,
+   isLoading: PropTypes.bool,
+ };
+diff --git a/src/features/review/components/GateTable/GateTable.jsx b/src/features/review/components/GateTable/GateTable.jsx
+new file mode 100644
+index 0000000..c6b0dc4
+--- /dev/null
++++ b/src/features/review/components/GateTable/GateTable.jsx
+@@ -0,0 +1,102 @@
++import PropTypes from 'prop-types';
++import Checkbox from '@/components/ui/Checkbox';
++import { EmptyState } from '@/components/ui/Surfaces';
++import {
++  DataTable,
++  DataTableBody,
++  DataTableFooter,
++  DataTableHead,
++} from '@/components/ui/DataTable';
++import TablePagination from './TablePagination';
++import TableSkeleton from './TableSkeleton';
++import styles from './GateTable.module.css';
++
++/**
++ * A gate's items as one table.
++ *
++ * The head, the body, the empty state, the skeleton and the pagination are the
++ * same whatever is being reviewed; only the columns and the cells differ, so a
++ * gate supplies `columns`, `skeletonCells` and a `Row` and nothing else.
++ *
++ * The header checkbox selects the page in front of you, not the whole run —
++ * which is what makes "filter to undecided, select the page, approve" the fast
++ * path, and what stops it from quietly approving the rows the filter and the
++ * pagination are hiding.
++ */
++export default function GateTable({
++  columns,
++  skeletonCells,
++  items,
++  Row,
++  isLoading,
++  emptyHint,
++  selectAllLabel,
++  decisionFor,
++  isChecked,
++  allChecked,
++  onCheck,
++  onCheckPage,
++  onApprove,
++  onReject,
++  onOpen,
++  pagination,
++}) {
++  return (
++    <DataTable className={styles.table}>
++      <DataTableHead
++        columns={columns}
++        leading={
++          <Checkbox size="sm" checked={allChecked} onChange={onCheckPage} label={selectAllLabel} />
++        }
++      />
++
++      <DataTableBody>
++        {isLoading && <TableSkeleton columns={columns} cells={skeletonCells} />}
++
++        {!isLoading && items.length === 0 && (
++          <div className={styles.tableEmpty}>
++            <EmptyState icon="search" title="Nothing matches" hint={emptyHint} />
++          </div>
++        )}
++
++        {items.map((item) => (
++          <Row
++            key={item.id}
++            item={item}
++            decision={decisionFor(item.id)}
++            checked={isChecked(item.id)}
++            onCheck={() => onCheck(item.id)}
++            onApprove={() => onApprove(item.id)}
++            onReject={() => onReject(item.id)}
++            onOpen={() => onOpen(item.id)}
++          />
++        ))}
++      </DataTableBody>
++
++      <DataTableFooter tall>
++        <TablePagination {...pagination} isLoading={isLoading} />
++      </DataTableFooter>
++    </DataTable>
++  );
++}
++
++GateTable.propTypes = {
++  columns: PropTypes.arrayOf(
++    PropTypes.shape({ id: PropTypes.string.isRequired, width: PropTypes.string.isRequired }),
++  ).isRequired,
++  skeletonCells: PropTypes.array.isRequired,
++  items: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string.isRequired })).isRequired,
++  Row: PropTypes.elementType.isRequired,
++  isLoading: PropTypes.bool,
++  emptyHint: PropTypes.node.isRequired,
++  selectAllLabel: PropTypes.string.isRequired,
++  decisionFor: PropTypes.func.isRequired,
++  isChecked: PropTypes.func.isRequired,
++  allChecked: PropTypes.bool,
++  onCheck: PropTypes.func.isRequired,
++  onCheckPage: PropTypes.func.isRequired,
++  onApprove: PropTypes.func.isRequired,
++  onReject: PropTypes.func.isRequired,
++  onOpen: PropTypes.func.isRequired,
++  pagination: PropTypes.object.isRequired,
++};
+diff --git a/src/features/review/pages/ReviewConcepts/ReviewConcepts.module.css b/src/features/review/components/GateTable/GateTable.module.css
+similarity index 100%
+rename from src/features/review/pages/ReviewConcepts/ReviewConcepts.module.css
+rename to src/features/review/components/GateTable/GateTable.module.css
+diff --git a/src/features/review/pages/ReviewConcepts/ConceptToolbar.jsx b/src/features/review/components/GateTable/GateToolbar.jsx
+similarity index 77%
+rename from src/features/review/pages/ReviewConcepts/ConceptToolbar.jsx
+rename to src/features/review/components/GateTable/GateToolbar.jsx
+index bc3e59e..7827b9f 100644
+--- a/src/features/review/pages/ReviewConcepts/ConceptToolbar.jsx
++++ b/src/features/review/components/GateTable/GateToolbar.jsx
+@@ -2,24 +2,24 @@ import PropTypes from 'prop-types';
+ import Button from '@/components/ui/Button';
+ import Icon from '@/components/ui/Icon';
+ import SearchInput from '@/components/ui/SearchInput';
+-import {
+-  CONCEPT_FILTERS,
+-  CONCEPT_SORTS,
+-  CONFIDENCE_FILTERS,
+-} from '@/features/review/conceptReview';
++import { CONFIDENCE_FILTERS, GATE_FILTERS } from '@/features/review/gateItems';
+ import FilterMenu from './FilterMenu';
+-import styles from './ReviewConcepts.module.css';
++import styles from './GateTable.module.css';
+ 
+ /**
+- * Search and the three menus that narrow the table, and — when rows are ticked
+- * — what can be done to them.
++ * Search and the three menus that narrow a gate's table, and — when rows are
++ * ticked — what can be done to them.
+  *
+  * The bulk bar replaces the filters rather than stacking under them. A
+  * selection is a mode: while it is live the question is what to do with those
+  * rows, and leaving both rows of controls on screen would offer to change the
+  * list out from under the selection that is about to be acted on.
++ *
++ * Status and confidence are the same everywhere; only the sort options and the
++ * search placeholder belong to the gate.
+  */
+-export default function ConceptToolbar({
++export default function GateToolbar({
++  searchPlaceholder,
+   query,
+   onQueryChange,
+   status,
+@@ -28,6 +28,7 @@ export default function ConceptToolbar({
+   confidence,
+   onConfidenceChange,
+   sort,
++  sortOptions,
+   onSortChange,
+   selectedCount,
+   onApproveSelected,
+@@ -61,12 +62,12 @@ export default function ConceptToolbar({
+       <SearchInput
+         value={query}
+         onChange={onQueryChange}
+-        placeholder="Search concepts, aliases or types"
++        placeholder={searchPlaceholder}
+         width={280}
+       />
+       <FilterMenu
+         label="Status"
+-        options={CONCEPT_FILTERS}
++        options={GATE_FILTERS}
+         value={status}
+         onChange={onStatusChange}
+         counts={statusCounts}
+@@ -79,16 +80,17 @@ export default function ConceptToolbar({
+       />
+       <FilterMenu
+         label="Sort by"
+-        options={CONCEPT_SORTS}
++        options={sortOptions}
+         value={sort}
+         onChange={onSortChange}
+-        width={210}
++        width={220}
+       />
+     </div>
+   );
+ }
+ 
+-ConceptToolbar.propTypes = {
++GateToolbar.propTypes = {
++  searchPlaceholder: PropTypes.string.isRequired,
+   query: PropTypes.string.isRequired,
+   onQueryChange: PropTypes.func.isRequired,
+   status: PropTypes.string.isRequired,
+@@ -97,6 +99,9 @@ ConceptToolbar.propTypes = {
+   confidence: PropTypes.string.isRequired,
+   onConfidenceChange: PropTypes.func.isRequired,
+   sort: PropTypes.string.isRequired,
++  sortOptions: PropTypes.arrayOf(
++    PropTypes.shape({ id: PropTypes.string.isRequired, label: PropTypes.node.isRequired }),
++  ).isRequired,
+   onSortChange: PropTypes.func.isRequired,
+   selectedCount: PropTypes.number.isRequired,
+   onApproveSelected: PropTypes.func.isRequired,
+diff --git a/src/features/review/pages/ReviewConcepts/TablePagination.jsx b/src/features/review/components/GateTable/TablePagination.jsx
+similarity index 94%
+rename from src/features/review/pages/ReviewConcepts/TablePagination.jsx
+rename to src/features/review/components/GateTable/TablePagination.jsx
+index 6a122ff..83818ef 100644
+--- a/src/features/review/pages/ReviewConcepts/TablePagination.jsx
++++ b/src/features/review/components/GateTable/TablePagination.jsx
+@@ -8,8 +8,8 @@ import {
+   DropdownMenuTrigger,
+ } from '@/components/ui/DropdownMenu';
+ import Icon from '@/components/ui/Icon';
+-import { CONCEPT_PAGE_SIZES } from '@/features/review/constants';
+-import styles from './ReviewConcepts.module.css';
++import { GATE_PAGE_SIZES } from '@/features/review/constants';
++import styles from './GateTable.module.css';
+ 
+ /**
+  * The bar under the table: where you are in the list, and how to move.
+@@ -49,7 +49,7 @@ export default function TablePagination({
+           </button>
+         </DropdownMenuTrigger>
+         <DropdownMenuContent align="end" width={110}>
+-          {CONCEPT_PAGE_SIZES.map((size) => (
++          {GATE_PAGE_SIZES.map((size) => (
+             <DropdownMenuItem
+               key={size}
+               selected={size === pageSize}
+diff --git a/src/features/review/components/GateTable/TableSkeleton.jsx b/src/features/review/components/GateTable/TableSkeleton.jsx
+new file mode 100644
+index 0000000..650d7e7
+--- /dev/null
++++ b/src/features/review/components/GateTable/TableSkeleton.jsx
+@@ -0,0 +1,52 @@
++import PropTypes from 'prop-types';
++import Skeleton from '@/components/ui/Skeleton';
++import styles from './GateTable.module.css';
++
++/**
++ * A gate's table while it is loading.
++ *
++ * Built on the table's own grid track so nothing shifts when the rows land.
++ * `cells` describes one column each: a width given as an array is cycled down
++ * the rows, because a column of identical bars reads as a pattern rather than
++ * as data waiting to arrive. A null cell renders nothing — which is how the
++ * actions column stays empty, an approve button that does not yet know what it
++ * would approve being worse than the gap where it will be.
++ */
++export default function TableSkeleton({ columns, cells, rows = 8 }) {
++  const template = columns.map((column) => column.width).join(' ');
++
++  return (
++    <div aria-busy="true" aria-label="Loading rows">
++      {Array.from({ length: rows }, (_, row) => (
++        <div key={row} className={styles.skeletonRow} style={{ gridTemplateColumns: template }}>
++          {cells.map((cell, index) =>
++            cell ? (
++              <Skeleton
++                key={columns[index].id}
++                width={Array.isArray(cell.width) ? cell.width[row % cell.width.length] : cell.width}
++                height={cell.height ?? 11}
++                radius={cell.radius}
++              />
++            ) : (
++              <div key={columns[index].id} />
++            ),
++          )}
++        </div>
++      ))}
++    </div>
++  );
++}
++
++TableSkeleton.propTypes = {
++  columns: PropTypes.arrayOf(
++    PropTypes.shape({ id: PropTypes.string.isRequired, width: PropTypes.string.isRequired }),
++  ).isRequired,
++  cells: PropTypes.arrayOf(
++    PropTypes.shape({
++      width: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.array]),
++      height: PropTypes.number,
++      radius: PropTypes.string,
++    }),
++  ).isRequired,
++  rows: PropTypes.number,
++};
+diff --git a/src/features/review/components/GateTable/index.js b/src/features/review/components/GateTable/index.js
+new file mode 100644
+index 0000000..62e97df
+--- /dev/null
++++ b/src/features/review/components/GateTable/index.js
+@@ -0,0 +1,8 @@
++/** The screen and the table chrome every review gate is built from. */
++export { default as GateScreen } from './GateScreen';
++export { default as GateTable } from './GateTable';
++export { default as GateStats } from './GateStats';
++export { default as GateToolbar } from './GateToolbar';
++export { default as FilterMenu } from './FilterMenu';
++export { default as TablePagination } from './TablePagination';
++export { default as TableSkeleton } from './TableSkeleton';
+diff --git a/src/features/review/conceptReview.js b/src/features/review/conceptReview.js
+index c8ccbf2..5e51ee5 100644
+--- a/src/features/review/conceptReview.js
++++ b/src/features/review/conceptReview.js
+@@ -1,102 +1,45 @@
+-import { CONFIDENCE_BANDS, DECISION, TONE } from '@/config/constants/common';
++import { parseJsonArray } from '@/features/review/gateItems';
+ 
+ /**
+- * The concept review gate, as the API describes it.
++ * The concept gate's half of the review API: how one response item becomes the
++ * row the table draws, and what the table can sort it by.
+  *
+- * The endpoint returns one envelope per item type — a total, a count per status
+- * and the items themselves — and every item carries a `payload` of loosely
+- * typed strings. This module is the only place that knows that shape: it turns
+- * a response item into the object the screen renders, so when the fetcher lands
+- * nothing above it has to change.
+- *
+- * Everything the table filters and sorts by lives here too, as pure functions
+- * over normalised concepts. The page holds the current filter; it does not know
+- * what a filter means.
++ * Everything that is true of any gate — the envelope, the statuses, the status
++ * and confidence filters — lives in `gateItems.js`. This file is only the
++ * concept payload.
+  */
+ 
+-/** The statuses the API reports. An item is in exactly one of them. */
+-export const REVIEW_STATUS = {
+-  pending: 'PENDING',
+-  approved: 'APPROVED',
+-  rejected: 'REJECTED',
+-};
+-
+-/** `item_type` on the envelope. Concepts and relationships are separate gates. */
+-export const REVIEW_ITEM_TYPE = {
+-  concept: 'CONCEPT',
+-  relationship: 'RELATIONSHIP',
+-};
++/** Aliases arrive as a JSON-encoded array inside a string field, not an array. */
++export const parseAliases = (raw) =>
++  parseJsonArray(raw).filter((alias) => typeof alias === 'string');
+ 
+ /**
+- * API status to the decision the gate holds.
++ * One response item, flattened into what the screen actually reads.
+  *
+- * PENDING deliberately maps to nothing: undecided is not a third decision, it
+- * is the absence of one, and the gate has to be able to count it as such.
+- */
+-export const DECISION_BY_STATUS = {
+-  [REVIEW_STATUS.approved]: DECISION.approved,
+-  [REVIEW_STATUS.rejected]: DECISION.rejected,
+-};
+-
+-/** Which slice of the gate the table is showing. */
+-export const CONCEPT_FILTER = {
+-  all: 'all',
+-  undecided: 'undecided',
+-  approved: DECISION.approved,
+-  rejected: DECISION.rejected,
+-};
+-
+-export const CONCEPT_FILTERS = [
+-  { id: CONCEPT_FILTER.all, label: 'All statuses' },
+-  { id: CONCEPT_FILTER.undecided, label: 'Undecided' },
+-  { id: CONCEPT_FILTER.approved, label: 'Approved' },
+-  { id: CONCEPT_FILTER.rejected, label: 'Rejected' },
+-];
+-
+-/**
+- * How the Status column reads, keyed by the decision held — with undecided as
+- * the absent one. Neutral rather than amber: on arrival every row is undecided,
+- * and a table of fifty amber chips says "all of this is wrong" instead of
+- * "none of this has been looked at".
++ * Confidence is taken from the item rather than the payload copy of it: the
++ * payload's is a string, and a score the table sorts and colours by should be a
++ * number everywhere above this line.
+  */
+-export const CONCEPT_STATUS_META = {
+-  [CONCEPT_FILTER.undecided]: { label: 'Undecided', tone: TONE.neutral, icon: 'clock' },
+-  [DECISION.approved]: { label: 'Approved', tone: TONE.ok, icon: 'check' },
+-  [DECISION.rejected]: { label: 'Rejected', tone: TONE.danger, icon: 'close' },
+-};
+-
+-export const statusMetaFor = (decision) =>
+-  CONCEPT_STATUS_META[decision ?? CONCEPT_FILTER.undecided];
+-
+-/** `decision` is undefined for an item nobody has ruled on yet. */
+-export function matchesFilter(filter, decision) {
+-  if (filter === CONCEPT_FILTER.all) return true;
+-  if (filter === CONCEPT_FILTER.undecided) return !decision;
+-  return decision === filter;
++export function normalizeConcept(item) {
++  const payload = item.payload ?? {};
++  return {
++    id: item.item_ref_id,
++    name: payload.canonical_name,
++    aliases: parseAliases(payload.aliases),
++    type: payload.type,
++    role: payload.ontology_role,
++    definition: payload.definition,
++    confidence: Number(item.confidence ?? payload.confidence ?? 0),
++    status: item.status,
++    reviewedBy: item.reviewed_by_id,
++    reviewedAt: item.reviewed_at,
++    comment: item.review_comment,
++    conceptId: payload.canonical_concept_id,
++    runId: payload.execution_run_id,
++    createdAt: payload.created_at,
++  };
+ }
+ 
+-/** The confidence band a score falls in — the same bands that colour the chip. */
+-const bandOf = (value) =>
+-  CONFIDENCE_BANDS.find((band) => value >= band.min) ??
+-  CONFIDENCE_BANDS[CONFIDENCE_BANDS.length - 1];
+-
+-export const CONFIDENCE_FILTER = { all: 'all' };
+-
+-/**
+- * Built from the bands rather than listed again, so a band added to the scale
+- * appears in this menu without anyone remembering to add it.
+- */
+-export const CONFIDENCE_FILTERS = [
+-  { id: CONFIDENCE_FILTER.all, label: 'All confidence' },
+-  ...CONFIDENCE_BANDS.map((band) => ({
+-    id: band.label,
+-    label: `${band.label[0].toUpperCase()}${band.label.slice(1)} confidence`,
+-  })),
+-];
+-
+-export const matchesConfidence = (filter, value) =>
+-  filter === CONFIDENCE_FILTER.all || bandOf(value).label === filter;
+-
+ export const CONCEPT_SORT = {
+   nameAsc: 'name-asc',
+   nameDesc: 'name-desc',
+@@ -114,7 +57,7 @@ export const CONCEPT_SORTS = [
+ ];
+ 
+ /** Ties break on name, so a sort by type or confidence is still stable to read. */
+-const BY_SORT = {
++export const CONCEPT_COMPARATORS = {
+   [CONCEPT_SORT.nameAsc]: (a, b) => a.name.localeCompare(b.name),
+   [CONCEPT_SORT.nameDesc]: (a, b) => b.name.localeCompare(a.name),
+   [CONCEPT_SORT.confidenceDesc]: (a, b) =>
+@@ -124,73 +67,6 @@ const BY_SORT = {
+   [CONCEPT_SORT.type]: (a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name),
+ };
+ 
+-export const sortConcepts = (concepts, sort) => [...concepts].sort(BY_SORT[sort]);
+-
+-/**
+- * Aliases arrive as a JSON-encoded array inside a string field, not as an
+- * array. Anything that does not parse is treated as no aliases rather than
+- * thrown: one malformed row should not take the gate down.
+- */
+-export function parseAliases(raw) {
+-  if (Array.isArray(raw)) return raw;
+-  if (typeof raw !== 'string' || raw.trim() === '') return [];
+-  try {
+-    const parsed = JSON.parse(raw);
+-    return Array.isArray(parsed) ? parsed.filter((alias) => typeof alias === 'string') : [];
+-  } catch {
+-    return [];
+-  }
+-}
+-
+-/**
+- * One response item, flattened into what the screen actually reads.
+- *
+- * Confidence is taken from the item rather than the payload copy of it: the
+- * payload's is a string, and a score the table sorts and colours by should be a
+- * number everywhere above this line.
+- */
+-export function normalizeConcept(item) {
+-  const payload = item.payload ?? {};
+-  return {
+-    id: item.item_ref_id,
+-    name: payload.canonical_name,
+-    aliases: parseAliases(payload.aliases),
+-    type: payload.type,
+-    role: payload.ontology_role,
+-    definition: payload.definition,
+-    confidence: Number(item.confidence ?? payload.confidence ?? 0),
+-    status: item.status,
+-    reviewedBy: item.reviewed_by_id,
+-    reviewedAt: item.reviewed_at,
+-    comment: item.review_comment,
+-    conceptId: payload.canonical_concept_id,
+-    runId: payload.execution_run_id,
+-    createdAt: payload.created_at,
+-  };
+-}
+-
+-/**
+- * The decisions the API has already recorded, as the gate's decision map.
+- *
+- * Seeding from the response is what makes a reopened gate show the work someone
+- * already did, rather than presenting every item as untouched.
+- */
+-export function seedDecisions(items) {
+-  return items.reduce((acc, item) => {
+-    const decision = DECISION_BY_STATUS[item.status];
+-    if (decision) acc[item.item_ref_id] = decision;
+-    return acc;
+-  }, {});
+-}
+-
+-/** How many items sit behind each status filter, given the decisions held now. */
+-export function countByFilter(items, decisionFor) {
+-  return CONCEPT_FILTERS.reduce((acc, filter) => {
+-    acc[filter.id] = items.filter((item) => matchesFilter(filter.id, decisionFor(item.id))).length;
+-    return acc;
+-  }, {});
+-}
+-
+ /** Free-text search across everything a reviewer would type looking for a concept. */
+ export function conceptMatches(concept, needle) {
+   return [concept.name, concept.type, concept.role, concept.definition, ...concept.aliases]
+diff --git a/src/features/review/constants.js b/src/features/review/constants.js
+index 328489c..b5b4d88 100644
+--- a/src/features/review/constants.js
++++ b/src/features/review/constants.js
+@@ -36,6 +36,9 @@ export const GATE_COPY = {
+   continue: (n) => `Continue with ${n}`,
+ };
+ 
++/** The run whose proposals both gates are showing. */
++export const PROPOSAL_RUN = 'R-2418';
++
+ /**
+  * The concept gate's table. Widths are grid tracks: the two prose columns flex
+  * and everything with a fixed shape — the checkbox, the chips, the icon row —
+@@ -51,6 +54,48 @@ export const CONCEPT_COLUMNS = [
+   { id: 'actions', label: 'Actions', width: '108px' },
+ ];
+ 
+-/** Page sizes offered under the table. */
+-export const CONCEPT_PAGE_SIZES = [10, 25, 50, 100];
+-export const DEFAULT_CONCEPT_PAGE_SIZE = 25;
++/**
++ * The relationship gate's table. The triple takes three columns rather than one
++ * rendered string: a reviewer scanning for everything hanging off Customer is
++ * reading down a column, which a sentence per row would not let them do.
++ */
++export const RELATIONSHIP_COLUMNS = [
++  { id: 'select', label: '', width: '36px' },
++  { id: 'source', label: 'Source concept', width: 'minmax(120px, 0.85fr)' },
++  { id: 'predicate', label: 'Relationship', width: 'minmax(110px, 0.8fr)' },
++  { id: 'target', label: 'Target concept', width: 'minmax(120px, 0.85fr)' },
++  { id: 'evidence', label: 'Evidence / supporting text', width: 'minmax(190px, 1.7fr)' },
++  { id: 'confidence', label: 'Confidence', width: '96px' },
++  { id: 'status', label: 'Status', width: '118px' },
++  { id: 'actions', label: 'Actions', width: '108px' },
++];
++
++/** Page sizes offered under either gate's table. */
++export const GATE_PAGE_SIZES = [10, 25, 50, 100];
++export const DEFAULT_GATE_PAGE_SIZE = 25;
++
++/**
++ * The loading shape of each table, one recipe per column. A width given as an
++ * array is cycled down the rows, because a column of identical bars reads as a
++ * pattern rather than as data arriving. Null leaves the actions column empty.
++ */
++export const CONCEPT_SKELETON_CELLS = [
++  { width: 14, height: 14, radius: 'var(--radius-sm)' },
++  { width: [118, 164, 96, 142] },
++  { width: [106, 88, 124, 96], height: 10 },
++  { width: ['86%', '72%', '91%', '64%'], height: 10 },
++  { width: 44, height: 18, radius: 'var(--radius)' },
++  { width: 82, height: 18, radius: 'var(--radius)' },
++  null,
++];
++
++export const RELATIONSHIP_SKELETON_CELLS = [
++  { width: 14, height: 14, radius: 'var(--radius-sm)' },
++  { width: [86, 112, 74, 96] },
++  { width: [72, 104, 88, 64], height: 10 },
++  { width: [94, 78, 116, 82] },
++  { width: ['88%', '72%', '94%', '66%'], height: 10 },
++  { width: 44, height: 18, radius: 'var(--radius)' },
++  { width: 82, height: 18, radius: 'var(--radius)' },
++  null,
++];
+diff --git a/src/features/review/gateItems.js b/src/features/review/gateItems.js
+new file mode 100644
+index 0000000..4817291
+--- /dev/null
++++ b/src/features/review/gateItems.js
+@@ -0,0 +1,145 @@
++import { CONFIDENCE_BANDS, DECISION, TONE } from '@/config/constants/common';
++
++/**
++ * What every review gate has in common, whatever it is reviewing.
++ *
++ * The endpoint returns one envelope per item type — a total, a count per status
++ * and the items themselves — and every item carries a `payload` of loosely
++ * typed strings. The envelope, the statuses and the two filters that act on
++ * them are identical for concepts and relationships, so they are defined once
++ * here; only the payload differs, and each gate normalises its own.
++ */
++
++/** The statuses the API reports. An item is in exactly one of them. */
++export const REVIEW_STATUS = {
++  pending: 'PENDING',
++  approved: 'APPROVED',
++  rejected: 'REJECTED',
++};
++
++/** `item_type` on the envelope. Each gate reads one. */
++export const REVIEW_ITEM_TYPE = {
++  concept: 'CONCEPT',
++  relationship: 'RELATIONSHIP',
++};
++
++/**
++ * API status to the decision the gate holds.
++ *
++ * PENDING deliberately maps to nothing: undecided is not a third decision, it
++ * is the absence of one, and the gate has to be able to count it as such.
++ */
++export const DECISION_BY_STATUS = {
++  [REVIEW_STATUS.approved]: DECISION.approved,
++  [REVIEW_STATUS.rejected]: DECISION.rejected,
++};
++
++/** Which slice of a gate the table is showing. */
++export const GATE_FILTER = {
++  all: 'all',
++  undecided: 'undecided',
++  approved: DECISION.approved,
++  rejected: DECISION.rejected,
++};
++
++export const GATE_FILTERS = [
++  { id: GATE_FILTER.all, label: 'All statuses' },
++  { id: GATE_FILTER.undecided, label: 'Undecided' },
++  { id: GATE_FILTER.approved, label: 'Approved' },
++  { id: GATE_FILTER.rejected, label: 'Rejected' },
++];
++
++/**
++ * How the Status column reads, keyed by the decision held — with undecided as
++ * the absent one. Neutral rather than amber: on arrival every row is undecided,
++ * and a table of amber chips says "all of this is wrong" instead of "none of
++ * this has been looked at".
++ */
++export const GATE_STATUS_META = {
++  [GATE_FILTER.undecided]: { label: 'Undecided', tone: TONE.neutral, icon: 'clock' },
++  [DECISION.approved]: { label: 'Approved', tone: TONE.ok, icon: 'check' },
++  [DECISION.rejected]: { label: 'Rejected', tone: TONE.danger, icon: 'close' },
++};
++
++export const statusMetaFor = (decision) => GATE_STATUS_META[decision ?? GATE_FILTER.undecided];
++
++/** `decision` is undefined for an item nobody has ruled on yet. */
++export function matchesFilter(filter, decision) {
++  if (filter === GATE_FILTER.all) return true;
++  if (filter === GATE_FILTER.undecided) return !decision;
++  return decision === filter;
++}
++
++/** The confidence band a score falls in — the same bands that colour the chip. */
++const bandOf = (value) =>
++  CONFIDENCE_BANDS.find((band) => value >= band.min) ??
++  CONFIDENCE_BANDS[CONFIDENCE_BANDS.length - 1];
++
++export const CONFIDENCE_FILTER = { all: 'all' };
++
++/**
++ * Built from the bands rather than listed again, so a band added to the scale
++ * appears in this menu without anyone remembering to add it.
++ */
++export const CONFIDENCE_FILTERS = [
++  { id: CONFIDENCE_FILTER.all, label: 'All confidence' },
++  ...CONFIDENCE_BANDS.map((band) => ({
++    id: band.label,
++    label: `${band.label[0].toUpperCase()}${band.label.slice(1)} confidence`,
++  })),
++];
++
++export const matchesConfidence = (filter, value) =>
++  filter === CONFIDENCE_FILTER.all || bandOf(value).label === filter;
++
++/**
++ * A payload field that arrives as a JSON-encoded array inside a string, the way
++ * a concept's aliases and a relationship's signals both do. Anything that does
++ * not parse is treated as empty rather than thrown: one malformed row should
++ * not take a gate down.
++ */
++export function parseJsonArray(raw) {
++  if (Array.isArray(raw)) return raw;
++  if (typeof raw !== 'string' || raw.trim() === '') return [];
++  try {
++    const parsed = JSON.parse(raw);
++    return Array.isArray(parsed) ? parsed : [];
++  } catch {
++    return [];
++  }
++}
++
++/**
++ * The decisions the API has already recorded, as the gate's decision map.
++ *
++ * Seeding from the response is what makes a reopened gate show the work someone
++ * already did, rather than presenting every item as untouched.
++ */
++export function seedDecisions(items) {
++  return items.reduce((acc, item) => {
++    const decision = DECISION_BY_STATUS[item.status];
++    if (decision) acc[item.item_ref_id] = decision;
++    return acc;
++  }, {});
++}
++
++/** How many items sit behind each status filter, given the decisions held now. */
++export function countByFilter(items, decisionFor) {
++  return GATE_FILTERS.reduce((acc, filter) => {
++    acc[filter.id] = items.filter((item) => matchesFilter(filter.id, decisionFor(item.id))).length;
++    return acc;
++  }, {});
++}
++
++/** Builds the envelope a gate endpoint returns, so a fixture cannot drift from its own counts. */
++export function toEnvelope(itemType, items) {
++  const count = (status) => items.filter((item) => item.status === status).length;
++  return {
++    item_type: itemType,
++    total: items.length,
++    pending: count(REVIEW_STATUS.pending),
++    approved: count(REVIEW_STATUS.approved),
++    rejected: count(REVIEW_STATUS.rejected),
++    items,
++  };
++}
+diff --git a/src/features/review/pages/ReviewConcepts/ConceptDetail.jsx b/src/features/review/pages/ReviewConcepts/ConceptDetail.jsx
+index 0064b32..a33e87e 100644
+--- a/src/features/review/pages/ReviewConcepts/ConceptDetail.jsx
++++ b/src/features/review/pages/ReviewConcepts/ConceptDetail.jsx
+@@ -5,7 +5,7 @@ import { SectionLabel, StatPairs } from '@/components/ui/Surfaces';
+ import DecisionActions from '@/features/review/components/DecisionActions';
+ import { DECISION } from '@/config/constants/common';
+ import { conceptIri, confidenceTone, formatConfidence, formatDateTime } from '@/utils/format';
+-import styles from './ReviewConcepts.module.css';
++import styles from '@/features/review/components/GateTable/GateTable.module.css';
+ 
+ /**
+  * Everything the run recorded about one concept, over the table.
+diff --git a/src/features/review/pages/ReviewConcepts/ConceptRow.jsx b/src/features/review/pages/ReviewConcepts/ConceptRow.jsx
+index 936e5f6..0d865d2 100644
+--- a/src/features/review/pages/ReviewConcepts/ConceptRow.jsx
++++ b/src/features/review/pages/ReviewConcepts/ConceptRow.jsx
+@@ -5,10 +5,10 @@ import Chip from '@/components/ui/Chip';
+ import Icon from '@/components/ui/Icon';
+ import { DataTableRow } from '@/components/ui/DataTable';
+ import { DECISION } from '@/config/constants/common';
+-import { statusMetaFor } from '@/features/review/conceptReview';
++import { statusMetaFor } from '@/features/review/gateItems';
+ import { CONCEPT_COLUMNS } from '@/features/review/constants';
+ import { confidenceTone, formatConfidence, joinMeta } from '@/utils/format';
+-import styles from './ReviewConcepts.module.css';
++import styles from '@/features/review/components/GateTable/GateTable.module.css';
+ 
+ /**
+  * One concept in the table.
+@@ -23,7 +23,7 @@ import styles from './ReviewConcepts.module.css';
+  * confirmation of what the row shows rather than the only place it is said.
+  */
+ export default function ConceptRow({
+-  concept,
++  item,
+   decision,
+   checked,
+   onCheck,
+@@ -37,28 +37,28 @@ export default function ConceptRow({
+ 
+   return (
+     <DataTableRow columns={CONCEPT_COLUMNS} selected={checked} height="52px">
+-      <Checkbox size="sm" checked={checked} onChange={onCheck} label={`Select ${concept.name}`} />
++      <Checkbox size="sm" checked={checked} onChange={onCheck} label={`Select ${item.name}`} />
+ 
+       <div className={styles.cellName}>
+         <button type="button" className={styles.nameButton} onClick={onOpen}>
+-          <span className={rejected ? styles.nameStruck : undefined}>{concept.name}</span>
++          <span className={rejected ? styles.nameStruck : undefined}>{item.name}</span>
+         </button>
+-        {concept.aliases.length > 0 && (
+-          <span className={styles.aliasCount}>+{concept.aliases.length} aliases</span>
++        {item.aliases.length > 0 && (
++          <span className={styles.aliasCount}>+{item.aliases.length} aliases</span>
+         )}
+       </div>
+ 
+-      <div className={styles.cellType} title={joinMeta(concept.type, concept.role)}>
+-        {concept.type}
++      <div className={styles.cellType} title={joinMeta(item.type, item.role)}>
++        {item.type}
+       </div>
+ 
+-      <div className={styles.cellDefinition} title={concept.definition}>
+-        {concept.definition}
++      <div className={styles.cellDefinition} title={item.definition}>
++        {item.definition}
+       </div>
+ 
+       <div>
+-        <Chip tone={confidenceTone(concept.confidence)} mono>
+-          {formatConfidence(concept.confidence)}
++        <Chip tone={confidenceTone(item.confidence)} mono>
++          {formatConfidence(item.confidence)}
+         </Chip>
+       </div>
+ 
+@@ -74,7 +74,7 @@ export default function ConceptRow({
+           variant={approved ? 'approveActive' : 'approve'}
+           iconLeft="check"
+           aria-pressed={approved}
+-          aria-label={approved ? `Approved ${concept.name}` : `Approve ${concept.name}`}
++          aria-label={approved ? `Approved ${item.name}` : `Approve ${item.name}`}
+           title={approved ? 'Approved — click to undo' : 'Approve'}
+           onClick={onApprove}
+         />
+@@ -83,7 +83,7 @@ export default function ConceptRow({
+           variant={rejected ? 'rejectActive' : 'reject'}
+           iconLeft="close"
+           aria-pressed={rejected}
+-          aria-label={rejected ? `Rejected ${concept.name}` : `Reject ${concept.name}`}
++          aria-label={rejected ? `Rejected ${item.name}` : `Reject ${item.name}`}
+           title={rejected ? 'Rejected — click to undo' : 'Reject'}
+           onClick={onReject}
+         />
+@@ -91,7 +91,7 @@ export default function ConceptRow({
+           size="icon"
+           variant="ghost"
+           iconLeft="expand"
+-          aria-label={`Open ${concept.name}`}
++          aria-label={`Open ${item.name}`}
+           title="Definition, aliases and provenance"
+           onClick={onOpen}
+         />
+@@ -101,7 +101,7 @@ export default function ConceptRow({
+ }
+ 
+ ConceptRow.propTypes = {
+-  concept: PropTypes.shape({
++  item: PropTypes.shape({
+     name: PropTypes.string.isRequired,
+     aliases: PropTypes.arrayOf(PropTypes.string).isRequired,
+     type: PropTypes.string.isRequired,
+diff --git a/src/features/review/pages/ReviewConcepts/ConceptTable.jsx b/src/features/review/pages/ReviewConcepts/ConceptTable.jsx
+deleted file mode 100644
+index c828320..0000000
+--- a/src/features/review/pages/ReviewConcepts/ConceptTable.jsx
++++ /dev/null
+@@ -1,98 +0,0 @@
+-import PropTypes from 'prop-types';
+-import Checkbox from '@/components/ui/Checkbox';
+-import { EmptyState } from '@/components/ui/Surfaces';
+-import {
+-  DataTable,
+-  DataTableBody,
+-  DataTableFooter,
+-  DataTableHead,
+-} from '@/components/ui/DataTable';
+-import { CONCEPT_COLUMNS } from '@/features/review/constants';
+-import ConceptRow from './ConceptRow';
+-import ConceptTableSkeleton from './ConceptTableSkeleton';
+-import TablePagination from './TablePagination';
+-import styles from './ReviewConcepts.module.css';
+-
+-/**
+- * The gate as one table.
+- *
+- * The header checkbox selects the page in front of you, not the whole run —
+- * which is what makes "filter to undecided, select the page, approve" the fast
+- * path, and what stops it from quietly approving the two hundred concepts the
+- * filter and the pagination are hiding. Clearing the whole gate in one move is
+- * a different action, and it says so on its own button.
+- */
+-export default function ConceptTable({
+-  concepts,
+-  isLoading,
+-  decisionFor,
+-  isChecked,
+-  allChecked,
+-  onCheck,
+-  onCheckPage,
+-  onApprove,
+-  onReject,
+-  onOpen,
+-  pagination,
+-}) {
+-  return (
+-    <DataTable className={styles.table}>
+-      <DataTableHead
+-        columns={CONCEPT_COLUMNS}
+-        leading={
+-          <Checkbox
+-            size="sm"
+-            checked={allChecked}
+-            onChange={onCheckPage}
+-            label="Select every concept on this page"
+-          />
+-        }
+-      />
+-
+-      <DataTableBody>
+-        {isLoading && <ConceptTableSkeleton />}
+-
+-        {!isLoading && concepts.length === 0 && (
+-          <div className={styles.tableEmpty}>
+-            <EmptyState
+-              icon="search"
+-              title="Nothing matches"
+-              hint="No concept in this run answers to those filters together."
+-            />
+-          </div>
+-        )}
+-
+-        {concepts.map((concept) => (
+-          <ConceptRow
+-            key={concept.id}
+-            concept={concept}
+-            decision={decisionFor(concept.id)}
+-            checked={isChecked(concept.id)}
+-            onCheck={() => onCheck(concept.id)}
+-            onApprove={() => onApprove(concept.id)}
+-            onReject={() => onReject(concept.id)}
+-            onOpen={() => onOpen(concept.id)}
+-          />
+-        ))}
+-      </DataTableBody>
+-
+-      <DataTableFooter tall>
+-        <TablePagination {...pagination} isLoading={isLoading} />
+-      </DataTableFooter>
+-    </DataTable>
+-  );
+-}
+-
+-ConceptTable.propTypes = {
+-  concepts: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string.isRequired })).isRequired,
+-  isLoading: PropTypes.bool,
+-  decisionFor: PropTypes.func.isRequired,
+-  isChecked: PropTypes.func.isRequired,
+-  allChecked: PropTypes.bool,
+-  onCheck: PropTypes.func.isRequired,
+-  onCheckPage: PropTypes.func.isRequired,
+-  onApprove: PropTypes.func.isRequired,
+-  onReject: PropTypes.func.isRequired,
+-  onOpen: PropTypes.func.isRequired,
+-  pagination: PropTypes.object.isRequired,
+-};
+diff --git a/src/features/review/pages/ReviewConcepts/ConceptTableSkeleton.jsx b/src/features/review/pages/ReviewConcepts/ConceptTableSkeleton.jsx
+deleted file mode 100644
+index 3463f98..0000000
+--- a/src/features/review/pages/ReviewConcepts/ConceptTableSkeleton.jsx
++++ /dev/null
+@@ -1,46 +0,0 @@
+-import Skeleton from '@/components/ui/Skeleton';
+-import { CONCEPT_COLUMNS } from '@/features/review/constants';
+-import styles from './ReviewConcepts.module.css';
+-
+-/** Names and definitions vary; a column of identical bars reads as a pattern. */
+-const ROWS = [
+-  { name: 118, definition: '86%' },
+-  { name: 164, definition: '72%' },
+-  { name: 96, definition: '91%' },
+-  { name: 142, definition: '64%' },
+-  { name: 176, definition: '88%' },
+-  { name: 108, definition: '78%' },
+-  { name: 132, definition: '95%' },
+-  { name: 152, definition: '69%' },
+-];
+-
+-const TEMPLATE = CONCEPT_COLUMNS.map((column) => column.width).join(' ');
+-
+-/**
+- * The table while the gate is loading.
+- *
+- * Built on the table's own grid track so nothing shifts when the concepts land,
+- * and stopping short of the actions column: an approve button that does not yet
+- * know what it would approve is worse than the gap where it will be.
+- */
+-export default function ConceptTableSkeleton() {
+-  return (
+-    <div aria-busy="true" aria-label="Loading concepts">
+-      {ROWS.map((row) => (
+-        <div
+-          key={row.name}
+-          className={styles.skeletonRow}
+-          style={{ gridTemplateColumns: TEMPLATE }}
+-        >
+-          <Skeleton width={14} height={14} radius="var(--radius-sm)" />
+-          <Skeleton width={row.name} height={11} />
+-          <Skeleton width={106} height={10} />
+-          <Skeleton width={row.definition} height={10} />
+-          <Skeleton width={44} height={18} radius="var(--radius)" />
+-          <Skeleton width={82} height={18} radius="var(--radius)" />
+-          <div />
+-        </div>
+-      ))}
+-    </div>
+-  );
+-}
+diff --git a/src/features/review/pages/ReviewConcepts/ReviewConcepts.jsx b/src/features/review/pages/ReviewConcepts/ReviewConcepts.jsx
+index b6dbc95..0bce4eb 100644
+--- a/src/features/review/pages/ReviewConcepts/ReviewConcepts.jsx
++++ b/src/features/review/pages/ReviewConcepts/ReviewConcepts.jsx
+@@ -1,21 +1,23 @@
+-import { useMemo, useState } from 'react';
+-import { useNavigate, useParams } from 'react-router-dom';
+-import { PageBody } from '@/components/layout/AppShell';
+-import PageHeader from '@/components/layout/PageHeader';
+-import Button from '@/components/ui/Button';
+-import { DECISION } from '@/config/constants/common';
+-import { GATE_COPY } from '@/features/review/constants';
+-import { useReviewContext } from '@/features/review/useReviewContext';
+-import { useSelection } from '@/hooks/useSelection';
++import { useParams } from 'react-router-dom';
++import { GateScreen } from '@/features/review/components/GateTable';
++import { CONCEPT_COLUMNS, CONCEPT_SKELETON_CELLS } from '@/features/review/constants';
++import {
++  CONCEPT_COMPARATORS,
++  CONCEPT_SORT,
++  CONCEPT_SORTS,
++  conceptMatches,
++} from '@/features/review/conceptReview';
+ import { useWorkspace } from '@/features/workspaces';
+ import { buildPath } from '@/routes/paths';
+ import ConceptDetail from './ConceptDetail';
+-import ConceptStats from './ConceptStats';
+-import ConceptTable from './ConceptTable';
+-import ConceptToolbar from './ConceptToolbar';
+-import { useConceptQueue } from './useConceptQueue';
++import ConceptRow from './ConceptRow';
+ import { useConceptReview } from './useConceptReview';
+-import styles from './ReviewConcepts.module.css';
++
++const QUEUE_OPTIONS = {
++  matches: conceptMatches,
++  comparators: CONCEPT_COMPARATORS,
++  defaultSort: CONCEPT_SORT.nameAsc,
++};
+ 
+ /**
+  * The concept gate: every canonical concept a run proposed, and the decision it
+@@ -27,118 +29,35 @@ import styles from './ReviewConcepts.module.css';
+  * question most rows do not raise. The row that does raise it opens into a
+  * dialog, and the pane's width goes back to the columns.
+  *
+- * Relationships used to share this screen as a second tab. They are their own
+- * stage now, so this screen does one thing and hands off when it is done.
++ * Everything above is `GateScreen`, which all three gates share. What is left
++ * here is what makes this gate a concept gate: its copy, how a concept is
++ * searched and sorted, the row, and the dialog.
+  */
+ export default function ReviewConcepts() {
+-  const navigate = useNavigate();
+   const { workspaceId } = useWorkspace();
+   const { runId } = useParams();
+-
+   const { data, isLoading } = useConceptReview();
+-  const decisions = useReviewContext();
+-  const checks = useSelection();
+-  const [openId, setOpenId] = useState(null);
+-
+-  const items = useMemo(() => data?.items ?? [], [data]);
+-  const queue = useConceptQueue(items);
+-
+-  const allIds = useMemo(() => items.map((concept) => concept.id), [items]);
+-  const tally = decisions.tally(allIds);
+-  const pageIds = queue.rows.map((concept) => concept.id);
+-
+-  /** Bulk and single decisions run through the same state; only the arity differs. */
+-  const decideChecked = (decision) => {
+-    decisions.decideMany(checks.selectedIds, decision);
+-    checks.clear();
+-  };
+ 
+   return (
+-    <PageBody>
+-      <PageHeader
+-        title="Concept review"
+-        subtitle="Every canonical concept this run proposed. Approve the ones that belong in the ontology and reject the rest — nothing downstream is built until you do, and deciding partially is fine."
+-        actions={
+-          <>
+-            <Button
+-              variant="secondary"
+-              iconLeft="check"
+-              disabled={isLoading || tally.undecided === 0}
+-              onClick={() =>
+-                decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)
+-              }
+-            >
+-              {GATE_COPY.approveRest}
+-            </Button>
+-            <Button
+-              variant="primary"
+-              iconRight="arrowRight"
+-              disabled={tally.approved === 0}
+-              onClick={() => navigate(buildPath.reviewRelations(workspaceId, runId))}
+-            >
+-              {GATE_COPY.continue(tally.approved)}
+-            </Button>
+-          </>
+-        }
+-      />
+-
+-      <ConceptStats tally={tally} isLoading={isLoading} />
+-
+-      {tally.undecided > 0 && !isLoading && (
+-        <p className={styles.undecidedNote}>
+-          <span className={styles.undecidedDot} />
+-          {GATE_COPY.undecidedWarning(tally.undecided)}
+-        </p>
++    <GateScreen
++      title="Concept review"
++      subtitle="Every canonical concept this run proposed. Approve the ones that belong in the ontology and reject the rest — nothing downstream is built until you do, and deciding partially is fine."
++      totalLabel="Total concepts"
++      totalIcon="node"
++      searchPlaceholder="Search concepts, aliases or types"
++      emptyHint="No concept in this run answers to those filters together."
++      selectAllLabel="Select every concept on this page"
++      items={data?.items ?? []}
++      isLoading={isLoading}
++      sortOptions={CONCEPT_SORTS}
++      queueOptions={QUEUE_OPTIONS}
++      columns={CONCEPT_COLUMNS}
++      skeletonCells={CONCEPT_SKELETON_CELLS}
++      Row={ConceptRow}
++      nextPath={buildPath.reviewRelations(workspaceId, runId)}
++      renderDetail={({ item, ...rest }) => (
++        <ConceptDetail concept={item} workspaceId={workspaceId} {...rest} />
+       )}
+-
+-      <section className={styles.panel} aria-busy={isLoading}>
+-        <ConceptToolbar
+-          query={queue.query}
+-          onQueryChange={queue.setQuery}
+-          status={queue.status}
+-          onStatusChange={queue.setStatus}
+-          statusCounts={isLoading ? undefined : queue.counts}
+-          confidence={queue.confidence}
+-          onConfidenceChange={queue.setConfidence}
+-          sort={queue.sort}
+-          onSortChange={queue.setSort}
+-          selectedCount={checks.count}
+-          onApproveSelected={() => decideChecked(DECISION.approved)}
+-          onRejectSelected={() => decideChecked(DECISION.rejected)}
+-          onClearSelection={checks.clear}
+-        />
+-
+-        <ConceptTable
+-          concepts={queue.rows}
+-          isLoading={isLoading}
+-          decisionFor={decisions.decisionFor}
+-          isChecked={checks.isSelected}
+-          allChecked={checks.allSelected(pageIds)}
+-          onCheck={checks.toggle}
+-          onCheckPage={(next) => checks.toggleMany(pageIds, next)}
+-          onApprove={decisions.approve}
+-          onReject={decisions.reject}
+-          onOpen={setOpenId}
+-          pagination={{
+-            range: queue.range,
+-            total: queue.total,
+-            page: queue.page,
+-            pageCount: queue.pageCount,
+-            pageSize: queue.pageSize,
+-            onPageChange: queue.setPage,
+-            onPageSizeChange: queue.setPageSize,
+-          }}
+-        />
+-      </section>
+-
+-      <ConceptDetail
+-        concept={items.find((concept) => concept.id === openId)}
+-        workspaceId={workspaceId}
+-        decision={decisions.decisionFor(openId)}
+-        onApprove={() => decisions.approve(openId)}
+-        onReject={() => decisions.reject(openId)}
+-        onClose={() => setOpenId(null)}
+-      />
+-    </PageBody>
++    />
+   );
+ }
+diff --git a/src/features/review/pages/ReviewRelations/RelationDetail.jsx b/src/features/review/pages/ReviewRelations/RelationDetail.jsx
+index b6657e1..f58405f 100644
+--- a/src/features/review/pages/ReviewRelations/RelationDetail.jsx
++++ b/src/features/review/pages/ReviewRelations/RelationDetail.jsx
+@@ -1,95 +1,149 @@
+ import PropTypes from 'prop-types';
+ import Chip from '@/components/ui/Chip';
+-import { SectionLabel } from '@/components/ui/Surfaces';
++import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/Modal';
++import { SectionLabel, StatPairs } from '@/components/ui/Surfaces';
+ import DecisionActions from '@/features/review/components/DecisionActions';
+-import {
+-  Definition,
+-  GateDetail,
+-  GateDetailBody,
+-  GateDetailHeader,
+-} from '@/features/review/components/ReviewGate';
+ import { EvidenceTable, SignalList, TripleDisplay } from '@/features/review/components/ReviewItem';
+ import { RELATION_EVIDENCE_COLUMNS } from '@/features/review/constants';
++import { relationshipLabel } from '@/features/review/relationshipReview';
+ import { DECISION } from '@/config/constants/common';
+-import { conceptIri, confidenceTone, formatConfidence } from '@/utils/format';
++import { conceptIri, confidenceTone, formatConfidence, formatDateTime } from '@/utils/format';
++import gate from '@/features/review/components/GateTable/GateTable.module.css';
+ 
+ /**
+- * Everything known about the selected relationship, and the decision it is
+- * asking for.
++ * Everything the run recorded about one relationship, over the table.
+  *
+- * The triple leads because it is the claim being made: a reviewer reads the
+- * shape first, then the join evidence that says whether the data supports it.
++ * The triple leads because it is the claim being made. Then the supporting text
++ * the row could only show the first line of, then the join evidence that says
++ * whether the data actually backs it — a reviewer reads the claim, then checks
++ * it, and the dialog is ordered the way that reading goes.
++ *
++ * The decision buttons are repeated here on purpose: having read the evidence,
++ * the reviewer should not have to close the dialog to act on what they read.
+  */
+-export default function RelationDetail({ relation, decision, onApprove, onReject, workspaceId }) {
++export default function RelationDetail({
++  relationship,
++  workspaceId,
++  decision,
++  onApprove,
++  onReject,
++  onClose,
++}) {
++  if (!relationship) return null;
++
+   return (
+-    <GateDetail>
+-      <GateDetailHeader
+-        title={`${relation.subject} — ${relation.predicate} → ${relation.object}`}
+-        mono
+-        badges={
+-          <>
+-            <Chip tone="accent">{relation.kind.toUpperCase()}</Chip>
+-            <Chip tone={confidenceTone(relation.confidence)} mono>
+-              {formatConfidence(relation.confidence)} confidence
++    <Modal open onOpenChange={(next) => !next && onClose()}>
++      <ModalContent
++        size="lg"
++        title={relationshipLabel(relationship)}
++        description={conceptIri(workspaceId, relationship.predicate)}
++      >
++        <ModalBody className={gate.dialogBody}>
++          <div className={gate.dialogBadges}>
++            <Chip tone="accent">{relationship.role?.toUpperCase()}</Chip>
++            <Chip>{relationship.cardinality}</Chip>
++            <Chip tone={confidenceTone(relationship.confidence)} mono>
++              {formatConfidence(relationship.confidence)} confidence
+             </Chip>
+-          </>
+-        }
+-        uri={conceptIri(workspaceId, relation.predicate)}
+-        actions={
+-          <DecisionActions
+-            decision={decision}
+-            onApprove={onApprove}
+-            onReject={onReject}
+-            onEdit={() => {}}
++          </div>
++
++          <TripleDisplay
++            subject={relationship.source}
++            predicate={relationship.predicate}
++            object={relationship.target}
++            cardinality={relationship.cardinality}
+           />
+-        }
+-      />
+ 
+-      <GateDetailBody>
+-        <TripleDisplay
+-          subject={relation.subject}
+-          predicate={relation.predicate}
+-          object={relation.object}
+-          cardinality={relation.cardinality}
+-        />
++          <div>
++            <SectionLabel>Definition</SectionLabel>
++            <p className={gate.dialogDefinition}>{relationship.definition}</p>
++          </div>
++
++          <div>
++            <SectionLabel note="what the row could only show the first line of">
++              Supporting text
++            </SectionLabel>
++            <p className={gate.dialogDefinition}>{relationship.evidence}</p>
++          </div>
++
++          {relationship.joinEvidence.length > 0 && (
++            <div>
++              <SectionLabel note="how the link was established">Join evidence</SectionLabel>
++              <EvidenceTable
++                columns={RELATION_EVIDENCE_COLUMNS}
++                rows={relationship.joinEvidence.map((row) => ({
++                  id: row.id,
++                  a: row.signal,
++                  b: row.value,
++                  c: row.detail,
++                  role: row.role,
++                }))}
++              />
++            </div>
++          )}
+ 
+-        <div>
+-          <SectionLabel>Definition</SectionLabel>
+-          <Definition source={relation.definitionSource} sourceIcon={relation.sourceIcon}>
+-            {relation.definition}
+-          </Definition>
+-        </div>
++          {relationship.signals.length > 0 && (
++            <div>
++              <SectionLabel>Why this confidence</SectionLabel>
++              <SignalList signals={relationship.signals} />
++            </div>
++          )}
+ 
+-        <div>
+-          <SectionLabel note="how the link was established">Join evidence</SectionLabel>
+-          <EvidenceTable columns={RELATION_EVIDENCE_COLUMNS} rows={relation.evidence} />
+-        </div>
++          {relationship.comment && (
++            <div>
++              <SectionLabel>Review note</SectionLabel>
++              <p className={gate.comment}>{relationship.comment}</p>
++            </div>
++          )}
+ 
+-        <div>
+-          <SectionLabel>Why this confidence</SectionLabel>
+-          <SignalList signals={relation.signals} />
+-        </div>
+-      </GateDetailBody>
+-    </GateDetail>
++          <div>
++            <SectionLabel>Provenance</SectionLabel>
++            <div className={gate.provenance}>
++              <StatPairs
++                keyWidth={140}
++                pairs={[
++                  { key: 'Relationship id', value: relationship.relationshipId },
++                  { key: 'Execution run', value: relationship.runId },
++                  { key: 'Proposed', value: formatDateTime(relationship.createdAt) },
++                  ...(relationship.reviewedAt
++                    ? [{ key: 'Reviewed', value: formatDateTime(relationship.reviewedAt) }]
++                    : []),
++                ]}
++              />
++            </div>
++          </div>
++        </ModalBody>
++
++        <ModalFooter>
++          <div className={gate.spacer} />
++          <DecisionActions decision={decision} onApprove={onApprove} onReject={onReject} />
++        </ModalFooter>
++      </ModalContent>
++    </Modal>
+   );
+ }
+ 
+ RelationDetail.propTypes = {
+-  relation: PropTypes.shape({
+-    subject: PropTypes.string.isRequired,
++  relationship: PropTypes.shape({
++    source: PropTypes.string.isRequired,
+     predicate: PropTypes.string.isRequired,
+-    object: PropTypes.string.isRequired,
+-    kind: PropTypes.string.isRequired,
++    target: PropTypes.string.isRequired,
+     cardinality: PropTypes.string,
+-    confidence: PropTypes.number.isRequired,
+-    definition: PropTypes.node,
+-    definitionSource: PropTypes.node,
+-    sourceIcon: PropTypes.string,
+-    evidence: PropTypes.array.isRequired,
++    role: PropTypes.string,
++    definition: PropTypes.string,
++    evidence: PropTypes.string,
++    joinEvidence: PropTypes.array.isRequired,
+     signals: PropTypes.array.isRequired,
+-  }).isRequired,
++    confidence: PropTypes.number.isRequired,
++    comment: PropTypes.string,
++    relationshipId: PropTypes.string,
++    runId: PropTypes.string,
++    createdAt: PropTypes.string,
++    reviewedAt: PropTypes.string,
++  }),
++  workspaceId: PropTypes.string.isRequired,
+   decision: PropTypes.oneOf(Object.values(DECISION)),
+   onApprove: PropTypes.func.isRequired,
+   onReject: PropTypes.func.isRequired,
+-  workspaceId: PropTypes.string.isRequired,
++  onClose: PropTypes.func.isRequired,
+ };
+diff --git a/src/features/review/pages/ReviewRelations/RelationRow.jsx b/src/features/review/pages/ReviewRelations/RelationRow.jsx
+new file mode 100644
+index 0000000..3aeb379
+--- /dev/null
++++ b/src/features/review/pages/ReviewRelations/RelationRow.jsx
+@@ -0,0 +1,121 @@
++import PropTypes from 'prop-types';
++import Button from '@/components/ui/Button';
++import Checkbox from '@/components/ui/Checkbox';
++import Chip from '@/components/ui/Chip';
++import Icon from '@/components/ui/Icon';
++import { DataTableRow } from '@/components/ui/DataTable';
++import { DECISION } from '@/config/constants/common';
++import { statusMetaFor } from '@/features/review/gateItems';
++import { RELATIONSHIP_COLUMNS } from '@/features/review/constants';
++import { relationshipLabel } from '@/features/review/relationshipReview';
++import { confidenceTone, formatConfidence } from '@/utils/format';
++import gate from '@/features/review/components/GateTable/GateTable.module.css';
++import styles from './ReviewRelations.module.css';
++
++/**
++ * One relationship in the table.
++ *
++ * The triple reads across three columns, with the predicate in mono between two
++ * concept names: a reviewer scanning for everything hanging off Customer reads
++ * down the source column, and the shape of the claim stays legible without
++ * having to parse a sentence per row.
++ *
++ * The three actions are icons alone, because they repeat on every row — the
++ * words would be read once and scanned past twenty-five times. Each carries its
++ * name for a screen reader and as a hover title, so nothing is hidden, only
++ * unrepeated.
++ */
++export default function RelationRow({
++  item,
++  decision,
++  checked,
++  onCheck,
++  onApprove,
++  onReject,
++  onOpen,
++}) {
++  const status = statusMetaFor(decision);
++  const approved = decision === DECISION.approved;
++  const rejected = decision === DECISION.rejected;
++  const label = relationshipLabel(item);
++
++  return (
++    <DataTableRow columns={RELATIONSHIP_COLUMNS} selected={checked} height="52px">
++      <Checkbox size="sm" checked={checked} onChange={onCheck} label={`Select ${label}`} />
++
++      <div className={gate.cellName}>
++        <button type="button" className={gate.nameButton} onClick={onOpen}>
++          <span className={rejected ? gate.nameStruck : undefined}>{item.source}</span>
++        </button>
++      </div>
++
++      <div className={styles.predicate} title={item.cardinality}>
++        {item.predicate}
++      </div>
++
++      <div className={styles.target}>{item.target}</div>
++
++      <div className={gate.cellDefinition} title={item.evidence}>
++        {item.evidence}
++      </div>
++
++      <div>
++        <Chip tone={confidenceTone(item.confidence)} mono>
++          {formatConfidence(item.confidence)}
++        </Chip>
++      </div>
++
++      <div>
++        <Chip tone={status.tone} icon={<Icon name={status.icon} size={11} />}>
++          {status.label}
++        </Chip>
++      </div>
++
++      <div className={gate.cellActions}>
++        <Button
++          size="icon"
++          variant={approved ? 'approveActive' : 'approve'}
++          iconLeft="check"
++          aria-pressed={approved}
++          aria-label={approved ? `Approved ${label}` : `Approve ${label}`}
++          title={approved ? 'Approved — click to undo' : 'Approve'}
++          onClick={onApprove}
++        />
++        <Button
++          size="icon"
++          variant={rejected ? 'rejectActive' : 'reject'}
++          iconLeft="close"
++          aria-pressed={rejected}
++          aria-label={rejected ? `Rejected ${label}` : `Reject ${label}`}
++          title={rejected ? 'Rejected — click to undo' : 'Reject'}
++          onClick={onReject}
++        />
++        <Button
++          size="icon"
++          variant="ghost"
++          iconLeft="expand"
++          aria-label={`Open ${label}`}
++          title="Evidence, confidence and provenance"
++          onClick={onOpen}
++        />
++      </div>
++    </DataTableRow>
++  );
++}
++
++RelationRow.propTypes = {
++  item: PropTypes.shape({
++    source: PropTypes.string.isRequired,
++    predicate: PropTypes.string.isRequired,
++    target: PropTypes.string.isRequired,
++    cardinality: PropTypes.string,
++    evidence: PropTypes.string,
++    confidence: PropTypes.number.isRequired,
++  }).isRequired,
++  decision: PropTypes.oneOf(Object.values(DECISION)),
++  checked: PropTypes.bool,
++  onCheck: PropTypes.func.isRequired,
++  onApprove: PropTypes.func.isRequired,
++  onReject: PropTypes.func.isRequired,
++  onOpen: PropTypes.func.isRequired,
++};
+diff --git a/src/features/review/pages/ReviewRelations/ReviewRelations.jsx b/src/features/review/pages/ReviewRelations/ReviewRelations.jsx
+index 0b2ecf9..5e33f76 100644
+--- a/src/features/review/pages/ReviewRelations/ReviewRelations.jsx
++++ b/src/features/review/pages/ReviewRelations/ReviewRelations.jsx
+@@ -1,153 +1,62 @@
+-import { useMemo, useState } from 'react';
+-import { useNavigate, useParams } from 'react-router-dom';
+-import Checkbox from '@/components/ui/Checkbox';
+-import SearchInput from '@/components/ui/SearchInput';
+-import Toggle from '@/components/ui/Toggle';
++import { useParams } from 'react-router-dom';
++import { GateScreen } from '@/features/review/components/GateTable';
++import { RELATIONSHIP_COLUMNS, RELATIONSHIP_SKELETON_CELLS } from '@/features/review/constants';
+ import {
+-  BulkActions,
+-  GateFooter,
+-  GateList,
+-  GateListBody,
+-  GateListHead,
+-  GateShell,
+-  GateSplit,
+-  GateToolbar,
+-  ToolbarSpacer,
+-} from '@/features/review/components/ReviewGate';
+-import { ReviewListItem } from '@/features/review/components/ReviewItem';
+-import { DECISION } from '@/config/constants/common';
+-import { GATE_COPY } from '@/features/review/constants';
+-import { RELATIONS } from '@/features/review/mocks';
+-import { useReviewContext } from '@/features/review/useReviewContext';
+-import { useSelection } from '@/hooks/useSelection';
++  RELATIONSHIP_COMPARATORS,
++  RELATIONSHIP_SORT,
++  RELATIONSHIP_SORTS,
++  relationshipMatches,
++} from '@/features/review/relationshipReview';
+ import { useWorkspace } from '@/features/workspaces';
+ import { buildPath } from '@/routes/paths';
+-import { relationLabel } from '@/utils/format';
+ import RelationDetail from './RelationDetail';
++import RelationRow from './RelationRow';
++import { useRelationReview } from './useRelationReview';
+ 
+-const LIST_COLUMNS = '34px 1fr 62px 24px';
++const QUEUE_OPTIONS = {
++  matches: relationshipMatches,
++  comparators: RELATIONSHIP_COMPARATORS,
++  defaultSort: RELATIONSHIP_SORT.sourceAsc,
++};
+ 
+ /**
+- * The relationship gate: the links proposed between concepts the previous gate
+- * approved.
++ * The relationship gate: the links this run proposed between concepts, and the
++ * decision each is waiting for.
+  *
+  * It follows concepts rather than sharing a screen with them, because the
+  * question is a different one — not "is this a real thing" but "is this really
+  * how those two things relate" — and a link is only worth judging once both
+  * ends have been signed off.
++ *
++ * It is the same screen as the concept gate because it is the same job: the
++ * shared `GateScreen` is what guarantees that, rather than two pages that have
++ * to be kept looking alike by hand.
+  */
+ export default function ReviewRelations() {
+-  const navigate = useNavigate();
+   const { workspaceId } = useWorkspace();
+   const { runId } = useParams();
+-
+-  const [query, setQuery] = useState('');
+-  const [undecidedOnly, setUndecidedOnly] = useState(false);
+-  const [pickedId, setPickedId] = useState(null);
+-
+-  const decisions = useReviewContext();
+-  const checks = useSelection();
+-
+-  const rows = useMemo(
+-    () =>
+-      RELATIONS.map((relation) => ({
+-        id: relation.id,
+-        name: relationLabel(relation),
+-        sub: `${relation.cardinality} · ${relation.kind.toLowerCase()}`,
+-        confidence: relation.confidence,
+-      })),
+-    [],
+-  );
+-
+-  const visible = useMemo(() => {
+-    const needle = query.trim().toLowerCase();
+-    return rows.filter((row) => {
+-      if (needle && !row.name.toLowerCase().includes(needle)) return false;
+-      if (undecidedOnly && decisions.decisionFor(row.id)) return false;
+-      return true;
+-    });
+-  }, [rows, query, undecidedOnly, decisions]);
+-
+-  const allIds = useMemo(() => RELATIONS.map((relation) => relation.id), []);
+-  const tally = decisions.tally(allIds);
+-
+-  const selected = RELATIONS.find((relation) => relation.id === pickedId) ?? RELATIONS[0];
+-  const visibleIds = visible.map((row) => row.id);
+-
+-  /** Bulk and single decisions run through the same state; only the arity differs. */
+-  const decideChecked = (decision) => {
+-    decisions.decideMany(checks.selectedIds, decision);
+-    checks.clear();
+-  };
++  const { data, isLoading } = useRelationReview();
+ 
+   return (
+-    <GateShell>
+-      <GateToolbar>
+-        <SearchInput
+-          value={query}
+-          onChange={setQuery}
+-          placeholder="Filter relationships"
+-          width={210}
+-          subtle
+-        />
+-        <Toggle checked={undecidedOnly} onChange={setUndecidedOnly} label="Undecided only" />
+-        <ToolbarSpacer />
+-        <BulkActions
+-          count={checks.count}
+-          onApprove={() => decideChecked(DECISION.approved)}
+-          onReject={() => decideChecked(DECISION.rejected)}
+-        />
+-      </GateToolbar>
+-
+-      <GateSplit>
+-        <GateList width={448}>
+-          <GateListHead columns={LIST_COLUMNS}>
+-            <Checkbox
+-              size="sm"
+-              checked={checks.allSelected(visibleIds)}
+-              onChange={(next) => checks.toggleMany(visibleIds, next)}
+-              label="Select every relationship in view"
+-            />
+-            <div>Relationship</div>
+-            <div>Conf</div>
+-            <div />
+-          </GateListHead>
+-          <GateListBody>
+-            {visible.map((row) => (
+-              <ReviewListItem
+-                key={row.id}
+-                columns={LIST_COLUMNS}
+-                name={row.name}
+-                sub={row.sub}
+-                confidence={row.confidence}
+-                decision={decisions.decisionFor(row.id)}
+-                selected={selected.id === row.id}
+-                checked={checks.isSelected(row.id)}
+-                onSelect={() => setPickedId(row.id)}
+-                onCheck={() => checks.toggle(row.id)}
+-              />
+-            ))}
+-          </GateListBody>
+-        </GateList>
+-
+-        <RelationDetail
+-          relation={selected}
+-          workspaceId={workspaceId}
+-          decision={decisions.decisionFor(selected.id)}
+-          onApprove={() => decisions.approve(selected.id)}
+-          onReject={() => decisions.reject(selected.id)}
+-        />
+-      </GateSplit>
+-
+-      <GateFooter
+-        tally={tally}
+-        undecidedWarning={GATE_COPY.undecidedWarning(tally.undecided)}
+-        onApproveRest={() =>
+-          decisions.decideMany(decisions.undecidedIds(allIds), DECISION.approved)
+-        }
+-        primaryLabel={GATE_COPY.continue(tally.approved)}
+-        onPrimary={() => navigate(buildPath.reviewQuestions(workspaceId, runId))}
+-      />
+-    </GateShell>
++    <GateScreen
++      title="Relationship review"
++      subtitle="The links this run proposed between approved concepts. Approve the ones that describe the domain and reject the rest — only approved links are compiled into the graph."
++      totalLabel="Total relationships"
++      totalIcon="link"
++      searchPlaceholder="Search concepts, predicates or evidence"
++      emptyHint="No relationship in this run answers to those filters together."
++      selectAllLabel="Select every relationship on this page"
++      items={data?.items ?? []}
++      isLoading={isLoading}
++      sortOptions={RELATIONSHIP_SORTS}
++      queueOptions={QUEUE_OPTIONS}
++      columns={RELATIONSHIP_COLUMNS}
++      skeletonCells={RELATIONSHIP_SKELETON_CELLS}
++      Row={RelationRow}
++      nextPath={buildPath.reviewQuestions(workspaceId, runId)}
++      renderDetail={({ item, ...rest }) => (
++        <RelationDetail relationship={item} workspaceId={workspaceId} {...rest} />
++      )}
++    />
+   );
+ }
+diff --git a/src/features/review/pages/ReviewRelations/ReviewRelations.module.css b/src/features/review/pages/ReviewRelations/ReviewRelations.module.css
+new file mode 100644
+index 0000000..cc9916c
+--- /dev/null
++++ b/src/features/review/pages/ReviewRelations/ReviewRelations.module.css
+@@ -0,0 +1,26 @@
++/* What the relationship table adds to the shared gate chrome: the two columns
++   that carry the middle and the far end of the triple. */
++
++/* The predicate is the only part of a row that is an ontology term rather than
++   a name, so it is the only part in mono and in the accent. */
++.predicate {
++  font-family: var(--font-mono);
++  font-size: var(--fs-caption);
++  color: var(--accent);
++  white-space: nowrap;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  padding-right: 14px;
++}
++
++/* Target reads as a name like the source, but it is not the link into the
++   dialog, so it stays plain text rather than borrowing the button's weight. */
++.target {
++  font-size: var(--fs-base);
++  font-weight: 500;
++  color: var(--text-2);
++  white-space: nowrap;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  padding-right: 14px;
++}
+diff --git a/src/features/review/relationshipReview.js b/src/features/review/relationshipReview.js
+new file mode 100644
+index 0000000..fe03f2f
+--- /dev/null
++++ b/src/features/review/relationshipReview.js
+@@ -0,0 +1,94 @@
++import { parseJsonArray } from '@/features/review/gateItems';
++
++/**
++ * The relationship gate's half of the review API.
++ *
++ * The envelope is the one the concept gate already proved — a total, a count
++ * per status, and items carrying a `payload` — with `item_type` RELATIONSHIP.
++ * The payload keys below are the shape this screen assumes until the endpoint
++ * is written; `normalizeRelationship` is the only thing that reads them, so
++ * matching the real response is a change to one function.
++ *
++ * `signals` and `join_evidence` arrive JSON-encoded inside a string, the same
++ * way a concept's `aliases` does — the one thing the sample response told us
++ * about how this API encodes lists.
++ */
++
++/** Ids are added here rather than stored: nothing outside a row needs them. */
++const withIds = (rows, prefix) => rows.map((row, index) => ({ ...row, id: `${prefix}${index}` }));
++
++export function normalizeRelationship(item) {
++  const payload = item.payload ?? {};
++  return {
++    id: item.item_ref_id,
++    source: payload.source_concept,
++    predicate: payload.relationship_type,
++    target: payload.target_concept,
++    cardinality: payload.cardinality,
++    role: payload.ontology_role,
++    definition: payload.definition,
++    // The one-line supporting text the table shows, in full for the dialog.
++    evidence: payload.evidence,
++    joinEvidence: withIds(parseJsonArray(payload.join_evidence), 'e'),
++    signals: withIds(parseJsonArray(payload.signals), 's'),
++    confidence: Number(item.confidence ?? payload.confidence ?? 0),
++    status: item.status,
++    reviewedBy: item.reviewed_by_id,
++    reviewedAt: item.reviewed_at,
++    comment: item.review_comment,
++    relationshipId: payload.canonical_relationship_id,
++    runId: payload.execution_run_id,
++    createdAt: payload.created_at,
++  };
++}
++
++/** "Customer holds Contract" — the human-readable form of the triple. */
++export const relationshipLabel = (relationship) =>
++  `${relationship.source} ${relationship.predicate} ${relationship.target}`;
++
++export const RELATIONSHIP_SORT = {
++  sourceAsc: 'source-asc',
++  sourceDesc: 'source-desc',
++  targetAsc: 'target-asc',
++  confidenceDesc: 'confidence-desc',
++  confidenceAsc: 'confidence-asc',
++};
++
++export const RELATIONSHIP_SORTS = [
++  { id: RELATIONSHIP_SORT.sourceAsc, label: 'Source concept (A–Z)' },
++  { id: RELATIONSHIP_SORT.sourceDesc, label: 'Source concept (Z–A)' },
++  { id: RELATIONSHIP_SORT.targetAsc, label: 'Target concept (A–Z)' },
++  { id: RELATIONSHIP_SORT.confidenceDesc, label: 'Confidence (high first)' },
++  { id: RELATIONSHIP_SORT.confidenceAsc, label: 'Confidence (low first)' },
++];
++
++/**
++ * Sorting by one end of a triple leaves the other two free, so every
++ * comparator falls through to the rest of the triple. Two links out of
++ * Customer should not swap places between renders.
++ */
++const byTriple = (a, b) =>
++  a.source.localeCompare(b.source) ||
++  a.predicate.localeCompare(b.predicate) ||
++  a.target.localeCompare(b.target);
++
++export const RELATIONSHIP_COMPARATORS = {
++  [RELATIONSHIP_SORT.sourceAsc]: byTriple,
++  [RELATIONSHIP_SORT.sourceDesc]: (a, b) => b.source.localeCompare(a.source) || byTriple(a, b),
++  [RELATIONSHIP_SORT.targetAsc]: (a, b) => a.target.localeCompare(b.target) || byTriple(a, b),
++  [RELATIONSHIP_SORT.confidenceDesc]: (a, b) => b.confidence - a.confidence || byTriple(a, b),
++  [RELATIONSHIP_SORT.confidenceAsc]: (a, b) => a.confidence - b.confidence || byTriple(a, b),
++};
++
++/** Free-text search across the triple and the words that justify it. */
++export function relationshipMatches(relationship, needle) {
++  return [
++    relationship.source,
++    relationship.predicate,
++    relationship.target,
++    relationship.definition,
++    relationship.evidence,
++  ]
++    .filter(Boolean)
++    .some((field) => field.toLowerCase().includes(needle));
++}
+diff --git a/src/features/review/pages/ReviewConcepts/useConceptQueue.js b/src/features/review/useGateQueue.js
+similarity index 64%
+rename from src/features/review/pages/ReviewConcepts/useConceptQueue.js
+rename to src/features/review/useGateQueue.js
+index 25adb67..2069618 100644
+--- a/src/features/review/pages/ReviewConcepts/useConceptQueue.js
++++ b/src/features/review/useGateQueue.js
+@@ -1,38 +1,39 @@
+ import { useMemo, useState } from 'react';
+ import {
+-  CONCEPT_FILTER,
+-  CONCEPT_SORT,
+   CONFIDENCE_FILTER,
+-  conceptMatches,
++  GATE_FILTER,
+   countByFilter,
+   matchesConfidence,
+   matchesFilter,
+-  sortConcepts,
+-} from '@/features/review/conceptReview';
+-import { DEFAULT_CONCEPT_PAGE_SIZE } from '@/features/review/constants';
++} from '@/features/review/gateItems';
++import { DEFAULT_GATE_PAGE_SIZE } from '@/features/review/constants';
+ import { useReviewContext } from '@/features/review/useReviewContext';
+ 
+ /**
+- * What the concept table is currently showing: the three filters, the sort, and
++ * What a gate's table is currently showing: the three filters, the sort, and
+  * the page of rows they resolve to.
+  *
++ * Both gates filter on the same two axes and paginate the same way; only what
++ * counts as a text match and what the sort options mean differ, so those come
++ * in as `matches` and `comparators`.
++ *
+  * The counts on the status menu come from the decisions held right now rather
+  * than from the envelope's `pending` / `approved` / `rejected` figures. Those
+- * are what the server knew when it answered; approving six concepts has to move
++ * are what the server knew when it answered; approving six rows has to move
+  * them immediately, or the menu contradicts the table underneath it.
+  *
+  * The page is clamped rather than corrected by an effect. Approving the last
+- * two rows of page ten while filtered to Undecided empties that page, and a
++ * two rows of page three while filtered to Undecided empties that page, and a
+  * clamp lands the reviewer on the new last page as they render — an effect
+  * would paint the empty page first.
+  */
+-export function useConceptQueue(items) {
++export function useGateQueue(items, { matches, comparators, defaultSort }) {
+   const decisions = useReviewContext();
+-  const [status, setStatus] = useState(CONCEPT_FILTER.all);
++  const [status, setStatus] = useState(GATE_FILTER.all);
+   const [confidence, setConfidence] = useState(CONFIDENCE_FILTER.all);
+-  const [sort, setSort] = useState(CONCEPT_SORT.nameAsc);
++  const [sort, setSort] = useState(defaultSort);
+   const [query, setQuery] = useState('');
+-  const [pageSize, setPageSize] = useState(DEFAULT_CONCEPT_PAGE_SIZE);
++  const [pageSize, setPageSize] = useState(DEFAULT_GATE_PAGE_SIZE);
+   const [page, setPage] = useState(1);
+ 
+   const { decisionFor } = decisions;
+@@ -40,13 +41,13 @@ export function useConceptQueue(items) {
+   const matched = useMemo(() => {
+     const needle = query.trim().toLowerCase();
+     const filtered = items.filter(
+-      (concept) =>
+-        matchesFilter(status, decisionFor(concept.id)) &&
+-        matchesConfidence(confidence, concept.confidence) &&
+-        (!needle || conceptMatches(concept, needle)),
++      (item) =>
++        matchesFilter(status, decisionFor(item.id)) &&
++        matchesConfidence(confidence, item.confidence) &&
++        (!needle || matches(item, needle)),
+     );
+-    return sortConcepts(filtered, sort);
+-  }, [items, status, confidence, query, sort, decisionFor]);
++    return [...filtered].sort(comparators[sort]);
++  }, [items, status, confidence, query, sort, decisionFor, matches, comparators]);
+ 
+   const counts = useMemo(() => countByFilter(items, decisionFor), [items, decisionFor]);
+ 

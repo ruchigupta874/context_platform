@@ -1,10 +1,12 @@
 import { CONFIDENCE_BANDS } from '@/config/constants/common';
 import { COVERAGE } from '@/features/review/questions';
+import { PROPOSAL_RUN } from '@/features/review/constants';
 import { CONCEPT_REVIEW } from '@/features/review/conceptMocks';
 import { normalizeConcept } from '@/features/review/conceptReview';
-import { PROPOSAL_RUN, RELATIONS } from '@/features/review/mocks';
+import { RELATIONSHIP_REVIEW } from '@/features/review/relationshipMocks';
+import { normalizeRelationship, relationshipLabel } from '@/features/review/relationshipReview';
 import { QUESTION_RUN, QUESTIONS } from '@/features/review/questionMocks';
-import { joinMeta, relationLabel } from '@/utils/format';
+import { joinMeta } from '@/utils/format';
 
 /** Above this band an item is safe to wave through from a one-line summary. */
 const HIGH_CONFIDENCE = CONFIDENCE_BANDS[0].min;
@@ -36,16 +38,16 @@ export const QUEUE_ITEMS = [
     scoreLabel: concept.confidence.toFixed(2),
     decidable: concept.confidence >= HIGH_CONFIDENCE,
   })),
-  ...RELATIONS.map((relation) => ({
-    id: relation.id,
+  ...RELATIONSHIP_REVIEW.items.map(normalizeRelationship).map((relationship) => ({
+    id: relationship.id,
     runId: PROPOSAL_RUN,
     gate: 'relationships',
     kind: 'relation',
-    name: relationLabel(relation),
-    sub: `${relation.kind} · ${relation.cardinality}`,
-    score: relation.confidence,
-    scoreLabel: relation.confidence.toFixed(2),
-    decidable: relation.confidence >= HIGH_CONFIDENCE,
+    name: relationshipLabel(relationship),
+    sub: joinMeta(relationship.cardinality, relationship.role),
+    score: relationship.confidence,
+    scoreLabel: relationship.confidence.toFixed(2),
+    decidable: relationship.confidence >= HIGH_CONFIDENCE,
   })),
   ...QUESTIONS.map((question) => ({
     id: question.id,

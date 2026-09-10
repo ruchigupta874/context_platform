@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
-import styles from './ReviewConcepts.module.css';
+import styles from './GateTable.module.css';
 
 /**
  * A labelled menu that reads as a select.

@@ -5,10 +5,10 @@ import Chip from '@/components/ui/Chip';
 import Icon from '@/components/ui/Icon';
 import { DataTableRow } from '@/components/ui/DataTable';
 import { DECISION } from '@/config/constants/common';
-import { statusMetaFor } from '@/features/review/conceptReview';
+import { statusMetaFor } from '@/features/review/gateItems';
 import { CONCEPT_COLUMNS } from '@/features/review/constants';
 import { confidenceTone, formatConfidence, joinMeta } from '@/utils/format';
-import styles from './ReviewConcepts.module.css';
+import styles from '@/features/review/components/GateTable/GateTable.module.css';
 
 /**
  * One concept in the table.
@@ -23,7 +23,7 @@ import styles from './ReviewConcepts.module.css';
  * confirmation of what the row shows rather than the only place it is said.
  */
 export default function ConceptRow({
-  concept,
+  item,
   decision,
   checked,
   onCheck,
@@ -37,28 +37,28 @@ export default function ConceptRow({
 
   return (
     <DataTableRow columns={CONCEPT_COLUMNS} selected={checked} height="52px">
-      <Checkbox size="sm" checked={checked} onChange={onCheck} label={`Select ${concept.name}`} />
+      <Checkbox size="sm" checked={checked} onChange={onCheck} label={`Select ${item.name}`} />
 
       <div className={styles.cellName}>
         <button type="button" className={styles.nameButton} onClick={onOpen}>
-          <span className={rejected ? styles.nameStruck : undefined}>{concept.name}</span>
+          <span className={rejected ? styles.nameStruck : undefined}>{item.name}</span>
         </button>
-        {concept.aliases.length > 0 && (
-          <span className={styles.aliasCount}>+{concept.aliases.length} aliases</span>
+        {item.aliases.length > 0 && (
+          <span className={styles.aliasCount}>+{item.aliases.length} aliases</span>
         )}
       </div>
 
-      <div className={styles.cellType} title={joinMeta(concept.type, concept.role)}>
-        {concept.type}
+      <div className={styles.cellType} title={joinMeta(item.type, item.role)}>
+        {item.type}
       </div>
 
-      <div className={styles.cellDefinition} title={concept.definition}>
-        {concept.definition}
+      <div className={styles.cellDefinition} title={item.definition}>
+        {item.definition}
       </div>
 
       <div>
-        <Chip tone={confidenceTone(concept.confidence)} mono>
-          {formatConfidence(concept.confidence)}
+        <Chip tone={confidenceTone(item.confidence)} mono>
+          {formatConfidence(item.confidence)}
         </Chip>
       </div>
 
@@ -74,7 +74,7 @@ export default function ConceptRow({
           variant={approved ? 'approveActive' : 'approve'}
           iconLeft="check"
           aria-pressed={approved}
-          aria-label={approved ? `Approved ${concept.name}` : `Approve ${concept.name}`}
+          aria-label={approved ? `Approved ${item.name}` : `Approve ${item.name}`}
           title={approved ? 'Approved — click to undo' : 'Approve'}
           onClick={onApprove}
         />
@@ -83,7 +83,7 @@ export default function ConceptRow({
           variant={rejected ? 'rejectActive' : 'reject'}
           iconLeft="close"
           aria-pressed={rejected}
-          aria-label={rejected ? `Rejected ${concept.name}` : `Reject ${concept.name}`}
+          aria-label={rejected ? `Rejected ${item.name}` : `Reject ${item.name}`}
           title={rejected ? 'Rejected — click to undo' : 'Reject'}
           onClick={onReject}
         />
@@ -91,7 +91,7 @@ export default function ConceptRow({
           size="icon"
           variant="ghost"
           iconLeft="expand"
-          aria-label={`Open ${concept.name}`}
+          aria-label={`Open ${item.name}`}
           title="Definition, aliases and provenance"
           onClick={onOpen}
         />
@@ -101,7 +101,7 @@ export default function ConceptRow({
 }
 
 ConceptRow.propTypes = {
-  concept: PropTypes.shape({
+  item: PropTypes.shape({
     name: PropTypes.string.isRequired,
     aliases: PropTypes.arrayOf(PropTypes.string).isRequired,
     type: PropTypes.string.isRequired,
